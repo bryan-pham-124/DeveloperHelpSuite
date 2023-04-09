@@ -7,9 +7,11 @@ import { Link } from 'react-router-dom'
 
 // app/components/form-field.tsx
 interface GenericButtonArgs {
-    to: string,
-    text: string,
+    to?: string
+    text: string
+    isInput?: boolean
     buttonType: string
+    className?: string
     onClick?: (...args: any) => any
 }
 
@@ -38,9 +40,11 @@ const buttonTypes = [
 
 const GenericButton = (
     {
-        to , 
+        to="" , 
         text, 
         buttonType,
+        isInput = false,
+        className = '',
         onClick = () => {}
     }: GenericButtonArgs
 ) => {
@@ -48,19 +52,48 @@ const GenericButton = (
   let bStyle = buttonTypes.find(style => style.name === buttonType);
 
   return (
-     <Link to={to} onClick={onClick} 
-        className= 
-           {
+    <>
+      {
+        !isInput 
+        
+        ? 
+
+        <Link to={to} onClick={onClick} 
+            className=  {
               `transition ease-in-out
               ${bStyle?.bgColor} hover:bg-[#fc8403]
               ${bStyle?.textColor} 
               hover:text-${bStyle?.textColor} 
               hover:border-0
-              duration-300 ${bStyle?.styles} `
-           }
-         >
-        {text}
-     </Link>
+              duration-300 ${bStyle?.styles} 
+              ${className}
+              `
+            }
+            >
+            {text}
+        </Link> 
+
+       :
+
+       <input
+            type="submit"
+            className= {
+              `transition ease-in-out
+              ${bStyle?.bgColor} hover:bg-[#fc8403]
+              ${bStyle?.textColor} 
+              hover:text-${bStyle?.textColor} 
+              hover:border-0
+              duration-300 ${bStyle?.styles} 
+              ${className}
+              `
+            } 
+            value={text}
+       />
+
+      }
+      
+    </>
+     
   )
 }
 

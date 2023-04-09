@@ -1,32 +1,78 @@
 import { Form } from '@remix-run/react'
 import React from 'react'
+import {useState} from 'react';
+import GenericButton from '~/components/GenericButton';
+import FormField from '~/components/FormField';
+
+import { ActionFunction } from '@remix-run/node'
+
+export const action: ActionFunction = async ({ request }) => {
+    const form = await request.formData()
+     const email = form.get('email')
+    const password = form.get('password')
+    let name = form.get('firstName')
+    
+    console.log('Email is: ' + email);
+}
 
 const login = () => {
 
+  
+   const [formValues, setFormFields] = useState(({
+        email:'',
+        password: ''
+   }));
+
+
    const loginFields =  [
-        'email',
-        'password'
+      {
+        field: 'email',
+        label: "Email",
+        value: formValues.email
+      },
+      {
+        field: 'password',
+        label: "Password",
+        value: formValues.password
+      },
+
    ]
+ 
+   const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+
+        setFormFields(formFields => ({...formFields, [field]: event.target.value}) )
+        console.log(formValues);
+   }
 
   return (
-    <div>
-        <label htmlFor="email" className="text-blue-600 font-semibold">
-            Email
-          </label>
-          <input type="text" id="email" name="email" className="w-full p-2 rounded-xl my-2" />
+    <div className='w-full h-full flex justify-center items-center'>
+        <div className="w-full wrapper flex flex-col items-center "> 
+            <h1 className='mt-[25px] text-2xl text-center font-bold '> Welcome Back!</h1>
+            <Form className='my-[50px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg'>
 
-          <label htmlFor="password" className="text-blue-600 font-semibold">
-            Password
-          </label>
-          <input type="password" id="password" name="password" className="w-full p-2 rounded-xl my-2" />
+                {
+                  loginFields.map(field => (
+                    <FormField 
+                        htmlFor =   { field.field }
+                        type    =   { field.field } 
+                        label   =   { field.label }
+                        value   =   { field.value }
+                        onChange = {e => updateFormField(e, field.field)}
+                    />
+                  ))
+                }
 
-          <div className="w-full text-center">
-            <input
-              type="submit"
-              className="rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-              value="Sign In"
-            />
-        </div>
+                <div className="w-full text-center">
+                  <GenericButton
+                    isInput
+                    buttonType='skyBlue'
+                    text="Submit"
+                    className='mt-4'
+                  />
+                </div>
+
+            </Form>
+        </div>         
     </div>
   )
 }
