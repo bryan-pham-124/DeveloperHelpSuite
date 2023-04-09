@@ -9,17 +9,12 @@ import { ActionFunction } from '@remix-run/node'
 
 export const action: ActionFunction = async ({ request }) => {
     const form = await request.formData()
-     const email = form.get('email')
+    const email = form.get('email')
     const password = form.get('password')
     let name = form.get('name')
     
-    console.log('Password  is: ' + password);
-    console.log('Name  is: ' + name);
-
-
     return null;
 }
-
 
 
 const signUp = () => {
@@ -37,31 +32,35 @@ const signUp = () => {
       {
         field: 'email',
         label: "Email",
-        value: formValues.email
-      },
+        value: formValues.email,
+       },
       {
         field: 'password',
         label: "Password",
-        value: formValues.password
+        value: formValues.password,
       },
       {
         field: 'password2',
         label: "Reenter Password",
-        value: formValues.password2
+        value: formValues.password2,
       },
 
       {
         field: 'name',
         label: "Username",
-        value: formValues.name
+        value: formValues.name,
       },
 
    ]
  
    const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
 
-        setFormFields(formFields => ({...formFields, [field]: event.target.value}) )
-        console.log(formValues);
+        let errors_array = [] as string[]
+
+       
+        setFormFields(formFields => ({...formFields, [field]: event.target.value}) );
+
+        //console.log(formValues);
    }
 
   return (
