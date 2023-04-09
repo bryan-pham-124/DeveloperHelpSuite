@@ -21,13 +21,15 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }]
 }
 
+
+
 export default function App() {
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <script src="https://kit.fontawesome.com/d75918720d.js" crossorigin="anonymous"></script>
+         <title>Developer Help Suite</title>
         <Meta />
         <Links />
       </head>

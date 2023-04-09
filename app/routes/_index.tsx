@@ -25,7 +25,7 @@ export default function Index() {
                 </div>
                 <h3 className="text-white text-center font-medium text-md   my-3">Browse the knowledge base</h3>
                 <div className="flex justify-center">
-                  <GenericButton to ={"#"} text="Browse" bgHoverColor="black" textHoverColor="white" className="link w-[200px] bg-white rounded-xl text-center py-3"/>
+                  <GenericButton to ={"#"} text="Browse" buttonType="blackFilled"  />
                 </div>
               </div>
 
@@ -35,7 +35,7 @@ export default function Index() {
                 </div>
                 <h3 className="text-sky-500 text-center font-medium text-md   my-3">See Questions and Answers</h3>
                 <div className="flex justify-center">
-                  <GenericButton to ={"#"} text="Explore" bgHoverColor="black" textHoverColor="white" className="link w-[200px] bg-sky-500 rounded-xl text-white text-center py-3"/>
+                  <GenericButton to ={"#"} text="Explore"  buttonType="skyBlue"  />
                 </div>
               </div>
 
