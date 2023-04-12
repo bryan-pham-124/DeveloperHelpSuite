@@ -4,6 +4,7 @@ import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
 import FormField from '~/components/FormField';
 import { ActionFunction } from '@remix-run/node'
+import { validateFormField } from '~/utils/validateForms';
 
 
 
@@ -26,6 +27,8 @@ const signUp = () => {
         password2: '',
         name: ''
    }));
+
+   const [validForm, setValidForm] = useState(false);
 
 
    const loginFields =  [
@@ -55,10 +58,12 @@ const signUp = () => {
  
    const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
 
-        let errors_array = [] as string[]
-
-       
         setFormFields(formFields => ({...formFields, [field]: event.target.value}) );
+
+        let result = validateFormField(event.target.value, field)
+        result.errorMessage !== '' ? setValidForm(false ): setValidForm(true)
+
+      
 
         //console.log(formValues);
    }
@@ -71,8 +76,10 @@ const signUp = () => {
             <Form  method="POST" className='my-[50px] w-[300px] bg-[#212121] px-8 py-7 rounded-xl'>
 
                 {
-                    loginFields.map(field => (
+                    loginFields.map((field, i) => (
                         <FormField 
+                            key = {i}
+                            setValidForm = {setValidForm}
                             htmlFor =   { field.field }
                             type    =   { field.field } 
                             label   =   { field.label }
@@ -84,10 +91,11 @@ const signUp = () => {
 
                 <div className="w-full text-center">
                     <GenericButton
-                        isInput
+                        formButton = {true}
                         buttonType='skyBlue'
                         text="Submit"
-                        className='mt-4'
+                        validForm = {validForm}
+                        className={`mt-4`}
                     />
                 </div>
 

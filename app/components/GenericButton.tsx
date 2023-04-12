@@ -1,24 +1,36 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-
-
-
-
 // app/components/form-field.tsx
 interface GenericButtonArgs {
     to?: string
     text: string
-    isInput?: boolean
+    formButton?: boolean
     buttonType: string
     className?: string
+    validForm?: boolean
     onClick?: (...args: any) => any
+    onSubmit?: (...args: any) => any
 }
 
-const buttonTypes = [
+const GenericButton = (
+    {
+        to="" , 
+        text, 
+        formButton = false,
+        buttonType,
+        className = '',
+        validForm = true,
+        onClick = () => {},
+        onSubmit = () => {}
+    }: GenericButtonArgs
+) => {
+
+  const buttonTypes = [
     {
       name: "skyBlue",
-      styles: "font-light py-1 rounded-xl w-[80px] text-center",
+      //styles: "font-light py-1 rounded-xl w-[80px] text-center" + (validForm ? '' : 'disabled:opacity-20') ,
+      styles: "font-light py-1 rounded-xl w-[80px] text-center" + (validForm ? '' : 'pointer-events-none opacity-20') ,
       textColor: "text-white",
       bgColor: "bg-sky-500",
     },
@@ -30,35 +42,23 @@ const buttonTypes = [
     },
     {
       name: "blackFilled",
-      styles: "font-light   py-1 rounded-xl w-[80px] text-center",  
+      styles: "font-light py-1 rounded-xl w-[80px] text-center",  
       textColor: 'text-white',
       bgColor: 'bg-[#212121]',
     },
     
-]
-
-
-const GenericButton = (
-    {
-        to="" , 
-        text, 
-        buttonType,
-        isInput = false,
-        className = '',
-        onClick = () => {}
-    }: GenericButtonArgs
-) => {
+  ]
 
   let bStyle = buttonTypes.find(style => style.name === buttonType);
 
   return (
     <>
       {
-        !isInput 
+        !formButton
         
         ? 
 
-        <Link to={to} onClick={onClick} 
+        <Link to={to} onClick={onClick}  
             className=  {
               `transition ease-in-out
               ${bStyle?.bgColor} hover:bg-[#fc8403]
@@ -77,6 +77,7 @@ const GenericButton = (
 
        <input
             type="submit"
+            onSubmit={onSubmit}
             className= {
               `transition ease-in-out
               ${bStyle?.bgColor} hover:bg-[#fc8403]
@@ -88,6 +89,7 @@ const GenericButton = (
               `
             } 
             value={text}
+            disabled={true}
        />
 
       }

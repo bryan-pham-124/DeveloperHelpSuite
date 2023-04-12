@@ -1,60 +1,38 @@
-import {useState  }from 'react'
+import {useState}from 'react'
+import { validateFormField } from '~/utils/validateForms'
+
+
 // app/components/form-field.tsx
 interface FormFieldProps {
     htmlFor: string
     label: string
     type?: string
     value: any
-    
+    setValidForm: Function
     onChange?: (...args: any) => any
 }
-
-
 
 const FormField = ({ 
     htmlFor, 
     label, 
     type = 'text', 
     value, 
+    setValidForm,
+    onChange = () => {} }: FormFieldProps
     
-    onChange = () => {} }: FormFieldProps) =>
+    ) =>
     
     {
 
-   const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
-   const displayError = (event: React.ChangeEvent<HTMLInputElement> ) => {
-
-        let errors_present = false;
-
-        let currentVal = event.target.value;
-
-        let validEmailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        
-        if (htmlFor === 'email' && (!currentVal.length || !validEmailRegex.test(currentVal))) {
-            setErrorMessage("Please enter a valid email")
-            errors_present = true;
-        }
-
-        if(currentVal.trim() === "" || !currentVal.length || currentVal.length === 0 ){
-             setErrorMessage("Field cannot be blank")
-             errors_present = true;
-        }
-
-        if(htmlFor === 'password' && currentVal.length < 9 ){
-            setErrorMessage('Password must be at least 9 characters.')
-            errors_present = true;
-        }   
-
-        if(!errors_present){
-            setErrorMessage("");
-        }
-
-        errors_present = false;
-
-        console.log(errorMessage)
-
+   
+    const displayErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let result = validateFormField(event.target.value, htmlFor);
+        result.errorMessage !== '' ? setErrorMessage(result.errorMessage ): setErrorMessage('')
+        result.errorMessage !== '' ? setValidForm(false ): setValidForm(true)
     }
+    
 
     return (
       <>
@@ -63,7 +41,7 @@ const FormField = ({
         </label>
         <input
             onChange={onChange}
-            onBlur={displayError}
+            onBlur={e => (displayErrors(e))}
             type={type}
             id={htmlFor}
             name={htmlFor}
@@ -73,11 +51,12 @@ const FormField = ({
         {
             errorMessage !== ''
 
-            ?
-                <small className='text-[#fc8403] text-xs mb-6'>  {errorMessage} </small>
+            ?  
+                <small className='text-[#fc8403] text-xs mb-3 block'>  {errorMessage} </small>
+           
             :
 
-            ""
+                 ""
         }
       </>
     )
