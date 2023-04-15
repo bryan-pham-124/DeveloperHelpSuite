@@ -9,7 +9,10 @@ interface FormFieldProps {
     type?: string
     value: any
     setValidForm: Function
-    onChange?: (...args: any) => any
+    formFields: Array<any>
+    setFormValues: Function
+    //updateFormField: Function
+    //onChange?: (...args: any) => any
 }
 
 const FormField = ({ 
@@ -18,7 +21,11 @@ const FormField = ({
     type = 'text', 
     value, 
     setValidForm,
-    onChange = () => {} }: FormFieldProps
+    formFields,
+    setFormValues
+    //updateFormField,
+    //onChange = () => {} 
+  }: FormFieldProps
     
     ) =>
     
@@ -26,27 +33,52 @@ const FormField = ({
 
     const [errorMessage, setErrorMessage] = useState('');
 
+
+    const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+      
+      let result = validateFormField(event.target.value, field, formFields );
+      let fieldIndex = formFields.findIndex(elm => elm.field === field);
+
+      if(result.errorMessage !== ''){
+          setValidForm(false)
+         
+          formFields[fieldIndex].error = result.errorMessage;
+
+      } else {
+           formFields[fieldIndex].error = ''
+
+      }
+
+      //console.log(formFields[fieldIndex].error)
+
+      setFormValues((formFields: Array<object>) => ({...formFields, [field]: event.target.value}) )
+   }
+
    
     const displayErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let result = validateFormField(event.target.value, htmlFor);
+        let result = validateFormField(event.target.value, htmlFor, formFields);
         result.errorMessage !== '' ? setErrorMessage(result.errorMessage ): setErrorMessage('')
         result.errorMessage !== '' ? setValidForm(false ): setValidForm(true)
     }
     
-
     return (
       <>
         <label htmlFor={htmlFor} className="text-white text-lg font-semibold">
              {label}
         </label>
         <input
-            onChange={onChange}
-            onBlur={e => (displayErrors(e))}
+            onChange={ (e) =>  {
+               updateFormField(e, htmlFor);
+               displayErrors(e)
+            }}
+            onBlur={(e) => displayErrors(e)}
             type={type}
             id={htmlFor}
             name={htmlFor}
             className="w-full p-2 rounded-xl my-3"
             value={value}
+            autoComplete='none'
+            required
         />
         {
             errorMessage !== ''
@@ -56,7 +88,7 @@ const FormField = ({
            
             :
 
-                 ""
+             ""
         }
       </>
     )
