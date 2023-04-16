@@ -4,8 +4,9 @@ import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
 import FormField from '~/components/FormField';
 import { ActionFunction } from '@remix-run/node'
-import { checkMatchingPasswords, checkBlankFields } from '~/utils/validateForms';
+import { checkMatchingPasswords} from '~/utils/validateForms';
 import { json, redirect } from "@remix-run/node"; // or cloudflare/deno
+import { register } from '~/utils/auth.server';
 
 
 
@@ -42,9 +43,16 @@ export const action: ActionFunction = async ({ request }) => {
 
     if(!checkMatchingPasswords(password, password2)){
         errorMessages.push('Both passwords must match')
+    } else {
+
+         const registerResult = await register({ email, password, name })
+
+         console.log(registerResult);
+
+        //return await register({ email, password, name })
     }
 
-    checkBlankFields(formFieldsArr).map(error => errorMessages.push(error))
+  
     
     return json(errorMessages, {status: 400});
 
