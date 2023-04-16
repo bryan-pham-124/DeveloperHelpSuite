@@ -1,34 +1,110 @@
-# Welcome to Remix!
+About this project
 
-- [Remix Docs](https://remix.run/docs)
+Description
 
-## Deployment
+This application is a prototype of what a useful “one stop shop” developer knowledge base could be.  My application has a section where developers can ask questions and get answers on their technical issues. Developers can also answer other questions. In addition, there is a resources section, where developers can share resources and write articles on topics/ technologies users may have trouble with.
 
-After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
 
-If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
+Inspiration
 
-```sh
-npm i -g vercel
-vercel
-```
+The main inspiration for this project was a common situation at work where developers at my workplace often had questions about how to solve certain issues in projects or how certain technical concepts work. Fortunately, other developers at the company would know the answer. I thought it would be useful for an application where users can ask questions and get answers and store those questions in a database and answer in case another developer came across the same issue later. In addition, having a knowledge base with specific tutorials for specific commonly encountered issues would be very helpful for users.
 
-It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
 
-## Development
+Tech Stack
 
-To run your Remix app locally, make sure your project's local dependencies are installed:
+Mongo db
+Database for my application
 
-```sh
-npm install
-```
+React.js
+Renders components and manages state in the front end
 
-Afterwards, start the Remix development server like so:
+Tailwind css
+CSS Framework for quickly applying styles to pages
 
-```sh
-npm run dev
-```
+Prisma
+No orm framework to query database
 
-Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
+ Bcrypt.js
+Framework that encrypts passwords and preventing storing plain text passwords
 
-If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
+ Remix.js
+           JavaScript framework that allows for back end and front end code to interact with each other seamlessly
+
+
+Features of this app
+
+Form input and validation
+
+-  Validated forms can create and edit entries on the database
+ - Forms validate user data and display errors
+
+Account creation
+
+	- Users can create and login to their accounts.
+	- Only people with accounts can post answers and reply to posts.
+
+Authentication
+
+- Can authenticate users and see if they have a valid password to login into their account.
+
+Roles
+
+	- Users can do the following to posts:
+Upvote
+Downvote
+Reply to
+Edit/delete their own post
+
+	- Moderators can do the following to posts:
+remove/edit posts 
+ can do everything regular users do 
+Questions
+
+- Users can create questions that can have the following:
+text
+code snippets
+Links
+
+- In addition questions have:
+Author name
+date
+score count (upvotes - downvotes)
+toggleable status (problem is solved/ not solved)
+tag (shows what technology/problem this problem is addressing
+priority(how quickly a user needs the problem to be solved)
+
+- Questions can be:
+up/down voted by users with one vote per uiser
+replied to
+- Replies to questions can also be:
+replied to
+be up/down voted
+edited or deleted by the original question poster
+ 
+- Questions can be sorted by:
+upvotes
+date
+Priority
+
+- Questions can be filtered by:
+status
+tech/tag
+priority
+
+Resource Articles
+
+- Users can create articles and choose from:
+adding a new technology to the application
+adding articles to existing technologies
+
+- Articles can be:
+upvoted
+downvoted
+replied tp
+edited or deleted by original user who posted article
+
+
+
+
+
+
