@@ -89,8 +89,7 @@ const GenericButton = (
               `
             } 
             value={text}
-            disabled={true}
-       />
+        />
 
       }
       

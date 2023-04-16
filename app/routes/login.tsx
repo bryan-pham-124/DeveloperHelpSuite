@@ -21,6 +21,8 @@ export const action: ActionFunction = async ({ request }) => {
 const login = () => {
 
   
+  
+
    const [formValues, setFormValues] = useState(({
         email:'',
         password: ''
@@ -52,8 +54,10 @@ const login = () => {
 
                 {
                   formFields.map((field, i )=> (
+
                     <FormField 
                         key = {i}
+                        formType = {'login'}
                         setValidForm = {setValidForm}
                         htmlFor =   { field.field }
                         type    =   { field.field } 
@@ -67,7 +71,6 @@ const login = () => {
 
                 <div className="w-full text-center ">
                     <GenericButton
-                        onClick={(e) => validateAllFormFields(e, formFields, setValidForm)}
                         formButton = {true}
                         buttonType='skyBlue'
                         text="Submit"

@@ -1,4 +1,4 @@
-export const  validateFormField = (currentVal: string, field: string, formFields: Array<any> ) => {
+export const  validateFormField = (currentVal: string, field: string ) => {
 
 
     field = field.toLowerCase()
@@ -24,61 +24,36 @@ export const  validateFormField = (currentVal: string, field: string, formFields
         errors_present = true;
     }   
 
-    let pw2 = formFields.find(elm => elm.field === 'password2').value
-    let pw =  formFields.find(elm => elm.field === 'password').value
-
-    console.log('pw ' + pw);
-    console.log('pw2 ' + pw2);
-
-
-    if(field === 'password' && currentVal !== pw2 &&  pw2.trim() != '' ){
-        
-        errorMessage = ( 'Both passwords must match')
-        errors_present = true;
-
-    } else if(field === 'password2' && currentVal !== pw){
-
-        errorMessage = ( 'Both passwords must match')
-        errors_present = true;
-    }
- 
+     
     return {field: 'field', 'errorMessage': errorMessage};
 
 } 
 
-// catch mismatching passwords and blank fields on server
-    // redirect user to errors page where users must renter register info
+export const checkMatchingPasswords = (pw:string, pw2:string ) => {
 
-interface FormFieldsProps {
-    field: string;
-    label: string;
-    value: string;
-    error: string;
+    if(pw2 === pw){
+        return (true)
+    }  else {
+        return (false)
+    }
 }
 
-export const validateAllFormFields = (event: React.ChangeEvent<HTMLInputElement>, inputArr: Array<FormFieldsProps>, setValidForm: Function | null =  null ) => {
 
-    let allFieldsValid = true;
-    inputArr.map(loginField => {
-        let result = validateFormField(loginField.value, loginField.field, inputArr )
-        if(result.errorMessage !== '' || loginField.value.trim() === '' ){
-            allFieldsValid = false
-            loginField.error = result.errorMessage
-            console.log(result.errorMessage)
+interface FormFieldProps {
+    field: string
+    value: string
+}
 
-        } else {
-            loginField.error = ''
+export const checkBlankFields = (inputArr: Array<FormFieldProps>) => {
+
+    let allErrors: Array<string> = []
+
+    inputArr.map((elm ) => {
+        if(elm.value.trim()  === '' || !elm ){
+            allErrors.push(elm.field + 'cannot be blank')
         }
     })
 
-    console.log('user clicked')
+    return allErrors;
 
-    if(setValidForm ) {
-        setValidForm(allFieldsValid)
-    }
-
-
-    
-
-}
-
+}   

@@ -11,6 +11,8 @@ interface FormFieldProps {
     setValidForm: Function
     formFields: Array<any>
     setFormValues: Function
+    matchingPasswords?: boolean
+    formType: string
     //updateFormField: Function
     //onChange?: (...args: any) => any
 }
@@ -22,7 +24,9 @@ const FormField = ({
     value, 
     setValidForm,
     formFields,
-    setFormValues
+    setFormValues,
+    matchingPasswords = true,
+    formType = 'signUp'
     //updateFormField,
     //onChange = () => {} 
   }: FormFieldProps
@@ -36,7 +40,7 @@ const FormField = ({
 
     const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
       
-      let result = validateFormField(event.target.value, field, formFields );
+      let result = validateFormField(event.target.value, field );
       let fieldIndex = formFields.findIndex(elm => elm.field === field);
 
       if(result.errorMessage !== ''){
@@ -49,14 +53,12 @@ const FormField = ({
 
       }
 
-      //console.log(formFields[fieldIndex].error)
-
       setFormValues((formFields: Array<object>) => ({...formFields, [field]: event.target.value}) )
    }
 
    
     const displayErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let result = validateFormField(event.target.value, htmlFor, formFields);
+        let result = validateFormField(event.target.value, htmlFor);
         result.errorMessage !== '' ? setErrorMessage(result.errorMessage ): setErrorMessage('')
         result.errorMessage !== '' ? setValidForm(false ): setValidForm(true)
     }
@@ -77,11 +79,10 @@ const FormField = ({
             name={htmlFor}
             className="w-full p-2 rounded-xl my-3"
             value={value}
-            autoComplete='none'
             required
         />
         {
-            errorMessage !== ''
+            errorMessage !== ''  
 
             ?  
                 <small className='text-[#fc8403] text-xs mb-3 block'>  {errorMessage} </small>
