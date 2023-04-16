@@ -18,7 +18,7 @@ export async function register(user: RegisterForm) {
         { status: 400 }
       );
     }
-  
+
     const newUser = await createUser(user);
 
     if (!newUser) {
@@ -30,6 +30,6 @@ export async function register(user: RegisterForm) {
         { status: 400 }
       );
     }
-    return  'Hooray you registered!'
+    //return  'Hooray you registered!'
 
-  }
+}

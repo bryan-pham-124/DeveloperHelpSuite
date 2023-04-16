@@ -11,50 +11,20 @@ import { register } from '~/utils/auth.server';
 
 
 export const action: ActionFunction = async ({ request }) => {
+
     const form = await request.formData()
     const email = form.get('email') + '';
     const password = form.get('password') + '';
     const password2 = form.get('password2') + '';
     const name = form.get('name') + '';
 
-
-    //console.log([password, password2])
-
-    let formFieldsArr = [
-        {
-          field: 'email',
-          value: email || ''
-        }, 
-        {
-          field: 'password',
-          value: password || ''
-        }, 
-        {
-          field: 'password3',
-          value: password2 || ''
-        }, 
-        {
-          field: 'name',
-          value: name || ''
-        }, 
-    ]
-
-    let errorMessages = []
-
     if(!checkMatchingPasswords(password, password2)){
-        errorMessages.push('Both passwords must match')
+        return json({error: 'Both passwords do no match'}, {status: 400});
     } else {
 
-         const registerResult = await register({ email, password, name })
-
-         console.log(registerResult);
-
-        //return await register({ email, password, name })
+        const registerResult = await register({ email, password, name })
+        return registerResult;
     }
-
-  
-    
-    return json(errorMessages, {status: 400});
 
 }
 
@@ -62,7 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
 const signUp = () => {
 
 
-   const form_errors = useActionData<typeof action>();
+   const formErrors = useActionData<typeof action>();
 
    const [formValues, setFormValues] = useState(({
         email:'',
@@ -73,7 +43,14 @@ const signUp = () => {
 
    const [validForm, setValidForm] = useState(false);
 
-   const [matchingPasswords, setMatchingPasswords] = useState(false);
+   const [serverFormErrors, setServerFormErrors] = useState('')
+
+   useEffect(() => {
+      if(formErrors){
+         setServerFormErrors((formErrors.error))
+      }
+   }, [formErrors])
+
 
    const formFields =  [
       {
@@ -109,57 +86,58 @@ const signUp = () => {
 
    ]
 
+
   return (
     <div className='w-full h-full flex justify-center items-center'>
-    <div className="w-full wrapper flex flex-col items-center "> 
-        <h1 className='mt-[25px] text-2xl text-center font-bold '> Welcome Back!</h1>
+     <div className="w-full wrapper flex flex-col items-center "> 
 
+        <h1 className='my-[50px] text-4xl text-center font-bold '> Join our community!</h1>
 
-        <div className='my-4'>
-          {
-            form_errors
-          }
-        </div>
-       
+        {
+
+          serverFormErrors !== ''
+          
+          ?
+
+            <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
+                {'Error:  ' + serverFormErrors}
+            </div>
+
+          :
+
+          ''
+
+        }
+          
+        
         <Form method='POST' className='my-[20px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg' autoComplete='off'>
 
-            {
-              formFields.map((field, i )=> (
-                <FormField 
-                    key = {i}
-                    formType='signUp'
-                    setValidForm = {setValidForm}
-                    htmlFor =   { field.field }
-                    type    =   { field.type } 
-                    label   =   { field.label }
-                    value   =   { field.value }
-                    formFields = {formFields}
-                    setFormValues = {setFormValues}
-                    matchingPasswords = {matchingPasswords}
-                />
-              ))
-            }
- 
-            <div className="w-full text-center ">
-                <GenericButton
-                    formButton = {true}
-                    buttonType='skyBlue'
-                    text="Submit"
-                    validForm = {validForm}
-                    className={`mt-4` }
-                />
-            </div>
-            {
-              !validForm && !matchingPasswords
-
-              ? 
-
-                <small className='w-full mt-3 text-center text-[#fc8403]'> Please correct input your erors </small>
-
-              :
-
-                ''
-            }
+              {
+                formFields.map((field, i )=> (
+                  <FormField 
+                      key = {i}
+                      formType='signUp'
+                      setValidForm = {setValidForm}
+                      htmlFor =   { field.field }
+                      type    =   { field.type } 
+                      label   =   { field.label }
+                      value   =   { field.value }
+                      formFields = {formFields}
+                      setFormValues = {setFormValues}
+                  />
+                ))
+              }
+  
+              <div className="w-full text-center ">
+                  <GenericButton
+                      formButton = {true}
+                      buttonType='skyBlue'
+                      text="Submit"
+                      validForm = {validForm}
+                      className={`mt-4` }
+                  />
+              </div>
+             
 
         </Form>
     </div>         

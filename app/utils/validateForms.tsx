@@ -1,6 +1,5 @@
 export const  validateFormField = (currentVal: string, field: string ) => {
 
-
     field = field.toLowerCase()
 
     let errors_present = false;
@@ -16,7 +15,7 @@ export const  validateFormField = (currentVal: string, field: string ) => {
 
     if(currentVal.trim() === "" || !currentVal.length || currentVal.length === 0 ){
         errorMessage =  ( field + " cannot be blank")
-         errors_present = true;
+        errors_present = true;
     }
 
     if((field.includes('password') || field === 'name' ) && currentVal.length < 7 ){
@@ -30,30 +29,8 @@ export const  validateFormField = (currentVal: string, field: string ) => {
 } 
 
 export const checkMatchingPasswords = (pw:string, pw2:string ) => {
-
-    if(pw2 === pw){
-        return (true)
-    }  else {
-        return (false)
-    }
+    return pw2 === pw ? true: false;
 }
 
-
-interface FormFieldProps {
-    field: string
-    value: string
-}
-
-export const checkBlankFields = (inputArr: Array<FormFieldProps>) => {
-
-    let allErrors: Array<string> = []
-
-    inputArr.map((elm ) => {
-        if(elm.value.trim()  === '' || !elm ){
-            allErrors.push(elm.field + 'cannot be blank')
-        }
-    })
-
-    return allErrors;
-
-}   
+ 
+ 

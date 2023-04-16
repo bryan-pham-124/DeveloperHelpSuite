@@ -3,8 +3,7 @@ import React from 'react'
 import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
 import FormField from '~/components/FormField';
-import {validateAllFormFields } from '~/utils/validateForms';
-
+ 
 import { ActionFunction } from '@remix-run/node'
 
 export const action: ActionFunction = async ({ request }) => {
@@ -19,9 +18,6 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 const login = () => {
-
-  
-  
 
    const [formValues, setFormValues] = useState(({
         email:'',
@@ -49,7 +45,7 @@ const login = () => {
   return (
     <div className='w-full h-full flex justify-center items-center'>
         <div className="w-full wrapper flex flex-col items-center "> 
-            <h1 className='mt-[25px] text-2xl text-center font-bold '> Welcome Back!</h1>
+            <h1 className='my-[50px] text-4xl text-center font-bold '>  Welcome Back!</h1>
             <Form method='POST' className='my-[50px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg'>
 
                 {
@@ -78,18 +74,7 @@ const login = () => {
                         className={`mt-4` }
                     />
                 </div>
-                {
-                  !validForm
-
-                  ? 
-
-                    <small className='w-full mt-3 text-center text-[#fc8403]'> Please correct input your erors </small>
-
-                  :
-
-                    ''
-
-                }
+                
 
             </Form>
         </div>         
