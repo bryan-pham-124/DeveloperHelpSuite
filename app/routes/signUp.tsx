@@ -46,14 +46,14 @@ const signUp = () => {
    const navigation = useNavigation();
    const isSubmitting = navigation.state === "submitting";
    const [allFieldsValid, setAllFieldsValid] = useState(false)
- 
+   const [matchingPasswords, setMatchingPasswords] = useState(false)
 
    const formFields =  [
       {
         field: 'email',
         label: "Email",
         type:  'email',
-        value: formValues.email,
+        value: formValues.email || '',
         error: ''
        },
 
@@ -90,7 +90,18 @@ const signUp = () => {
   }, [formErrors])
 
   useEffect(() => {
-      setAllFieldsValid(validateAllFormFields(formFields))
+
+      let pw = formFields.find(elm => elm.field === 'password')?.value
+      let pw2 =  formFields.find(elm => elm.field === 'password2')?.value
+
+      if(pw !== pw2){ 
+        setAllFieldsValid(false)
+        setMatchingPasswords(false)
+      } else {  
+        setAllFieldsValid(validateAllFormFields(formFields))
+        setMatchingPasswords(true)
+      }
+
   }, [formValues])
 
 
@@ -132,6 +143,19 @@ const signUp = () => {
                   />
                 ))
               }
+
+
+              {
+                !matchingPasswords 
+
+                ?
+
+                <div className='w-full text-center text-[#fc8403] text-xs mb-3 block'> Passwords must match each other! </div>
+
+                :
+
+                ''
+              }
   
               <div className="w-full text-center ">
                   <GenericButton
@@ -142,7 +166,6 @@ const signUp = () => {
                       isSubmitting = {isSubmitting}
                   />
               </div>
-
         </Form>
     </div>         
 </div>
