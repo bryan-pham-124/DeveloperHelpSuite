@@ -6,16 +6,17 @@ import FormField from '~/components/FormField';
  
 import { ActionFunction } from '@remix-run/node'
 import { validateAllFormFields } from '~/utils/validateForms';
+import { loginUser } from '~/utils/auth.server';
 
 export const action: ActionFunction = async ({ request }) => {
     const form = await request.formData()
-    const email = form.get('email')
-    const password = form.get('password')
+    const email = form.get('email') + ''
+    const password = form.get('password') + ''
     let name = form.get('firstName')
     
-    console.log('Email is: ' + email);
-
-    return null;
+    const loginResult = await loginUser({email, password})
+    
+    return  loginResult ;
 }
 
 const login = () => {
@@ -66,6 +67,23 @@ const login = () => {
     <div className='w-full h-full flex justify-center items-center'>
         <div className="w-full wrapper flex flex-col items-center "> 
             <h1 className='my-[50px] text-4xl text-center font-bold '>  Welcome Back!</h1>
+             
+            {
+
+                serverFormErrors !== ''
+
+                ?
+
+                  <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
+                      {'Error:  ' + serverFormErrors}
+                  </div>
+
+                :
+
+                ''
+
+            }
+            
             <Form method='POST' className='my-[50px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg'>
 
                 {
