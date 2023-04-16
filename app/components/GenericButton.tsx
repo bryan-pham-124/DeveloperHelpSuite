@@ -8,7 +8,7 @@ interface GenericButtonArgs {
     formButton?: boolean
     buttonType: string
     className?: string
-    validForm?: boolean
+    isSubmitting?: boolean
     onClick?: (...args: any) => any
     onSubmit?: (...args: any) => any
 }
@@ -20,7 +20,7 @@ const GenericButton = (
         formButton = false,
         buttonType,
         className = '',
-        validForm = true,
+        isSubmitting = false,
         onClick = () => {},
         onSubmit = () => {}
     }: GenericButtonArgs
@@ -30,7 +30,7 @@ const GenericButton = (
     {
       name: "skyBlue",
       //styles: "font-light py-1 rounded-xl w-[80px] text-center" + (validForm ? '' : 'disabled:opacity-20') ,
-      styles: "font-light py-1 rounded-xl w-[80px] text-center" + (validForm ? '' : 'pointer-events-none opacity-20') ,
+      styles: "font-light py-1 rounded-xl w-[80px] text-center",
       textColor: "text-white",
       bgColor: "bg-sky-500",
     },
@@ -88,6 +88,7 @@ const GenericButton = (
               ${className}
               `
             } 
+            disabled = {isSubmitting}
             value={text}
         />
 

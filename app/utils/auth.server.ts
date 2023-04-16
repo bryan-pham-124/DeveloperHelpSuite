@@ -5,14 +5,33 @@ import bcrypt from "bcryptjs";
 import { RegisterForm } from "./types.server";
 
 
+const sessionSecret = process.env.SESSION_SECRET;
 
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET must be set");
+}
 
-export async function register(user: RegisterForm) {
+const storage = createCookieSessionStorage({
+  cookie: {
+    name: "developerHelpSuiteSession",
+    secure: process.env.NODE_ENV === "production",
+    secrets: [sessionSecret],
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+    httpOnly: true,
+  },
+});
+
+ 
+export  const register = async (user: RegisterForm) => {
 
     const prisma = new PrismaClient()
-    const exists = await prisma.user.count({ where: { email: user.email } });
+    const user_exists = await prisma.user.count({ 
+        where: { email: user.email }
+    });
 
-    if (exists) {
+    if (user_exists) {
       return json(
         { error: `User already exists with that email` },
         { status: 400 }
@@ -32,4 +51,19 @@ export async function register(user: RegisterForm) {
     }
     //return  'Hooray you registered!'
 
+    return createUserSession(newUser.id, '/questions')
+
 }
+
+export const createUserSession = async (userId: string, redirectTo: string) => {
+  const session = await storage.getSession();
+  session.set("userId", userId);
+  return redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await storage.commitSession(session),
+    },
+  });
+}
+
+
+ 

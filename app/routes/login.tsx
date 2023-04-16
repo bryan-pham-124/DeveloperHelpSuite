@@ -1,10 +1,11 @@
-import { Form } from '@remix-run/react'
-import React from 'react'
+import { Form, useActionData, useNavigation } from '@remix-run/react'
+import React, { useEffect } from 'react'
 import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
 import FormField from '~/components/FormField';
  
 import { ActionFunction } from '@remix-run/node'
+import { validateAllFormFields } from '~/utils/validateForms';
 
 export const action: ActionFunction = async ({ request }) => {
     const form = await request.formData()
@@ -19,12 +20,19 @@ export const action: ActionFunction = async ({ request }) => {
 
 const login = () => {
 
+  const formErrors = useActionData<typeof action>();
+
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
    const [formValues, setFormValues] = useState(({
         email:'',
         password: ''
    }));
 
-   const [validForm, setValidForm] = useState(false);
+   const [serverFormErrors, setServerFormErrors] = useState('')
+   const [allFieldsValid, setAllFieldsValid] = useState(false)
+ 
 
    const formFields =  [
       {
@@ -42,6 +50,18 @@ const login = () => {
 
    ]
    
+
+  useEffect(() => {
+    if(formErrors){
+        setServerFormErrors((formErrors.error))
+    }
+  }, [formErrors])
+
+  useEffect(() => {
+      setAllFieldsValid(validateAllFormFields(formFields))
+  }, [formValues])
+
+
   return (
     <div className='w-full h-full flex justify-center items-center'>
         <div className="w-full wrapper flex flex-col items-center "> 
@@ -54,7 +74,6 @@ const login = () => {
                     <FormField 
                         key = {i}
                         formType = {'login'}
-                        setValidForm = {setValidForm}
                         htmlFor =   { field.field }
                         type    =   { field.field } 
                         label   =   { field.label }
@@ -70,8 +89,7 @@ const login = () => {
                         formButton = {true}
                         buttonType='skyBlue'
                         text="Submit"
-                        validForm = {validForm}
-                        className={`mt-4` }
+                        className={(isSubmitting || !allFieldsValid )? `mt-4 pointer-events-none opacity-20`: 'mt-4' }
                     />
                 </div>
                 

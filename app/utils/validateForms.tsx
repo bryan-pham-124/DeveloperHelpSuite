@@ -23,7 +23,6 @@ export const  validateFormField = (currentVal: string, field: string ) => {
         errors_present = true;
     }   
 
-     
     return {field: 'field', 'errorMessage': errorMessage};
 
 } 
@@ -31,6 +30,43 @@ export const  validateFormField = (currentVal: string, field: string ) => {
 export const checkMatchingPasswords = (pw:string, pw2:string ) => {
     return pw2 === pw ? true: false;
 }
+
+
+interface  formFieldsProps {
+    field:  string
+    label:  string
+    type?:  string
+    value:  string
+    error:  string
+}
+
+
+export const validateAllFormFields = (formFields:formFieldsProps[]) => {
+
+
+    let errorCount = 0;
+    let blankEntries = 0;
+
+    formFields.map(elm => {
+
+        elm.value  =  elm.value.trim()
+
+        if(elm.value === ''){
+            blankEntries += 1;
+        }
+
+        let errorMessage = validateFormField(elm.value, elm.field).errorMessage;
+
+        if(errorMessage !== ''){
+            errorCount += 1;
+        }
+
+    })
+
+    return blankEntries === 0  && errorCount === 0;
+   
+}
+
 
  
  

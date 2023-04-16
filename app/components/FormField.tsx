@@ -8,10 +8,8 @@ interface FormFieldProps {
     label: string
     type?: string
     value: any
-    setValidForm: Function
     formFields: Array<any>
     setFormValues: Function
-    matchingPasswords?: boolean
     formType: string
     //updateFormField: Function
     //onChange?: (...args: any) => any
@@ -22,10 +20,8 @@ const FormField = ({
     label, 
     type = 'text', 
     value, 
-    setValidForm,
     formFields,
     setFormValues,
-    matchingPasswords = true,
     formType = 'signUp'
     //updateFormField,
     //onChange = () => {} 
@@ -37,15 +33,13 @@ const FormField = ({
 
     const [errorMessage, setErrorMessage] = useState('');
 
-
     const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
       
       let result = validateFormField(event.target.value, field );
       let fieldIndex = formFields.findIndex(elm => elm.field === field);
 
       if(result.errorMessage !== ''){
-          setValidForm(false)
-         
+          
           formFields[fieldIndex].error = result.errorMessage;
 
       } else {
@@ -60,7 +54,7 @@ const FormField = ({
     const displayErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
         let result = validateFormField(event.target.value, htmlFor);
         result.errorMessage !== '' ? setErrorMessage(result.errorMessage ): setErrorMessage('')
-        result.errorMessage !== '' ? setValidForm(false ): setValidForm(true)
+         
     }
     
     return (

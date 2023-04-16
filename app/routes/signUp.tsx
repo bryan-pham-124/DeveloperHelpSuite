@@ -1,4 +1,4 @@
-import { Form, useActionData } from '@remix-run/react'
+import { Form, useActionData,  useNavigation } from '@remix-run/react'
 import React, { useEffect } from 'react'
 import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
@@ -7,6 +7,7 @@ import { ActionFunction } from '@remix-run/node'
 import { checkMatchingPasswords} from '~/utils/validateForms';
 import { json, redirect } from "@remix-run/node"; // or cloudflare/deno
 import { register } from '~/utils/auth.server';
+import { validateAllFormFields } from '~/utils/validateForms';
 
 
 
@@ -19,7 +20,7 @@ export const action: ActionFunction = async ({ request }) => {
     const name = form.get('name') + '';
 
     if(!checkMatchingPasswords(password, password2)){
-        return json({error: 'Both passwords do no match'}, {status: 400});
+        return json({error: 'Both passwords do not match'}, {status: 400});
     } else {
 
         const registerResult = await register({ email, password, name })
@@ -41,16 +42,11 @@ const signUp = () => {
         name: ''
    }));
 
-   const [validForm, setValidForm] = useState(false);
-
    const [serverFormErrors, setServerFormErrors] = useState('')
-
-   useEffect(() => {
-      if(formErrors){
-         setServerFormErrors((formErrors.error))
-      }
-   }, [formErrors])
-
+   const navigation = useNavigation();
+   const isSubmitting = navigation.state === "submitting";
+   const [allFieldsValid, setAllFieldsValid] = useState(false)
+ 
 
    const formFields =  [
       {
@@ -87,6 +83,17 @@ const signUp = () => {
    ]
 
 
+  useEffect(() => {
+    if(formErrors){
+        setServerFormErrors((formErrors.error))
+    }
+  }, [formErrors])
+
+  useEffect(() => {
+      setAllFieldsValid(validateAllFormFields(formFields))
+  }, [formValues])
+
+
   return (
     <div className='w-full h-full flex justify-center items-center'>
      <div className="w-full wrapper flex flex-col items-center "> 
@@ -109,7 +116,6 @@ const signUp = () => {
 
         }
           
-        
         <Form method='POST' className='my-[20px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg' autoComplete='off'>
 
               {
@@ -117,7 +123,6 @@ const signUp = () => {
                   <FormField 
                       key = {i}
                       formType='signUp'
-                      setValidForm = {setValidForm}
                       htmlFor =   { field.field }
                       type    =   { field.type } 
                       label   =   { field.label }
@@ -133,11 +138,10 @@ const signUp = () => {
                       formButton = {true}
                       buttonType='skyBlue'
                       text="Submit"
-                      validForm = {validForm}
-                      className={`mt-4` }
+                      className={(isSubmitting || !allFieldsValid )? `mt-4 pointer-events-none opacity-20`: 'mt-4' }
+                      isSubmitting = {isSubmitting}
                   />
               </div>
-             
 
         </Form>
     </div>         
