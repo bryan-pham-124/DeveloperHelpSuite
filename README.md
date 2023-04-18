@@ -20,7 +20,7 @@
 	- CSS Framework for quickly applying styles to pages.
 
 - Prisma
-	- No orm framework to query database.
+	- No orm framework to fetch data from database and modify it.
 
 - Bcrypt.js
 	- Framework that encrypts passwords and preventing storing plain text passwords.
