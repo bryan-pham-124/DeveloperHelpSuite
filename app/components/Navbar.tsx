@@ -4,7 +4,7 @@ import GenericButton from './GenericButton'
 
 const Navbar = () => {
   return (
-    <nav className="w-full grid grid-cols-1 bg-[#212121] px-10 py-5  text-white items-center gap-y-7 md:grid-cols-2 md:gap-y-0">
+    <nav className="w-full grid grid-cols-1 bg-customBlack px-10 py-5  text-white items-center gap-y-7 md:grid-cols-2 md:gap-y-0">
         <div className="w-full wrapper flex  flex-col gap-x-9 gap-y-7   justify-center align-middle items-center my-7 md:gap-y-0 md:flex-row md:justify-start md:my-0">
             <Link to={"/"} className="link text-3xl font-bold md:text-xl">Developer Help Suite</Link>
             <Link to={"#"} className="link font-light mt-3 text-xl border-b pb-2 md:text-sm">About</Link>

@@ -9,7 +9,7 @@ import binoculars from "~/images/binoculars-solid.svg";
 // ./app/routes/index.tsx
 export default function Index() {
   return (
-    <div className="bg-[#212121] pb-4 md:py-5 md:min-h-[95vh] ">
+    <div className="bg-customBlack pb-4 md:py-5 md:min-h-[95vh] ">
         <div className="h-full wrapper flex align-middle items-center flex-col p-5 md:pt-0">
 
             <div className="h-full w-full flex items-center">

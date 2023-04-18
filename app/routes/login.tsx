@@ -84,7 +84,7 @@ const login = () => {
 
             }
             
-            <Form method='POST' className='my-[50px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg'>
+            <Form method='POST' className='my-[50px] w-[300px] bg-customBlack px-8 py-7 rounded-lg'>
 
                 {
                   formFields.map((field, i )=> (

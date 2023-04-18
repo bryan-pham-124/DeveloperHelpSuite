@@ -699,6 +699,11 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-customBlack {
+  --tw-bg-opacity: 1;
+  background-color: rgb(33 33 33 / var(--tw-bg-opacity));
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -821,7 +826,7 @@ video {
   line-height: 2;
 }
 
-.text-\[\#fc8403\] {
+.text-customOrange {
   --tw-text-opacity: 1;
   color: rgb(252 132 3 / var(--tw-text-opacity));
 }
@@ -866,6 +871,11 @@ video {
 }
 
 .hover\:bg-\[\#fc8403\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 132 3 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-customOrange:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(252 132 3 / var(--tw-bg-opacity));
 }

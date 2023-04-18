@@ -79,7 +79,7 @@ const FormField = ({
             errorMessage !== ''  
 
             ?  
-                <small className='text-[#fc8403] text-xs mb-3 block'>  {errorMessage} </small>
+                <small className='text-customOrange text-xs mb-3 block'>  {errorMessage} </small>
            
             :
 

@@ -61,7 +61,7 @@ const GenericButton = (
         <Link to={to} onClick={onClick}  
             className=  {
               `transition ease-in-out
-              ${bStyle?.bgColor} hover:bg-[#fc8403]
+              ${bStyle?.bgColor} hover:bg-customOrange
               ${bStyle?.textColor} 
               hover:text-${bStyle?.textColor} 
               hover:border-0
@@ -80,7 +80,7 @@ const GenericButton = (
             onSubmit={onSubmit}
             className= {
               `transition ease-in-out
-              ${bStyle?.bgColor} hover:bg-[#fc8403]
+              ${bStyle?.bgColor} hover:bg-customOrange
               ${bStyle?.textColor} 
               hover:text-${bStyle?.textColor} 
               hover:border-0

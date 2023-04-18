@@ -127,7 +127,7 @@ const signUp = () => {
 
         }
           
-        <Form method='POST' className='my-[20px] w-[300px] bg-[#212121] px-8 py-7 rounded-lg' autoComplete='off'>
+        <Form method='POST' className='my-[20px] w-[300px] bg-customBlack px-8 py-7 rounded-lg' autoComplete='off'>
 
               {
                 formFields.map((field, i )=> (
@@ -150,7 +150,7 @@ const signUp = () => {
 
                 ?
 
-                <div className='w-full text-center text-[#fc8403] text-xs mb-3 block'> Passwords must match each other! </div>
+                <div className='w-full text-center text-customOrange text-xs mb-3 block'> Passwords must match each other! </div>
 
                 :
 
