@@ -10,7 +10,7 @@
 
 ## Tech Stack
 
-- Front End 
+- Front End  
 	- Tailwind css
 		- CSS Framework for quickly applying styles to pages and makes webpages responsive.
 	- React.js
