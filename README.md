@@ -10,23 +10,21 @@
 
 ## Tech Stack
 
-- Mongo db
-	- Database for my application where all of data is stored in the backend.
+- Front End 
+	- Tailwind css
+		- CSS Framework for quickly applying styles to pages and makes webpages responsive.
+	- React.js
+		- Dynamically render components and manages state on the front end UI.
 
-- React.js
-	- Renders components and manages state in the front end.
-
-- Tailwind css
-	- CSS Framework for quickly applying styles to pages.
-
-- Prisma
-	- No orm framework to fetch data from database and modify it.
-
-- Bcrypt.js
-	- Framework that encrypts passwords and preventing storing plain text passwords.
-
-- Remix.js
-	- JavaScript framework that allows for back end and front end code to interact with each other seamlessly.
+- Back End
+	- Mongo db
+		- Database for my application where all of data is stored in the backend.
+	- Prisma
+		- No orm framework to fetch data from database and modify it.
+	- Bcrypt.js
+		- Framework that encrypts passwords and preventing storing plain text passwords.
+	- Remix.js
+		- JavaScript framework that allows for back end and front end code to interact with each other seamlessly.
 	
 
 ## Features of this app
