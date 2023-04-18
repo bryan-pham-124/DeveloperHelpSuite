@@ -62,7 +62,7 @@ Inspiration
 	Code snippets
 	links
 
-- In addition questions have the following data:
+- In addition, questions have the following data:
 	Author name
 	Date
 	Score count (upvotes - downvotes)
