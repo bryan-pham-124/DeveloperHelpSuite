@@ -26,7 +26,7 @@ const storage = createCookieSessionStorage({
 });
 
  
-export  const register = async (user: RegisterForm) => {
+export const register = async (user: RegisterForm) => {
 
     const user_exists = await prisma.user.count({ 
         where: { email: user.email }
@@ -67,7 +67,7 @@ export const createUserSession = async (userId: string, redirectTo: string) => {
 
 
 // Validate the user on email & password
-export async function loginUser({ email, password }: LoginForm) {
+export const loginUser = async ({ email, password }: LoginForm) => {
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -78,4 +78,60 @@ export async function loginUser({ email, password }: LoginForm) {
   return createUserSession(user.id, "/questions");
 }
 
+
+export const  requireUserId = async (request: Request) => {
+  const session = await getUserSession(request)
+  const userId = session.get('userId')
  
+  if (!userId || typeof userId !== 'string') {  
+    return false;
+  }
+
+  return userId;
+}
+
+ 
+export const getUser = async (request: Request) => {
+  
+  //console.log(request)
+
+  const session = await getUserSession(request);
+  const userId = session.get("userId");
+  if (typeof userId !== "string") {
+    return null;
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, name: true },
+    });
+    //console.log(user);
+    return user;
+  } catch {
+    throw logout(request);
+  }
+}
+
+
+const getUserSession = (request: Request) => {
+  return storage.getSession(request.headers.get("Cookie"));
+}
+
+
+export const logout = async (request: Request) => {
+  //console.log('HELLO')
+  //console.log(request);
+
+  const session = await getUserSession(request);
+  
+  return redirect("/login", {
+    headers: {
+      "Set-Cookie": await storage.destroySession(session),
+    },
+  });
+ 
+
+  
+   
+}

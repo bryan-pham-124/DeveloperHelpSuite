@@ -44,7 +44,14 @@ const GenericButton = (
       name: "blackFilled",
       styles: "font-light py-1 rounded-xl w-[80px] text-center",  
       textColor: 'text-white',
-      bgColor: 'bg-[#212121]',
+      bgColor: 'bg-customBlack',
+    },
+
+    {
+      name: "dangerRed",
+      styles: "font-light py-1 rounded-xl w-[80px] text-center",  
+      textColor: 'text-white',
+      bgColor: 'bg-red-500',
     },
     
   ]

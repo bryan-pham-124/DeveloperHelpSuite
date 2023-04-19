@@ -69,7 +69,6 @@ const login = () => {
             <h1 className='my-[50px] text-4xl text-center font-bold '>  Welcome Back!</h1>
              
             {
-
                 serverFormErrors !== ''
 
                 ?
@@ -81,7 +80,6 @@ const login = () => {
                 :
 
                 ''
-
             }
             
             <Form method='POST' className='my-[50px] w-[300px] bg-customBlack px-8 py-7 rounded-lg'>
@@ -111,7 +109,6 @@ const login = () => {
                     />
                 </div>
                 
-
             </Form>
         </div>         
     </div>

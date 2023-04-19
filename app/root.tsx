@@ -1,9 +1,13 @@
 
 // ./app/root.tsx
-// 1
-import type { MetaFunction, LinksFunction } from "@remix-run/node";
 
-// 2
+import type { MetaFunction, LinksFunction } from "@remix-run/node";
+import { json } from "@remix-run/node"; // or cloudflare/deno
+import { getUser } from '~/utils/auth.server';
+import { useLoaderData } from '@remix-run/react';
+import type { LoaderArgs } from "@remix-run/node";
+import {useState, useEffect} from 'react';
+
 import styles from './styles/app.css';
 
 import {
@@ -14,16 +18,32 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+
 import Navbar from "./components/Navbar";
 
-// 3
+
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }]
 }
 
+export async function loader({ request }: LoaderArgs  ) {
 
+  const userData = await getUser(request);
+  
+  return await json({userData, request  });
+
+}
 
 export default function App() {
+
+  const {userData} = useLoaderData<typeof loader>()
+
+  const [isLoggedIn, setIsLoggedIn] = useState((typeof userData?.name === 'string') );
+
+  useEffect(() => {
+      setIsLoggedIn((typeof userData?.name === 'string'))
+  }, [userData])
+
   return (
     <html lang="en">
       <head>
@@ -34,7 +54,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Navbar />
+        <Navbar isLoggedIn={isLoggedIn} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
