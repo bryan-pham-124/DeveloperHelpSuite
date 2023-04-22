@@ -51,7 +51,7 @@ export const register = async (user: RegisterForm) => {
       );
     }
   
-    return createUserSession(newUser.id, '/questions')
+    return createUserSession(newUser.id, '/loginSuccess')
 
 }
 
@@ -75,7 +75,7 @@ export const loginUser = async ({ email, password }: LoginForm) => {
   if (!user || !(await bcrypt.compare(password, user.password)))
     return json({ error: `Your login credentials are incorrect` }, { status: 400 });
 
-  return createUserSession(user.id, "/questions");
+  return createUserSession(user.id, "/loginSuccess");
 }
 
 
@@ -83,9 +83,11 @@ export const  requireUserId = async (request: Request) => {
   const session = await getUserSession(request)
   const userId = session.get('userId')
  
+  /*
   if (!userId || typeof userId !== 'string') {  
-    return false;
+    return redirect(`/login`);
   }
+  */
 
   return userId;
 }

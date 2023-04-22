@@ -24,7 +24,7 @@ const Navbar = ({isLoggedIn = false}: NavbarProps ) => {
 
               ?
                 <form action="/logout" method="post">
-                  <GenericButton  text = "Logout" formButton buttonType='dangerRed'   />
+                   <GenericButton  text = "Logout" formButton buttonType='dangerRed'   />
                 </form>
               :
  
@@ -33,9 +33,6 @@ const Navbar = ({isLoggedIn = false}: NavbarProps ) => {
                    <GenericButton to={"signUp"} text = "Sign Up"  buttonType='outlineWhite'  />
                 </>              
             }
-
-           
-         
          </div>
   </nav>
   )

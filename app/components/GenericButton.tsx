@@ -29,27 +29,26 @@ const GenericButton = (
   const buttonTypes = [
     {
       name: "skyBlue",
-      //styles: "font-light py-1 rounded-xl w-[80px] text-center" + (validForm ? '' : 'disabled:opacity-20') ,
-      styles: "font-light py-1 rounded-xl w-[80px] text-center",
+      styles: "font-light py-1 px-3 rounded-xl   text-center",
       textColor: "text-white",
       bgColor: "bg-sky-500",
     },
     {
       name: "outlineWhite",
-      styles: "font-light border py-1 border-white rounded-xl w-[80px] text-center",  
+      styles: "font-light border px-3  py-1 rounded-xl   text-center",  
       textColor: 'text-white',
       bgColor: 'bg-transparent',
     },
     {
       name: "blackFilled",
-      styles: "font-light py-1 rounded-xl w-[80px] text-center",  
+      styles: "font-light py-1 px-3 rounded-xl  text-center",  
       textColor: 'text-white',
       bgColor: 'bg-customBlack',
     },
 
     {
       name: "dangerRed",
-      styles: "font-light py-1 rounded-xl w-[80px] text-center",  
+      styles: "font-light py-1 px-3 rounded-xl  text-center",  
       textColor: 'text-white',
       bgColor: 'bg-red-500',
     },

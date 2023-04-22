@@ -34,12 +34,11 @@ export default function Index() {
                 <div className="w-full flex justify-center text-center">
                    <FontAwesomeIcon className="h-[100px] text-center text-sky-500 md:h-[60px]" icon={faQuestionCircle} />
                 </div>
-                <h3 className="text-sky-500 text-center font-medium text-md   my-3">See Questions and Answers</h3>
+                <h3 className="text-sky-500 text-center font-medium text-md bg-white  my-3">See Questions and Answers</h3>
                 <div className="flex justify-center">
                   <GenericButton to ={"#"} text="Explore"  buttonType="skyBlue"  />
                 </div>
               </div>
-
             </div>
         </div>
 

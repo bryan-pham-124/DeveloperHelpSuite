@@ -1,14 +1,37 @@
-import { Form, useActionData, useNavigation } from '@remix-run/react'
+import { Form, useActionData, useLoaderData, useNavigation } from '@remix-run/react'
 import React, { useEffect } from 'react'
 import {useState} from 'react';
 import GenericButton from '~/components/GenericButton';
 import FormField from '~/components/FormField';
  
-import { ActionFunction } from '@remix-run/node'
+import { ActionFunction, LoaderFunction, json } from '@remix-run/node'
 import { validateAllFormFields } from '~/utils/validateForms';
 import { loginUser } from '~/utils/auth.server';
 
+
+
+
+
+export const loader: LoaderFunction = async({request}) => {
+
+  const url = new URL(request.url);
+  const redirectError= url.searchParams.get("error");
+  
+  //console.log('redirect error is: ' + redirectError);
+
+  let errorMessage = '';
+
+  if(redirectError){
+    errorMessage = (redirectError + '').split('_').join(' ');
+    return await json({'error': errorMessage});
+  }
+
+  return null;
+
+}
+
 export const action: ActionFunction = async ({ request }) => {
+
     const form = await request.formData()
     const email = form.get('email') + ''
     const password = form.get('password') + ''
@@ -21,7 +44,10 @@ export const action: ActionFunction = async ({ request }) => {
 
 const login = () => {
 
+
   const formErrors = useActionData<typeof action>();
+  const redirectErrors = useLoaderData<typeof loader>();
+
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -32,6 +58,8 @@ const login = () => {
    }));
 
    const [serverFormErrors, setServerFormErrors] = useState('')
+   const [redirectError, setRedirectError] = useState('')
+
    const [allFieldsValid, setAllFieldsValid] = useState(false)
  
 
@@ -58,6 +86,14 @@ const login = () => {
     }
   }, [formErrors])
 
+
+  useEffect(() => {
+    if(redirectErrors){
+        setRedirectError((redirectErrors.error))
+    }
+  }, [redirectErrors])
+
+
   useEffect(() => {
       setAllFieldsValid(validateAllFormFields(formFields))
   }, [formValues])
@@ -75,6 +111,20 @@ const login = () => {
 
                   <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
                       {'Error:  ' + serverFormErrors}
+                  </div>
+
+                :
+
+                ''
+            }
+
+            {         
+                redirectError !== ''
+
+                ?
+
+                  <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
+                      {'Error:  ' + redirectError}
                   </div>
 
                 :
