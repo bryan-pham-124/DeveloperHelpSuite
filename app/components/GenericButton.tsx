@@ -29,19 +29,19 @@ const GenericButton = (
   const buttonTypes = [
     {
       name: "skyBlue",
-      styles: "font-light py-1 px-3 rounded-xl   text-center",
+      styles: "font-light py-1 px-3 rounded-xl text-center",
       textColor: "text-white",
       bgColor: "bg-sky-500",
     },
     {
       name: "outlineWhite",
-      styles: "font-light border px-3  py-1 rounded-xl   text-center",  
+      styles: "font-light border px-3  py-1 rounded-xl text-center",  
       textColor: 'text-white',
       bgColor: 'bg-transparent',
     },
     {
       name: "blackFilled",
-      styles: "font-light py-1 px-3 rounded-xl  text-center",  
+      styles: "font-light py-1 px-3 rounded-xl text-center",  
       textColor: 'text-white',
       bgColor: 'bg-customBlack',
     },
@@ -72,7 +72,7 @@ const GenericButton = (
               hover:text-${bStyle?.textColor} 
               hover:border-0
               duration-300 ${bStyle?.styles} 
-              ${className}
+               ${className}
               `
             }
             >
@@ -91,7 +91,7 @@ const GenericButton = (
               hover:text-${bStyle?.textColor} 
               hover:border-0
               duration-300 ${bStyle?.styles} 
-              ${className}
+               ${className}
               `
             } 
             disabled = {isSubmitting}

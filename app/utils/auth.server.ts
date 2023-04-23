@@ -1,12 +1,14 @@
 import { redirect, json, createCookieSessionStorage } from "@remix-run/node";
-import { PrismaClient  } from "@prisma/client";
+//import { PrismaClient  } from "@prisma/client";
+import { prisma } from './prisma.server'
+
 import { createUser } from "./createUser.server";
 import bcrypt from "bcryptjs";
 import { LoginForm, RegisterForm } from "./types.server";
 
 
 const sessionSecret = process.env.SESSION_SECRET;
-const prisma = new PrismaClient()
+//const prisma = new PrismaClient()
 
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set");

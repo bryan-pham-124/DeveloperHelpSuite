@@ -14,8 +14,8 @@ import {
         } 
        from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
-import sortDown from "~/images/sort-down-solid.svg";
-import ImageIcon from '~/components/ImageIcon';
+import DropDown from '~/components/DropDown';
+import LinkCard from '~/components/LinkCard';
  
 
 export async function loader({ request }: LoaderArgs) {
@@ -23,17 +23,168 @@ export async function loader({ request }: LoaderArgs) {
   const userData = await getUser(request);
   
   if(!userData){
-    return await json({'userData':null});
+  return await json({'userData':null});
   }
 
   return await json({'userData': userData});
 
 }
 
+interface linkCardDataProps  {
+    [key: string]: any
+}
+
+const linkCardData: linkCardDataProps[] = [
+    {   
+       id: 1121,
+       date: '2/1/2023',
+       category: 'Test Category',
+       title: 'Test Title',
+       status: "Not Solved",
+       priority: 'Urgent',
+       votes: 60
+    },
+    {
+      id: 11211,
+      date: '4/12/2121',
+      category: 'Test Category',
+      title: 'Test Title',
+      status: "Not Solved",
+      priority: 'Urgent',
+      votes: 160
+   },
+   {
+    id: 1121212,
+    date: '1/10/2023',
+    category: 'Test Category',
+    title: 'Test Title',
+    status: "Not Solved",
+    priority: 'Urgent',
+    votes: 601
+   },
+   {
+    id: 11212121,
+    date: '5/12/2023',
+    category: 'Test Category',
+    title: 'Test Title',
+    status: "Not Solved",
+    priority: 'Urgent',
+    votes: 6021
+  },
+  { 
+    id: 11213212,
+    date: '12/12/2023',
+    category: 'Test Category',
+    title: 'Test Title',
+    status: "Not Solved",
+    priority: 'Urgent',
+    votes: 60
+  },
+  {
+    id: 1121212312323,
+    date: '12/12/2024',
+    category: 'Test Category',
+    title: 'Test Title',
+    status: "Not Solved",
+    priority: 'Urgent',
+    votes: 60
+  },
+  
+]
+
+const sortOptions = [
+    {
+      field: 'Votes',
+      sortType: 'Ascending'
+    },
+
+    {
+      field: 'Priority',
+      sortType: 'Ascending'
+    },
+]
+
+const filterOptions = [
+    {
+      field: 'Status',
+      options: ['', 'Solved', 'Not Solved'], 
+    },
+    {
+      field: 'Category',
+      options: ['', 'JavaScript', 'Typescript', 'React'], 
+    },
+    {
+      field: 'Priority',
+      options: ['', 'Low', 'Medium', 'Urgent'], 
+    },
+]
+
+
 const questions = () => {
   
   const {userData} = useLoaderData<typeof loader>();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [activeSortOptions, setActiveSortOptions] = useState(['','Votes', 'Priority']);
+  const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
+  const [activeSortValue, setActiveSortValue] = useState(activeSortOptions[0]);
+
+
+  const [sortedCardData, setSortedCardData] = useState(linkCardData)
+
+
+  const resetSort = (e: any) =>  {
+      e.preventDefault();
+      setActiveSortOptions(['', 'Upvotes', 'Priority']);
+      setActiveSortLabel('Select Sort');
+  }
+
+  const updateSort = (currentValue: string) => {
+
+
+      console.log(currentValue);
+
+      if(currentValue !== '' ){
+         setActiveSortOptions(['Ascending', 'Descending']);
+         setActiveSortValue('Descending')
+      }  
+
+      if(sortOptions.find(elm => elm.field === currentValue)){
+         setActiveSortLabel(currentValue)
+         
+      }  else if(currentValue === ''){
+         setActiveSortValue('Ascending')
+      } else {
+         setActiveSortValue(currentValue)
+      }
+
+      console.log(activeSortValue)
+      
+
+  }
+
+
+
+  useEffect(() => {
+     
+   
+    let sortValue = activeSortLabel.toLowerCase();
+    
+    //console.log('SV IS: ' + sortValue)
+
+    if(activeSortValue === 'Ascending' && sortValue !== ''){
+         linkCardData.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  )
+    } else if(activeSortValue === 'Descending' && sortValue !== '') {
+         linkCardData.sort((elm, elm2 )=> elm2[sortValue] - elm[sortValue]  )
+    }
+    setSortedCardData(linkCardData)
+    
+
+  }, [activeSortValue])
+
+  useEffect(() => {
+     setQuestionCount(linkCardData.length)
+  }, [linkCardData])
 
   useEffect(() => {
       setIsLoggedIn(userData ? true: false)
@@ -41,7 +192,7 @@ const questions = () => {
 
   return (
   
-      <div className="wrapper mt-[50px] px-10">
+      <div className="wrapper my-[50px] px-10">
     
           <div className="flex w-full justify-between mb-[50px]">
             <h1 className='text-4xl font-bold'>Questions</h1>
@@ -58,57 +209,55 @@ const questions = () => {
             </div>
           }
 
-          <div className="flex w-full ">
-              <div className="w-full bg-customBlack p-3 min-h-[50vh] rounded-l-xl"> 
+          <div className="grid grid-cols-1 grid-cols-2 w-full ">
+              <div className="w-full bg-customBlack p-6  h-[600px] rounded-l-xl"> 
                   <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
                       <h1 className='py-4 px-3 text-3xl text-white'>Total Questions</h1>
-                      <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> 20</p>
+                      <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> {questionCount}</p>
                   </div>
-                  <div className='flex flex-col md:flex-row w-full justify-between gap-x-3 mt-[40px] px-6'>
-                     <label className='text-white font-light mb-4  md:mb-0 ' htmlFor="Sort">Sort</label>
-                      <select className={`bg-[url('../images/sort-down-solid.svg')] bg-no-repeat bg-[right_10%_bottom_95%] bg-[length:20px_30px]	appearance-none  pl-[20px]  pb-2 pt-1 pr-8  rounded-xl`}>
-                        <option value="Upvotes">Upvotes</option>
-                        <option value="Date">Date</option>
-                        <option value="Priority">Priority</option>
-                      </select>
-                      <label className='text-white font-light my-4 md:my-0' htmlFor="Filter">Filter</label>
-                      <select  className={`bg-[url('../images/sort-down-solid.svg')] bg-no-repeat bg-[right_10%_bottom_95%] bg-[length:20px_30px]	appearance-none  pl-[20px]   pb-2 pt-1  px-4 md:px-8   rounded-xl`}>
-                        <option value="Status"> Status</option>
-                        <option value="Category">Category</option>
-                        <option value="Priority">Priority</option>
-                      </select>
-                     
+
+                  <div className='grid grid-cols-1 md:grid-cols-2  w-full justify-between gap-x-7 mt-[40px] px-6'>
+
+                        <div className="wrapper my-3 md:my-0">
+                            <h1 className='text-white text-2xl'>Sort</h1>
+                            <DropDown options={activeSortOptions} updateSort={updateSort} label={activeSortLabel} />
+                            <button className='bg-sky-500 rounded-xl px-3 py-1 text-white mt-5' onClick={e => resetSort(e)}>
+                                Reset Sort
+                            </button>
+                        </div>
+
+                        <div className="wrapper my-3 md:my-0">
+                            <h1 className='text-white text-2xl'>Filter</h1>
+                            {
+                              filterOptions.map(elm => (
+                                 <DropDown options={elm.options} updateSort={updateSort} label={elm.field} />
+                              ))
+                            }
+                        </div>
                   </div>
-                  <div className="flex flex-col mt-5 ml-2 px-4">
-                      <div className='text-white'>
-                            Sorted Questions by: Upvotes
+                  <div className="flex flex-col mt-[30px] ml-2 px-4">
+                      <div className='text-white  my-4'>
+                            Sorted Questions by: { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + activeSortValue: ''}
                        </div>
-                      <div className='text-white mt-4'>
+                      <div className='text-white'>
                           Filter Questions by: Status
                       </div>
                   </div>
                
               </div>
-              <div className="w-full bg-customOrange p-6 min-h-[50vh] rounded-r-xl"> 
-                  <div className="rounded-xl bg-white px-5 py-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                      <div className="text-center md:text-left wrapper mb-3 md:mb-0">
-                          <small>Tech/Framework</small> 
-                          <h1 className='text-xl font-bold'>Question Title</h1>
-                          <div className="flex gap-x-2 mt-2">
-                            <small className="bg-customRed rounded-xl px-3 text-white">
-                                Not Solved
-                            </small>
-                            <small className="bg-customRed rounded-xl px-3 text-white">
-                                Urgent
-                            </small>
-                          </div>
-                      </div>
-                      <p className='flex l px-3 py-5 border border-black rounded-xl'>
-                         60 Votes
-                      </p>
-                    </div>
-                  </div>
+              <div className="w-full bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll"> 
+                  {
+                     sortedCardData.map((card, i )=> (
+                          <LinkCard
+                              key = {i}
+                              category={card.category}
+                              priority= {card.priority} 
+                              status={card.status} 
+                              title= {card.title}
+                              votes = {card.votes}
+                          />
+                      ))
+                  }
               </div>
           </div>
       </div>

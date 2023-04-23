@@ -11,7 +11,8 @@ module.exports = {
       colors: {
           customOrange: "#fc8403",
           customBlack:  "#212121",
-          customRed: "#DC3545"
+          customRed: "#DC3545",
+          customGreen: "#2ed16f"
       }
     }
 
