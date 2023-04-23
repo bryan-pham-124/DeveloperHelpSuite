@@ -29,7 +29,7 @@ const loginSuccess = () => {
             </h1>
             
             <div className="wrapper flex w-full gap-x-5 justify-center px-4">   
-                <Link to="#" className='border-b border-sky-500 pb-2 text-sky-500 text-md md:text-lg' > Explore Questions and Answers </Link>
+                <Link to="/questions" className='border-b border-sky-500 pb-2 text-sky-500 text-md md:text-lg' > Explore Questions and Answers </Link>
                 <Link to="#" className='border-b border-customBlack pb-2 text-customBlack text-md md:text-lg' > Explore the Knowledgebase </Link>
             </div>
            

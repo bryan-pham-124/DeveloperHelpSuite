@@ -22,6 +22,7 @@ import {
 import Navbar from "./components/Navbar";
 
 
+
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }]
 }

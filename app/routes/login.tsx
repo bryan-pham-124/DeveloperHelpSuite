@@ -7,6 +7,7 @@ import FormField from '~/components/FormField';
 import { ActionFunction, LoaderFunction, json } from '@remix-run/node'
 import { validateAllFormFields } from '~/utils/validateForms';
 import { loginUser } from '~/utils/auth.server';
+import ErrorBox from '~/components/ErrorBox';
 
 
 
@@ -109,9 +110,7 @@ const login = () => {
 
                 ?
 
-                  <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
-                      {'Error:  ' + serverFormErrors}
-                  </div>
+                 <ErrorBox text= {serverFormErrors + ''}/>  
 
                 :
 
@@ -123,10 +122,8 @@ const login = () => {
 
                 ?
 
-                  <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
-                      {'Error:  ' + redirectError}
-                  </div>
-
+                <ErrorBox text= {redirectError + ''}/>  
+                  
                 :
 
                 ''

@@ -8,6 +8,7 @@ import { checkMatchingPasswords} from '~/utils/validateForms';
 import { json, redirect } from "@remix-run/node"; // or cloudflare/deno
 import { register } from '~/utils/auth.server';
 import { validateAllFormFields } from '~/utils/validateForms';
+import ErrorBox from '~/components/ErrorBox';
 
 
 
@@ -117,9 +118,7 @@ const signUp = () => {
           
           ?
 
-            <div className='my-4 px-4 py-2 bg-red-600 rounded-xl text-white font-bold'>
-                {'Error:  ' + serverFormErrors}
-            </div>
+          <ErrorBox text = {serverFormErrors + ''}/>  
 
           :
 
