@@ -218,7 +218,7 @@ const questions = () => {
                             <h1 className='text-white text-2xl'>Filter</h1>
                             {
                               filterOptions.map(elm => (
-                                 <DropDown options={elm.options} updateSort={updateSort} label={elm.field} />
+                                 <DropDown options={elm.options} label={elm.field} />
                               ))
                             }
                         </div>

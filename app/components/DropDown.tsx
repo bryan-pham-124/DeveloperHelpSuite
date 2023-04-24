@@ -4,7 +4,7 @@ import React from 'react'
 interface DropDownProps {
     options: string[]
     label: string
-    updateSort:  Function
+    updateSort?:  Function
     defaultValue?: string
 }
 
@@ -18,13 +18,38 @@ const DropDown = ({options, label, updateSort, defaultValue =''}: DropDownProps)
     <>
        
        <label className='text-white font-light my-2 block' htmlFor="Filter">{label}</label>
-        <select  defaultValue={defaultValue} onChange = {e => updateSort(e.target.value)} className={`w-full  text-xs lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`}>
-            {
-                options.map((option, i) =>  (
-                  <option className='text-sm rounded-xl' value={option}> {option}</option>
-                ))
-            }
-         </select>
+
+        {
+          updateSort &&
+
+          <select  defaultValue={defaultValue} onChange = {e => updateSort(e.target.value)} className={`w-full  text-xs lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`}>
+          {
+              options.map((option, i) =>  (
+                <option className='text-sm rounded-xl' value={option}> {option}</option>
+
+              ))
+          }
+        </select>
+
+        }
+
+
+        {
+          !updateSort &&
+
+          <select  defaultValue={defaultValue}  className={`w-full  text-xs lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`}>
+          {
+              options.map((option, i) =>  (
+                <option className='text-sm rounded-xl' value={option}> {option}</option>
+
+              ))
+          }
+        </select>
+
+        }
+
+
+       
 
     </>
   )
