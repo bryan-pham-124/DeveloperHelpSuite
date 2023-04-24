@@ -201,16 +201,23 @@ const questions = () => {
                             
                             <DropDown options={['Select Sort','Votes', 'Priority']} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} />
                             
-                            <div className="flex flex-col gap-y-3 my-8">
-                                <div className="wrapper w-full flex justify-between" onClick={() => setSortType('Ascending')} >
+                            {
+                              activeSortLabel !== 'Select Sort' &&
+
+                              <div className="flex flex-col gap-y-3 my-8">
+                                <div className="wrapper w-full flex justify-between">
                                   <label className='text-white text-xs' htmlFor="Ascending">Ascending   </label>
-                                  <input type="radio" name="SortType" id="Ascending"/>
+                                  <input type="radio" className='scale-125' name="SortType" id="Ascending"  onClick={() => setSortType('Ascending')} defaultChecked/>
                                 </div>
-                                <div className="wrapper w-full flex justify-between" onClick={() => setSortType('Descending')}>
+                                <div className="wrapper w-full flex justify-between" >
                                   <label className='text-white text-xs' htmlFor="Descending">Descending</label>
-                                  <input type="radio" name="SortType" id="Descending" />
+                                  <input type="radio" className='scale-125' name="SortType" id="Descending"  onClick={() => setSortType('Descending')}    />
                                 </div>
                             </div>
+
+                            }
+
+                            
 
                         </div>
 

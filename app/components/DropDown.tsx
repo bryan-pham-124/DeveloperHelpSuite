@@ -13,7 +13,6 @@ interface DropDownProps {
 
 const DropDown = ({options, label, updateSort, defaultValue =''}: DropDownProps) => {
 
- 
   return (
     <>
        
@@ -44,7 +43,7 @@ const DropDown = ({options, label, updateSort, defaultValue =''}: DropDownProps)
            </select>
 
         }
-        
+
     </>
   )
 }
