@@ -125,62 +125,41 @@ const questions = () => {
   const {userData} = useLoaderData<typeof loader>();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
-  const [activeSortOptions, setActiveSortOptions] = useState(['','Votes', 'Priority']);
+ 
   const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
-  const [activeSortValue, setActiveSortValue] = useState(activeSortOptions[0]);
 
 
   const [sortedCardData, setSortedCardData] = useState(linkCardData)
+  const [sortType, setSortType] = useState('');
 
 
-  const resetSort = (e: any) =>  {
-      e.preventDefault();
-      setActiveSortOptions(['', 'Upvotes', 'Priority']);
-      setActiveSortLabel('Select Sort');
-  }
-
+  
   const updateSort = (currentValue: string) => {
-
-
-      console.log(currentValue);
-
-      if(currentValue !== '' ){
-         setActiveSortOptions(['Ascending', 'Descending']);
-         setActiveSortValue('Descending')
-      }  
-
-      if(sortOptions.find(elm => elm.field === currentValue)){
-         setActiveSortLabel(currentValue)
-         
-      }  else if(currentValue === ''){
-         setActiveSortValue('Ascending')
-      } else {
-         setActiveSortValue(currentValue)
-      }
-
-      console.log(activeSortValue)
-      
-
+      setActiveSortLabel(currentValue);   
   }
-
-
-
+  
+ 
+  
   useEffect(() => {
      
    
     let sortValue = activeSortLabel.toLowerCase();
-    
-    //console.log('SV IS: ' + sortValue)
 
-    if(activeSortValue === 'Ascending' && sortValue !== ''){
-         linkCardData.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  )
-    } else if(activeSortValue === 'Descending' && sortValue !== '') {
+    if(sortType === 'Ascending' && activeSortLabel !== ''){
+  
          linkCardData.sort((elm, elm2 )=> elm2[sortValue] - elm[sortValue]  )
+
+    } else if(sortType === 'Descending' && activeSortLabel !== '') {
+ 
+         linkCardData.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  )
     }
+
     setSortedCardData(linkCardData)
+
+    console.log(sortValue)
     
 
-  }, [activeSortValue])
+  }, [activeSortLabel, sortType])
 
   useEffect(() => {
      setQuestionCount(linkCardData.length)
@@ -209,7 +188,7 @@ const questions = () => {
             </div>
           }
 
-          <div className="grid grid-cols-1 grid-cols-2 w-full ">
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full ">
               <div className="w-full bg-customBlack p-6  h-[600px] rounded-l-xl"> 
                   <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
                       <h1 className='py-4 px-3 text-3xl text-white'>Total Questions</h1>
@@ -217,13 +196,22 @@ const questions = () => {
                   </div>
 
                   <div className='grid grid-cols-1 md:grid-cols-2  w-full justify-between gap-x-7 mt-[40px] px-6'>
-
                         <div className="wrapper my-3 md:my-0">
                             <h1 className='text-white text-2xl'>Sort</h1>
-                            <DropDown options={activeSortOptions} updateSort={updateSort} label={activeSortLabel} />
-                            <button className='bg-sky-500 rounded-xl px-3 py-1 text-white mt-5' onClick={e => resetSort(e)}>
-                                Reset Sort
-                            </button>
+                            
+                            <DropDown options={['Select Sort','Votes', 'Priority']} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} />
+                            
+                            <div className="flex flex-col gap-y-3 my-8">
+                                <div className="wrapper w-full flex justify-between" onClick={() => setSortType('Ascending')} >
+                                  <label className='text-white text-xs' htmlFor="Ascending">Ascending   </label>
+                                  <input type="radio" name="SortType" id="Ascending"/>
+                                </div>
+                                <div className="wrapper w-full flex justify-between" onClick={() => setSortType('Descending')}>
+                                  <label className='text-white text-xs' htmlFor="Descending">Descending</label>
+                                  <input type="radio" name="SortType" id="Descending" />
+                                </div>
+                            </div>
+
                         </div>
 
                         <div className="wrapper my-3 md:my-0">
@@ -237,7 +225,7 @@ const questions = () => {
                   </div>
                   <div className="flex flex-col mt-[30px] ml-2 px-4">
                       <div className='text-white  my-4'>
-                            Sorted Questions by: { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + activeSortValue: ''}
+                            Sorted Questions by: { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + sortType: ''}
                        </div>
                       <div className='text-white'>
                           Filter Questions by: Status
