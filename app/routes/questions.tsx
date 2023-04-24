@@ -130,7 +130,7 @@ const questions = () => {
 
 
   const [sortedCardData, setSortedCardData] = useState(linkCardData)
-  const [sortType, setSortType] = useState('');
+  const [sortType, setSortType] = useState('Descending');
 
 
   
@@ -138,8 +138,41 @@ const questions = () => {
       setActiveSortLabel(currentValue);   
   }
   
+  const sortCards = (sortMethod: string) => {
+
+
+      let sortValue = activeSortLabel.toLowerCase();
+
+      
+      let copy = ([] as any[]).concat(linkCardData);
+
+      if(sortMethod === 'Ascending'  && sortValue !== 'Select Sort' ){
+        
+        copy.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  )
+                    
+      } else if(sortMethod === 'Descending' && sortValue !== 'Select Sort' ) {
+
+        copy.sort((elm, elm2 )=> elm2[sortValue] - elm[sortValue]  )
+
+      }
+
+      console.log(linkCardData)
+      setSortedCardData(copy)
+
+       
+  }
  
+
+  useEffect(() => {
+     
+    linkCardData.sort((elm, elm2 )=> elm2['votes'] - elm['votes']  )
+    setSortedCardData(linkCardData)
+
+  },  [])
+
   
+
+
   useEffect(() => {
      
    
@@ -200,25 +233,11 @@ const questions = () => {
                             <h1 className='text-white text-2xl'>Sort</h1>
                             
                             <DropDown options={['Select Sort','Votes', 'Priority']} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} />
-                            
-                            {
-                              activeSortLabel !== 'Select Sort' &&
-
-                              <div className="flex flex-col gap-y-3 my-8">
-                                <div className="wrapper w-full flex justify-between">
-                                  <label className='text-white text-xs' htmlFor="Ascending">Ascending   </label>
-                                  <input type="radio" className='scale-125' name="SortType" id="Ascending"  onChange={() => setSortType('Ascending')} />
-                                </div>
-                                <div className="wrapper w-full flex justify-between" >
-                                  <label className='text-white text-xs' htmlFor="Descending">Descending</label>
-                                  <input type="radio" className='scale-125' name="SortType" id="Descending"   onChange={() => setSortType('Descending')}    />
-                                </div>
+                            <div className="wrapper">
+                              <button  className='bg-sky-500 rounded-xl py-2 px-2 my-3 w-full  max-w-[200px]' onClick={() => sortCards('Ascending')}>Ascending</button>
+                              <button  className='bg-sky-500 rounded-xl py-2 px-2 w-full max-w-[200px]'  onClick={() => sortCards('Descending')}>Descending</button>
                             </div>
-
-                            }
-
-                            
-
+                           
                         </div>
 
                         <div className="wrapper my-3 md:my-0">
