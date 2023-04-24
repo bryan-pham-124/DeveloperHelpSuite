@@ -159,7 +159,7 @@ const questions = () => {
     console.log(sortValue)
     
 
-  }, [activeSortLabel, sortType])
+  }, [sortType])
 
   useEffect(() => {
      setQuestionCount(linkCardData.length)
@@ -207,11 +207,11 @@ const questions = () => {
                               <div className="flex flex-col gap-y-3 my-8">
                                 <div className="wrapper w-full flex justify-between">
                                   <label className='text-white text-xs' htmlFor="Ascending">Ascending   </label>
-                                  <input type="radio" className='scale-125' name="SortType" id="Ascending"  onClick={() => setSortType('Ascending')} defaultChecked/>
+                                  <input type="radio" className='scale-125' name="SortType" id="Ascending"  onChange={() => setSortType('Ascending')} />
                                 </div>
                                 <div className="wrapper w-full flex justify-between" >
                                   <label className='text-white text-xs' htmlFor="Descending">Descending</label>
-                                  <input type="radio" className='scale-125' name="SortType" id="Descending"  onClick={() => setSortType('Descending')}    />
+                                  <input type="radio" className='scale-125' name="SortType" id="Descending"   onChange={() => setSortType('Descending')}    />
                                 </div>
                             </div>
 
