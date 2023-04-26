@@ -267,7 +267,7 @@ const questions = () => {
                             <DropDown options={['Select Sort','Votes', 'Priority']} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} />
                             <div className="wrapper flex flex-col">
                               <button  className='bg-sky-500 rounded-xl py-2 px-2 my-3 w-full text-white max-w-[200px]' onClick={() => sortCards('Ascending')}>Ascending</button>
-                              <button  className='bg-sky-500 rounded-xl py-2 px-2 w-full text-white max-w-[200px]'  onClick={() => sortCards('Descending')}>Descending</button>
+                              <button  className='bg-customOrange rounded-xl py-2 px-2 w-full text-white max-w-[200px]'  onClick={() => sortCards('Descending')}>Descending</button>
                             </div>
                            
                         </div>
