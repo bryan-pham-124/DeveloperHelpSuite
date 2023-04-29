@@ -84,20 +84,7 @@
 	- Status
 	- Tech/tag
 	- Priority
-
-## Resource Articles
-
-- Users can create articles and choose from:
-	- Adding a new technology to the application.
-	- Adding articles to existing technologies.
-
-- Articles can be:
-	- Upvoted
-	- Downvoted	
-	- Replied to
-	- Edited or deleted by original user who posted article.
-
-
+ 
 
 
 
