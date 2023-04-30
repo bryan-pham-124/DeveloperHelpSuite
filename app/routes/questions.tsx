@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DropDown from '~/components/DropDown';
 import LinkCard from '~/components/LinkCard';
  
+ 
 
 export async function loader({ request }: LoaderArgs) {
 
@@ -140,6 +141,9 @@ const questions = () => {
   const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
   const [modifiedCardData, setModifiedCardData] = useState(linkCardData)
   const [sortType, setSortType] = useState('Descending');
+ 
+
+ 
 
   const [activeFilterLabels, setActiveFilterLabels] = useState(
       [
@@ -178,7 +182,7 @@ const questions = () => {
           })
         }
 
-        let activeFilters =  copyArr.filter(elm => elm.isActive);
+        let activeFilters = copyArr.filter(elm => elm.isActive);
 
         //apply newest filter
         if(currentValue !== ''){
@@ -232,26 +236,22 @@ const questions = () => {
  
 
   useEffect(() => {
-     
     linkCardData.sort((elm, elm2 )=> elm2['votes'] - elm['votes']  )
     setModifiedCardData(linkCardData)
-
   },  [])
-
 
   useEffect(() => {
      setQuestionCount(linkCardData.length)
   }, [linkCardData])
 
-  
   useEffect(() => {
     setQuestionCount(modifiedCardData.length)
   }, [modifiedCardData])
 
-
   useEffect(() => {
       setIsLoggedIn(userData ? true: false)
   }, [userData])
+
 
   return (
   
@@ -259,7 +259,15 @@ const questions = () => {
     
           <div className="flex w-full justify-between mb-[50px]">
             <h1 className='text-4xl font-bold'>Questions</h1>
-            <GenericButton text ="Ask A Question" buttonType='skyBlue'  className={(!isLoggedIn) ? `mt-4 pointer-events-none opacity-20`: 'mt-4' }  />
+
+             
+
+            <GenericButton text ="Ask A Question"  
+                //onClick={() => setIsModalOpen(prevData => !prevData)} 
+                to='/askQuestionForm'
+                buttonType='skyBlue'  
+                className={(!isLoggedIn) ? `mt-4 pointer-events-none opacity-20`: 'mt-4' } 
+             />
           </div>
 
           {
@@ -273,7 +281,7 @@ const questions = () => {
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 w-full  max-w-[1000px]  ">
-              <div className="w-full bg-customBlack p-6  h-[600px]rounded-l-xl"> 
+              <div className="w-full bg-customBlack p-6  h-[600px] rounded-l-xl"> 
                   <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
                       <h1 className='py-4 px-3 text-3xl text-white'> Questions</h1>
                       <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> {questionCount}</p>
@@ -308,7 +316,20 @@ const questions = () => {
                
               </div>
               <div className="w-full bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll"> 
+
+
                   {
+                    modifiedCardData.length === 0 
+                    
+                    &&
+
+                    <h1 className='font-bold mt-10 '>
+                        Looks like there are no entries that match your filters.  
+                    </h1>
+                  }
+
+                  {
+                    
                      modifiedCardData.map((card, i )=> (
                           <LinkCard
                               key = {i}

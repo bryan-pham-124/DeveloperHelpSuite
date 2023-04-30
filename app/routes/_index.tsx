@@ -20,14 +20,23 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="h-full flex flex-col justify-center items-center pr-8 gap-y-10 md:flex-row md:gap-y-10 md:gap-x-7 xl:gap-7-3">
-              <div className="wrapper bg-sky-500 w-full py-6 px-6 flex flex-col gap-y-3 max-w-[350px] rounded-xl md:w-[400px]  md:h-[230px]">
-                 <ImageIcon src= {binoculars} height='100px'   minHeight='60px' />
-                <h3 className="text-white text-center font-medium text-md my-3">Browse the knowledge base</h3>
-                <div className="flex justify-center">
-                  <GenericButton to ={"#"} text="Browse" buttonType="blackFilled"  />
+
+            {
+
+              /*
+
+                 <div className="wrapper bg-sky-500 w-full py-6 px-6 flex flex-col gap-y-3 max-w-[350px] rounded-xl md:w-[400px]  md:h-[230px]">
+                    <ImageIcon src= {binoculars} height='100px'   minHeight='60px' />
+                    <h3 className="text-white text-center font-medium text-md my-3">Browse the knowledge base</h3>
+                    <div className="flex justify-center">
+                      <GenericButton to ={"#"} text="Browse" buttonType="blackFilled"  />
+                    </div>
                 </div>
-              </div>
+
+              */
+            }
+            <div className="h-full flex flex-col justify-center items-center pr-8 gap-y-10 md:flex-row md:gap-y-10 md:gap-x-7 xl:gap-7-3">
+             
 
               <div className="wrapper bg-white w-full py-6 px-6 flex flex-col gap-y-3 max-w-[350px] rounded-xl md:w-[400px] md:h-[230px]">
                 <div className="w-full flex justify-center text-center">

@@ -1,3 +1,5 @@
+
+
 export const  validateFormField = (currentVal: string, field: string ) => {
 
     field = field.toLowerCase()
@@ -21,7 +23,12 @@ export const  validateFormField = (currentVal: string, field: string ) => {
     if((field.includes('password') || field === 'name' ) && currentVal.length < 7 ){
         errorMessage = ( field + ' must be at least 7 characters.')
         errors_present = true;
-    }   
+    } 
+    
+    if((field.includes('description') || field === 'title' || field.includes('text') ) && currentVal.length < 10 ){
+        errorMessage =  ( field + " must be at least 10 characters")
+        errors_present = true;
+    }
 
     return {field: 'field', 'errorMessage': errorMessage};
 
@@ -63,7 +70,7 @@ export const validateAllFormFields = (formFields:formFieldsProps[]) => {
 
     })
 
-    return blankEntries === 0  && errorCount === 0;
+    return blankEntries === 0 && errorCount === 0;
    
 }
 

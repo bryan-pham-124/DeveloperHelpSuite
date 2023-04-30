@@ -7,12 +7,12 @@ interface FormFieldProps {
     htmlFor: string
     label: string
     type?: string
-    value: any
+    value?: any
     formFields: Array<any>
     setFormValues: Function
+    updateDynamicForm?: Function
     formType: string
-    //updateFormField: Function
-    //onChange?: (...args: any) => any
+    multiline?: boolean
 }
 
 const FormField = ({ 
@@ -22,9 +22,8 @@ const FormField = ({
     value, 
     formFields,
     setFormValues,
-    formType = 'signUp'
-    //updateFormField,
-    //onChange = () => {} 
+    formType = 'signUp',
+    multiline = false
   }: FormFieldProps
     
     ) =>
@@ -33,28 +32,32 @@ const FormField = ({
 
     const [errorMessage, setErrorMessage] = useState('');
 
-    const updateFormField = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const updateFormField = (event: React.ChangeEvent<HTMLInputElement> |  React.ChangeEvent<HTMLTextAreaElement> , field: string) => {
       
       let result = validateFormField(event.target.value, field );
       let fieldIndex = formFields.findIndex(elm => elm.field === field);
 
-      if(result.errorMessage !== ''){
+      if(fieldIndex !== -1){
+        if(result.errorMessage !== ''){
           
           formFields[fieldIndex].error = result.errorMessage;
 
-      } else {
-           formFields[fieldIndex].error = ''
-
+        } else {
+            formFields[fieldIndex].error = ''
+        }
       }
-
+     
+       
       setFormValues((formFields: Array<object>) => ({...formFields, [field]: event.target.value}) )
+    
+      //console.log(event.target.value);
+
    }
 
    
-    const displayErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const displayErrors = (event: React.ChangeEvent<HTMLInputElement> |  React.ChangeEvent<HTMLTextAreaElement>) => {
         let result = validateFormField(event.target.value, htmlFor);
         result.errorMessage !== '' ? setErrorMessage(result.errorMessage ): setErrorMessage('')
-         
     }
     
     return (
@@ -62,19 +65,48 @@ const FormField = ({
         <label htmlFor={htmlFor} className="text-white text-lg font-semibold">
              {label}
         </label>
-        <input
-            onChange={ (e) =>  {
-               updateFormField(e, htmlFor);
-               displayErrors(e)
-            }}
-            onBlur={(e) => displayErrors(e)}
-            type={type}
-            id={htmlFor}
-            name={htmlFor}
-            className="w-full p-2 rounded-xl my-3"
-            value={value}
-            required
-        />
+
+        {
+       
+          multiline
+
+          ?
+
+          <textarea
+                onChange={ (e) =>  {
+
+                  updateFormField(e, htmlFor);
+                  displayErrors(e);
+                }}
+              
+                id={htmlFor}
+                name={htmlFor}
+                className="w-full p-2 rounded-xl my-3"
+                value={value}
+                required
+              >
+          </textarea>
+
+          :
+
+          <input
+              onChange={ (e) =>  {
+
+                updateFormField(e, htmlFor);
+                displayErrors(e);
+              }}
+              onBlur={(e) => displayErrors(e)}
+              type={type}
+              id={htmlFor}
+              name={htmlFor}
+              className="w-full p-2 rounded-xl my-3"
+              value={value}
+              required
+          />
+
+
+        }
+    
         {
             errorMessage !== ''  
 

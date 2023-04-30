@@ -1,6 +1,7 @@
 /* ./styles/app.css */
 @tailwind base;
-
+@tailwind components;
+@tailwind utilities;
 
 
 
@@ -32,7 +33,12 @@
 }
 
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
-
-@tailwind components;
-@tailwind utilities;
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
