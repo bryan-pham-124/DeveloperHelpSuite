@@ -60,8 +60,17 @@ const linkCardData: linkCardDataProps[] = [
     date: '1/10/2023',
     category: 'TypeScript',
     title: 'Test Title',
-    status: "Solved",
+    status: "Not Solved",
     priority: 1,
+    votes: 31
+   },
+   {
+    id: 1121212,
+    date: '1/10/2023',
+    category: 'TypeScript',
+    title: 'Test Title',
+    status: "Solved",
+    priority: 3,
     votes: 601
    },
    {
@@ -71,7 +80,7 @@ const linkCardData: linkCardDataProps[] = [
     title: 'Test Title',
     status: "Not Solved",
     priority: 2,
-    votes: 6021
+    votes: 0-6021
   },
   { 
     id: 11213212,
@@ -80,7 +89,7 @@ const linkCardData: linkCardDataProps[] = [
     title: 'Test Title',
     status: "Solved",
     priority: 1,
-    votes: 60
+    votes: 6021
   },
   {
     id: 1121212312323,
@@ -89,7 +98,7 @@ const linkCardData: linkCardDataProps[] = [
     title: 'Test Title',
     status: "Not Solved",
     priority: 2,
-    votes: 60
+    votes: -10
   },
   
 ]
@@ -132,7 +141,6 @@ const questions = () => {
   const [modifiedCardData, setModifiedCardData] = useState(linkCardData)
   const [sortType, setSortType] = useState('Descending');
 
-
   const [activeFilterLabels, setActiveFilterLabels] = useState(
       [
         {field: 'Status', isActive: false, value: ''},
@@ -149,43 +157,48 @@ const questions = () => {
 
       let copyArr = [...activeFilterLabels];
       const index = copyArr.findIndex(elm => elm.field === label);
+      let prevFilters = copyArr.filter(elm => elm.isActive && elm.field !== label);
 
-      console.log(label);
+      //console.log(label);
 
       if(label === 'Priority') {
-          currentValue =  currentValue === 'Urgent' ? '3' :  currentValue === 'Medium' ? '2' : '1';
+          currentValue =  currentValue === 'Urgent' ? '3' :  currentValue === 'Medium' ? '2' : currentValue === 'Low' ? '1' : '';
       }
 
       if(index !== -1){
 
         label = label.toLowerCase();
-       
-        // if filter for current label is currently active then look at og array to avoid double filtering on same label  
+        let filteredData: any[] =  linkCardData;
+        
       
-        let copyModifiedArr;
-       
-        if(currentValue !== '' && copyArr[index].value == ''  ){
-          copyModifiedArr = ([] as any[]).concat(modifiedCardData).filter(elm => elm[label] == currentValue);
-        } 
-        
-        else if(currentValue !== '' && copyArr[index].value  !== '' ){
-          copyModifiedArr = ([] as any[]).concat(linkCardData).filter(elm => elm[label] == currentValue);
+        //check if user applied 
+        if(prevFilters.length !== 0 ){
+          prevFilters.forEach(elm =>{
+            filteredData = filteredData.filter((elmI) => elmI[elm.field.toLowerCase()] == elm.value);
+          })
         }
-        
-        else {
-          copyModifiedArr = ([] as any[]).concat(linkCardData);
-        }
- 
-        copyArr[index].isActive = (currentValue !== '');
 
+        let activeFilters =  copyArr.filter(elm => elm.isActive);
+
+        //apply newest filter
+        if(currentValue !== ''){
+            filteredData = filteredData.filter((elm) => elm[label]  == currentValue);
+        }  
+
+        //clear filters if no dropdowns are selected
+        else {
+           if(activeFilters.length === 0 || activeFilters[0].value === ''  ){
+               filteredData = linkCardData;
+           }
+        }
+      
+        copyArr[index].isActive = (currentValue !== '');
         copyArr[index].value = currentValue;
 
-        setModifiedCardData(copyModifiedArr);
-
+ 
+        setModifiedCardData(filteredData);
         setActiveFilterLabels(copyArr);
-
-      }
-
+       }
 
   }
   
@@ -225,10 +238,16 @@ const questions = () => {
 
   },  [])
 
-  
+
   useEffect(() => {
      setQuestionCount(linkCardData.length)
   }, [linkCardData])
+
+  
+  useEffect(() => {
+    setQuestionCount(modifiedCardData.length)
+  }, [modifiedCardData])
+
 
   useEffect(() => {
       setIsLoggedIn(userData ? true: false)
@@ -256,7 +275,7 @@ const questions = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 w-full  max-w-[1000px]  ">
               <div className="w-full bg-customBlack p-6  h-[600px]rounded-l-xl"> 
                   <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
-                      <h1 className='py-4 px-3 text-3xl text-white'>Total Questions</h1>
+                      <h1 className='py-4 px-3 text-3xl text-white'> Questions</h1>
                       <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> {questionCount}</p>
                   </div>
 
@@ -282,12 +301,9 @@ const questions = () => {
                         </div>
                   </div>
                   <div className="flex flex-col mt-[30px] ml-2 px-4">
-                      <div className='text-white  my-4'>
+                      <div className='text-white  my-4 text-md'>
                             Sorted Questions by: { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + sortType: ''}
                        </div>
-                      <div className='text-white'>
-                          Filter Questions by: Status
-                      </div>
                   </div>
                
               </div>
