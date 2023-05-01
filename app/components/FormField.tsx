@@ -13,6 +13,9 @@ interface FormFieldProps {
     updateDynamicForm?: Function
     formType: string
     multiline?: boolean
+    dynamicForm?: boolean
+    deletable?: boolean
+    deleteFormField: Function
 }
 
 const FormField = ({ 
@@ -23,7 +26,10 @@ const FormField = ({
     formFields,
     setFormValues,
     formType = 'signUp',
-    multiline = false
+    multiline = false,
+    dynamicForm = false,
+    deletable = false,
+    deleteFormField
   }: FormFieldProps
     
     ) =>
@@ -34,7 +40,9 @@ const FormField = ({
 
     const updateFormField = (event: React.ChangeEvent<HTMLInputElement> |  React.ChangeEvent<HTMLTextAreaElement> , field: string) => {
       
-      let result = validateFormField(event.target.value, field );
+      let currentVal = event.target.value;
+
+      let result = validateFormField(currentVal, field );
       let fieldIndex = formFields.findIndex(elm => elm.field === field);
 
       if(fieldIndex !== -1){
@@ -47,10 +55,14 @@ const FormField = ({
         }
       }
      
-       
-      setFormValues((formFields: Array<object>) => ({...formFields, [field]: event.target.value}) )
-    
-      //console.log(event.target.value);
+      setFormValues((formFields: Array<object>) => ({...formFields, [field]: currentVal}) );
+
+      if(dynamicForm) {
+        let index = formFields.findIndex(elm => elm.field == field);
+        if(index !== -1){
+           formFields[index].value = currentVal;
+        }
+      }
 
    }
 
@@ -62,9 +74,32 @@ const FormField = ({
     
     return (
       <>
-        <label htmlFor={htmlFor} className="text-white text-lg font-semibold">
-             {label}
-        </label>
+
+
+        {
+
+          deletable
+
+          ?
+
+          <div className="flex justify-between my-3">
+               <label htmlFor={htmlFor} className="text-white text-lg font-semibold capitalize">
+                    {label}
+               </label>
+               <button className='bg-customRed rounded-xl text-sm px-4 text-white' onClick={(e) => {e.preventDefault(); deleteFormField(htmlFor)}}>
+                    Delete Field
+               </button>
+          </div>
+         
+          :
+
+          <label htmlFor={htmlFor} className="text-white text-lg font-semibold my-3 capitalize">
+              {label}
+          </label>
+
+        }
+
+
 
         {
        
@@ -81,7 +116,7 @@ const FormField = ({
               
                 id={htmlFor}
                 name={htmlFor}
-                className="w-full p-2 rounded-xl my-3"
+                className="w-full p-2 rounded-xl my-3 whitespace-pre-wrap h-[120px]"
                 value={value}
                 required
               >
@@ -91,7 +126,6 @@ const FormField = ({
 
           <input
               onChange={ (e) =>  {
-
                 updateFormField(e, htmlFor);
                 displayErrors(e);
               }}
@@ -104,7 +138,6 @@ const FormField = ({
               required
           />
 
-
         }
     
         {
@@ -112,7 +145,6 @@ const FormField = ({
 
             ?  
                 <small className='text-customOrange text-xs mb-3 block'>  {errorMessage} </small>
-           
             :
 
              ""

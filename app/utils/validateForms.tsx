@@ -63,12 +63,14 @@ export const validateAllFormFields = (formFields:formFieldsProps[]) => {
         }
 
         let errorMessage = validateFormField(elm.value, elm.field).errorMessage;
-
+        //console.log(errorMessage);
         if(errorMessage !== ''){
             errorCount += 1;
         }
 
     })
+
+
 
     return blankEntries === 0 && errorCount === 0;
    
