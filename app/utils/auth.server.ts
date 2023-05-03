@@ -57,6 +57,7 @@ export const register = async (user: RegisterForm) => {
 
 }
 
+
 export const createUserSession = async (userId: string, redirectTo: string) => {
   const session = await storage.getSession();
   session.set("userId", userId);
@@ -118,7 +119,7 @@ export const getUser = async (request: Request) => {
 }
 
 
-const getUserSession = (request: Request) => {
+export const getUserSession = (request: Request) => {
   return storage.getSession(request.headers.get("Cookie"));
 }
 

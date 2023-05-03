@@ -116,8 +116,9 @@ const FormField = ({
               
                 id={htmlFor}
                 name={htmlFor}
-                className="w-full p-2 rounded-xl my-3 whitespace-pre-wrap h-[120px]"
+                className="w-full p-2 rounded-xl my-3 whitespace-pre-wrap h-[120px] focus:outline-none focus:ring focus:ring-customOrange"
                 value={value}
+                contentEditable
                 required
               >
           </textarea>
@@ -133,7 +134,7 @@ const FormField = ({
               type={type}
               id={htmlFor}
               name={htmlFor}
-              className="w-full p-2 rounded-xl my-3"
+              className="w-full p-2 rounded-xl my-3 focus:outline-none focus:ring focus:ring-customOrange"
               value={value}
               required
           />

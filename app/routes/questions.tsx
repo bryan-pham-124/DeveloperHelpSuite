@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import { json, redirect } from "@remix-run/node"; // or cloudflare/deno
+import { json} from "@remix-run/node"; // or cloudflare/deno
 import { getUser } from '~/utils/auth.server';
 import { useLoaderData } from '@remix-run/react';
 import type { LoaderArgs } from "@remix-run/node";
@@ -16,18 +16,26 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import DropDown from '~/components/DropDown';
 import LinkCard from '~/components/LinkCard';
+import { getQuestions } from '~/utils/questionForm';
  
  
 
 export async function loader({ request }: LoaderArgs) {
 
   const userData = await getUser(request);
-  
+
+  const questions = await getQuestions();
+
+  await console.log(questions);
   if(!userData){
-  return await json({'userData':null});
+  return await json({'userData':null, 'questions': questions});
   }
 
-  return await json({'userData': userData});
+
+
+  return await json({'userData': userData, 'questions': questions} );
+
+
 
 }
 
@@ -37,6 +45,10 @@ interface linkCardDataProps  {
 
 // priority 3 to 1 
 // urgent to minor
+
+
+
+/*
 const linkCardData: linkCardDataProps[] = [
     {   
        id: 1121,
@@ -104,6 +116,8 @@ const linkCardData: linkCardDataProps[] = [
   
 ]
 
+*/
+
 const sortOptions = [
     {
       field: 'Votes',
@@ -134,16 +148,17 @@ const filterOptions = [
 
 const questions = () => {
   
-  const {userData} = useLoaderData<typeof loader>();
+  const {userData, questions} = useLoaderData<typeof loader>();
+
+
+  const linkCardData: linkCardDataProps[] = questions;
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
- 
   const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
   const [modifiedCardData, setModifiedCardData] = useState(linkCardData)
   const [sortType, setSortType] = useState('Descending');
- 
 
- 
 
   const [activeFilterLabels, setActiveFilterLabels] = useState(
       [
@@ -252,19 +267,18 @@ const questions = () => {
       setIsLoggedIn(userData ? true: false)
   }, [userData])
 
-
+ 
   return (
   
       <div className="wrapper my-[50px] px-10  w-full grid justify-center">
     
           <div className="flex w-full justify-between mb-[50px]">
             <h1 className='text-4xl font-bold'>Questions</h1>
-
+  
              
-
             <GenericButton text ="Ask A Question"  
                 //onClick={() => setIsModalOpen(prevData => !prevData)} 
-                to='/askQuestionForm'
+                to='/questionForm'
                 buttonType='skyBlue'  
                 className={(!isLoggedIn) ? `mt-4 pointer-events-none opacity-20`: 'mt-4' } 
              />
@@ -315,7 +329,7 @@ const questions = () => {
                   </div>
                
               </div>
-              <div className="w-full bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll"> 
+              <div className=" bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll md:w-[400px]"> 
 
 
                   {
@@ -337,7 +351,7 @@ const questions = () => {
                               priority= {card.priority === 3 ?  'Urgent' : card.priority === 2 ? 'Medium' :  card.priority === 1 ?  'Low'   : '' } 
                               status={card.status} 
                               title= {card.title}
-                              votes = {card.votes}
+                              votes = {card.upvotes - card.downvotes }
                           />
                       ))
                   }
