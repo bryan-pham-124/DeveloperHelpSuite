@@ -1278,6 +1278,10 @@ video {
     width: 3500px;
   }
 
+  .md\:w-\[340px\] {
+    width: 340px;
+  }
+
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1362,6 +1366,10 @@ video {
 @media (min-width: 1024px) {
   .lg\:w-\[160px\] {
     width: 160px;
+  }
+
+  .lg\:w-full {
+    width: 100%;
   }
 }
 

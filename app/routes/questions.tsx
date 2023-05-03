@@ -329,11 +329,20 @@ const questions = () => {
                   </div>
                
               </div>
-              <div className=" bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll md:w-[400px]"> 
-
+              <div className=" bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll md:w-[340px] lg:w-full"> 
 
                   {
-                    modifiedCardData.length === 0 
+                    (!modifiedCardData)
+                    
+                    &&
+
+                    <h1 className='font-bold mt-10 '>
+                        Be first to ask a question!  
+                    </h1>
+                  }
+
+                  {
+                    (modifiedCardData.length === 0 && modifiedCardData)
                     
                     &&
 
