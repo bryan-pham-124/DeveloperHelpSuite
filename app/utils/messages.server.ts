@@ -4,9 +4,11 @@ import { storage } from "./auth.server";
 
 
 
-export const flashMessage = async (request: Request, message: string, redirectPage: string) => {
+export const flashMessage = async (request: Request, message: string, redirectPage: string, success: boolean) => {
     const session = await getUserSession(request);
-    session.flash("message",  message);
+    const returnMessage = success ? 'Success: ' + message: 'Error: ' + message;
+
+    session.flash("message", returnMessage);
    
     return redirect( redirectPage, {
         headers: {
@@ -17,4 +19,8 @@ export const flashMessage = async (request: Request, message: string, redirectPa
 
 
 
- 
+ export const clearMessage = async (session: any) => {
+       
+    return { "Set-Cookie": await storage.commitSession(session)}
+
+ }

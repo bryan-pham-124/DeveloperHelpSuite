@@ -5,20 +5,13 @@ import { useLoaderData } from '@remix-run/react';
 import type { LoaderArgs } from "@remix-run/node";
 import ErrorBox from '~/components/ErrorBox';
 import GenericButton from '~/components/GenericButton';
-import {  
-          faHourglassEmpty, 
-          faQuestionCircle, faCaretSquareDown, 
-          faArrowAltCircleDown, faArrowAltCircleUp, 
-          faCaretSquareUp,
-          faThumbsUp, faThumbsDown, faBarChart
-        } 
-       from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import DropDown from '~/components/DropDown';
 import LinkCard from '~/components/LinkCard';
 import { getQuestions } from '~/utils/questionForm';
 import { linkCardDataProps } from '~/utils/types.server';
 import SortButtons from '~/components/SortButtons';
+import SuccessBox from '~/components/SuccessBox';
+import { clearMessage } from '~/utils/messages.server';
  
  
 
@@ -30,13 +23,18 @@ export async function loader({ request }: LoaderArgs) {
 
   const session = await getUserSession(request);
 
-  const successMessage = session.get("Success Message") || null;
+  const message = session.get("message") || null;
 
   if(!userData){
      return await json({'userData':null, 'questions': questions, 'message': null});
   }
 
-  return await json({'userData': userData, 'questions': questions, 'message': null} );
+  return await json({
+      'userData': userData, 
+      'questions': questions,
+      'message': message} ,
+      { headers: await clearMessage(session)} 
+  );
 
 }
 
@@ -55,10 +53,6 @@ const sortOptions = [
 ]
 
 
-
-
-
-
 const questions = () => {
   
   const {userData, questions, message} = useLoaderData<typeof loader>();
@@ -71,17 +65,6 @@ const questions = () => {
   const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
   const [modifiedCardData, setModifiedCardData] = useState(linkCardData)
   const [sortType, setSortType] = useState('Descending');
-
-  const sortCardParams = {
-      sortMethod:'Ascending',
-      activeSortLabel: activeSortLabel,
-      modifiedCardData: modifiedCardData,  
-      linkCardData:linkCardData,
-      setSortType: setSortType,
-      setModifiedCardData: setModifiedCardData
-  }
-
-
   
   const defaultSorts = ['Select Sort','Votes', 'Priority'];
 
@@ -200,7 +183,7 @@ const sortCards = (sortMethod: string) => {
     console.log(linkCardData);
     setModifiedCardData(copy);
    
-}
+ } 
 
 
 
@@ -231,7 +214,6 @@ const sortCards = (sortMethod: string) => {
   
              
             <GenericButton text ="Ask A Question"  
-                //onClick={() => setIsModalOpen(prevData => !prevData)} 
                 to='/questionForm'
                 buttonType='skyBlue'  
                 className={(!isLoggedIn) ? `mt-4 pointer-events-none opacity-20`: 'mt-4' } 
@@ -239,7 +221,15 @@ const sortCards = (sortMethod: string) => {
           </div>
 
           {
-            message && <h1 className='text-black'> {message} </h1>
+            message 
+            
+            && 
+            
+            <div className="wrapper w-full flex justify-center">
+                <h1 className='text-black text-center'>   
+                    {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
+                 </h1>
+            </div>
           }
 
           {
@@ -263,11 +253,8 @@ const sortCards = (sortMethod: string) => {
                         <div className="wrapper my-3 md:my-0">
                             <h1 className='text-white text-2xl'>Sort</h1>
                             
-
-                            {
-                                questions && <DropDown options={ defaultSorts} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} /> 
-                            }
-
+                            <DropDown options={ defaultSorts} updateSort={updateSort}  defaultValue={'Ascending'}   label={activeSortLabel} /> 
+                        
                             <div className="wrapper flex flex-col my-3">
                                 <SortButtons type ='customOrange'   text={'Descending'} onClick ={() => sortCards('Descending')}  />
                                 <SortButtons type ='skyBlue'   text={'Ascending'} onClick ={() => sortCards('Ascending')}  />

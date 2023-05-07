@@ -11,16 +11,8 @@ import { questionData, questionDataEntry } from "./types.server";
  
  export const createQuestion = async(defaultData: Array<questionDataEntry>,  questionContentData: Array<questionDataEntry>, userId: string) => {
     
-
-    console.log(defaultData)
-
-  
     const priority = (defaultData.find(elm => elm.type === 'priority')?.content);
     const category = (defaultData.find(elm => elm.type === 'category')?.content);
-
-    //console.log([defaultData[0].content, defaultData[1].content]);
-
-    //return null;
 
     const baseQuery = {
         userId: userId,
@@ -38,7 +30,6 @@ import { questionData, questionDataEntry } from "./types.server";
         baseQuery.questionContent = {create: questionContentData }
     }
 
-    //console.log( questionContentData[2].content);
 
     try{
 

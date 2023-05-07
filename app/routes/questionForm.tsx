@@ -1,4 +1,4 @@
-import { Form, useActionData, useNavigation } from '@remix-run/react'
+import { Form, useActionData, useLoaderData, useNavigation } from '@remix-run/react'
 import React, { useEffect, useState } from 'react'
 import FormField from '~/components/FormField';
 import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node"; // or cloudflare/deno
@@ -11,7 +11,8 @@ import { questionData, questionDataEntry } from '~/utils/types.server';
 import { getUser } from '~/utils/auth.server';
 import ErrorBox from '~/components/ErrorBox';
 import { getUserSession } from '~/utils/auth.server';
-import { flashMessage} from '~/utils/messages.server';
+import { clearMessage, flashMessage} from '~/utils/messages.server';
+import SuccessBox from '~/components/SuccessBox';
  
 
 
@@ -19,11 +20,18 @@ export async function loader({ request }: LoaderArgs) {
     
   const userData = await getUser(request);
 
-  if(!userData){
-      return redirect('/login?error=User_Not_Logged_In');
-  }
 
-  return await json({'userData': userData});    
+   // Retrieves the current session from the incoming request's Cookie header
+   const session = await getUserSession(request);
+
+   // Retrieve the session value set in the previous request
+   const message = session.get("message") || null;
+
+   if(!userData){
+      return redirect('/login?error=User_Not_Logged_In');
+   }
+
+   return await json({'userData': userData, message: message}, {headers: await clearMessage(session)});    
 };
 
 
@@ -58,11 +66,11 @@ export const action: ActionFunction = async ({ request }) => {
  
   if(result && result.status === 200){
     console.log(result.status)
-    return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions');
+    return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions', true);
     
   } else {
 
-    return flashMessage(request, 'Question could not be created. Please try again ', '/questionForm');
+    return flashMessage(request, 'Question could not be created. Please try again ', '/questionForm', false);
 
   }
 
@@ -103,6 +111,8 @@ const actionButtons =  [
 const QuestionForm = () => {
 
   const formErrors = useActionData<typeof action>();
+  const {userData,  message} = useLoaderData<typeof loader>();
+
   const navigation = useNavigation();
 
   const isSubmitting = navigation.state === "submitting";
@@ -176,6 +186,19 @@ const QuestionForm = () => {
   return (
 
     <div className="wrapper w-full flex flex-col items-center py-5 rounded-xl">
+
+
+          {
+            message 
+            
+            && 
+            
+            <div className="wrapper w-full flex justify-center">
+                <h1 className='text-black text-center'>   
+                    {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
+                 </h1>
+            </div>
+          }
         
 
         {
