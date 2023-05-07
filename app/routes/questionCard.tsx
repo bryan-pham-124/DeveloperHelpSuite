@@ -60,8 +60,8 @@ const questionCard = () => {
 
              </div>
             <div className="wrapper grid grid-cols-4  pr-8 mt-5">
-                <div className="wrapper flex justify-center">
-                    <VoteCounter voteStatus="up" votes={619} />
+                <div className="wrapper flex justify-center  ">
+                    <VoteCounter voteStatus="up" votes={69} />
                 </div>
                 <div className="wrapper-main-content col-span-3">
                     

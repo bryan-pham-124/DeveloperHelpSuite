@@ -73,7 +73,7 @@ const VoteCounter = ({votes, voteStatus}: VoteCounterProps) => {
 
 
   return (
-    <Form  action ='/questionCard' method='POST' className=" h-24 bg-customGreen px-3 py-3 flex flex-col items-center rounded-xl">
+    <Form  action ='/questionCard' method='POST' className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
         <button>
            <FontAwesomeIcon icon={faArrowUp} onClick={() => updateCounter('up')} className={toggleUp ? 'text-customOrange': 'text-white'}/>
         </button>
