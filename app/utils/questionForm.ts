@@ -5,20 +5,31 @@ import { prisma } from './prisma.server'
 import { questionData, questionDataEntry } from "./types.server";
 
 
-
  export const getQuestions = async() => {
     return await prisma.questions.findMany({});
  }
  
- export const createQuestion = async( questionCardData: Array<questionDataEntry>,  questionContentData: Array<questionDataEntry>, userId: string) => {
+ export const createQuestion = async(defaultData: Array<questionDataEntry>,  questionContentData: Array<questionDataEntry>, userId: string) => {
+    
+
+    console.log(defaultData)
+
   
+    const priority = (defaultData.find(elm => elm.type === 'priority')?.content);
+    const category = (defaultData.find(elm => elm.type === 'category')?.content);
+
+    //console.log([defaultData[0].content, defaultData[1].content]);
+
+    //return null;
+
     const baseQuery = {
         userId: userId,
-        title:  questionCardData[0].content || '',
-        description: questionCardData[1].content || '',
+        title:  defaultData[0].content || '',
+        description:defaultData[1].content || '',
         upvotes: 0,
         downvotes: 0,
-        priority: questionCardData[2].content ? +questionCardData[2].content: 1 ,
+        category: category || 'None',
+        priority:  priority ? +priority: 1,
         status:'Not Solved',
         questionContent: {}
     }
@@ -27,12 +38,13 @@ import { questionData, questionDataEntry } from "./types.server";
         baseQuery.questionContent = {create: questionContentData }
     }
 
-    console.log(questionCardData[2].content);
+    //console.log( questionContentData[2].content);
 
     try{
 
         await prisma.questions.create({ data: baseQuery}) 
 
+        
         return json(
             {
             error: ``,

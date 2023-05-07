@@ -11,6 +11,7 @@ import { questionData, questionDataEntry } from '~/utils/types.server';
 import { getUser } from '~/utils/auth.server';
 import ErrorBox from '~/components/ErrorBox';
 import { getUserSession } from '~/utils/auth.server';
+import { flashMessage} from '~/utils/messages.server';
  
 
 
@@ -35,35 +36,37 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   const form = await request.formData()
+
+  const session = await getUserSession(request);
   
   
   console.log([...form]);
 
-  const baseFields = ['title', 'priority', 'description'];
+  const baseFields = ['title', 'priority', 'description', 'category'];
 
   //console.log(baseFields.findIndex(i => i === 'title'));
 
-  let questionCardData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
-  let formattedCard: Array<questionDataEntry> = [];
-  questionCardData.map((elm, index) => formattedCard.push({type: elm[0], order: index , content: elm[1] + ''}));
+  let defaultData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
+  let formattedDefault: Array<questionDataEntry> = [];
+  defaultData.map((elm, index) => formattedDefault.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  let questionContentData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) === -1 );
+  let contentData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) === -1 );
   let formattedContent: Array<questionDataEntry> = [];
-  questionContentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
+  contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  //console.log(formattedCard);
-  //console.log(formattedContent);
-
-  const result = await createQuestion(formattedCard, formattedContent, userData.id);
+  const result = await createQuestion(formattedDefault, formattedContent, userData.id);
  
-  if(result && result.status){
-    const session = await getUserSession(request);
-    session.flash("QuestionCreateSuccess", "Successfully created a question!");
-    return redirect('/questions');
-  } 
+  if(result && result.status === 200){
+    console.log(result.status)
+    return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions');
+    
+  } else {
 
-  return await createQuestion(formattedCard, formattedContent, userData.id);
+    return flashMessage(request, 'Question could not be created. Please try again ', '/questionForm');
 
+  }
+
+ 
 }
 
 const baseBtnStyles = 'rounded-xl py-2 px-2 w-full text-white max-w-[200px] transition	 hover:bg-white hover:text-black';
@@ -81,7 +84,15 @@ const defaultFormFields = [
     value: '',
     error: ''
   },
+  {
+    field: 'category',
+    label: "category",
+    value: '',
+    error: ''
+  },
 ]
+
+const singleLineFields = ['title', 'category', 'link'];
 
 const actionButtons =  [
     {param: 'Code', color: 'bg-customOrange'},
@@ -193,9 +204,9 @@ const QuestionForm = () => {
                     formFields = {formFields}
                     value =     {field.value}
                     setFormValues = {setFormValues}
-                    multiline = {field.label !== 'title'}
+                    multiline = {singleLineFields.findIndex(elm => elm === field.label.split(' ')[0].toLowerCase()) === -1}
                     dynamicForm
-                    deletable = {field.label !== 'title' &&  field.label !== 'description'}
+                    deletable = {defaultFormFields.findIndex(elm => elm.label === field.label) === -1}
                     deleteFormField = {deleteFormField}
                 />
                 
@@ -218,7 +229,8 @@ const QuestionForm = () => {
             </div>
 
             <div className="flex flex-col items-center my-5">
-                <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority'} width={'200px'} />
+        
+                <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
             </div>
 
             {

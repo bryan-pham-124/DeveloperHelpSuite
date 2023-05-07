@@ -15,7 +15,7 @@ if (!sessionSecret) {
 }
 
 
-const storage = createCookieSessionStorage({
+export const storage = createCookieSessionStorage({
   cookie: {
     name: "developerHelpSuiteSession",
     secure: process.env.NODE_ENV === "production",
@@ -29,7 +29,7 @@ const storage = createCookieSessionStorage({
 
  
 export const register = async (user: RegisterForm) => {
-
+  
     const user_exists = await prisma.user.count({ 
         where: { email: user.email }
     });

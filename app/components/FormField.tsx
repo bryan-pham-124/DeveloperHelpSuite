@@ -134,7 +134,7 @@ const FormField = ({
               type={type}
               id={htmlFor}
               name={htmlFor}
-              className="w-full p-2 rounded-xl my-3 focus:outline-none focus:ring focus:ring-customOrange"
+              className="w-full p-2 rounded-xl my-3 focus:outline-none focus:ring focus:ring-customOrange "
               value={value}
               required
           />
@@ -145,7 +145,7 @@ const FormField = ({
             errorMessage !== ''  
 
             ?  
-                <small className='text-customOrange text-xs mb-3 block'>  {errorMessage} </small>
+                <small className='text-customOrange text-xs mb-3 block '>  {errorMessage} </small>
             :
 
              ""
