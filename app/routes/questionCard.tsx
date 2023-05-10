@@ -103,12 +103,12 @@ const questionCard = () => {
 
                 {
 
-                    userId 
+                    userId === data?.userId
 
                     &&
 
                     <>
-                         <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className="text-white bg-transparent h-10 text-center rounded-xl appearance-none transition hover:bg-customOrange px-5 text-2xl"> ...    </button>
+                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className="text-white bg-transparent h-10 text-center rounded-xl appearance-none transition hover:bg-customOrange px-5 text-2xl"> ...    </button>
 
                         <div id="dropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg border-2 border-customOrange">
                             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
