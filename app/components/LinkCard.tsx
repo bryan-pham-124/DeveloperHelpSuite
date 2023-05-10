@@ -3,11 +3,13 @@ import React from 'react'
 
 
 interface LinkCardProps {
+    id: string
     category: string
     title: string
     status: string
     priority: string
-    votes: number
+    upvotes: number
+    downvotes: number
 }
 
 const getTagColor = (priority:string) => {
@@ -19,9 +21,9 @@ const getSolvedColor = (status:string) => {
     return status === 'Solved' ? 'bg-customGreen' : 'bg-customRed' ;
 }
 
-const LinkCard = ({category, title, status, priority, votes}: LinkCardProps) => {
+const LinkCard = ({id, category, title, status, priority, upvotes, downvotes}: LinkCardProps) => {
   return (
-    <Link to ="#" > 
+    <Link to = {'/questionCard?questionId=' + id} > 
         <div className="rounded-xl bg-white px-5 py-4 my-5 hover:scale-110">
             <div className="flex flex-col gap-y-2 min-[810px]:flex-row min-[810px]:gap-y-0 justify-between items-center">
                 <div className="text-center min-[810px]:text-left wrapper mb-3 md:mb-0">
@@ -37,7 +39,7 @@ const LinkCard = ({category, title, status, priority, votes}: LinkCardProps) => 
                     </div>
                 </div>
                 <p className='flex l px-2 py-5 border bg-customGreen rounded-xl text-center text-xs'>
-                    {votes} Votes
+                    {upvotes - downvotes} Votes
                 </p>
             </div>
         </div>

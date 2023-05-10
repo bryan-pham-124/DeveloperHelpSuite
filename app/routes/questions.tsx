@@ -13,7 +13,6 @@ import SortButtons from '~/components/SortButtons';
 import SuccessBox from '~/components/SuccessBox';
 import { clearMessage } from '~/utils/messages.server';
  
- 
 
 export async function loader({ request }: LoaderArgs) {
 
@@ -38,34 +37,21 @@ export async function loader({ request }: LoaderArgs) {
 
 }
 
-
  
-const sortOptions = [
-    {
-      field: 'Votes',
-      sortType: 'Ascending'
-    },
-
-    {
-      field: 'Priority',
-      sortType: 'Ascending'
-    },
-]
-
-
 const questions = () => {
   
   const {userData, questions, message} = useLoaderData<typeof loader>();
 
+  console.log(questions);
 
-  const linkCardData: linkCardDataProps[] = questions;
+  const linkCardData = questions;
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   const [activeSortLabel, setActiveSortLabel] = useState('Select Sort');
   const [modifiedCardData, setModifiedCardData] = useState(linkCardData)
   const [sortType, setSortType] = useState('Descending');
-  
+
   const defaultSorts = ['Select Sort','Votes', 'Priority'];
 
   const getAllCategories =  () => {
@@ -86,7 +72,7 @@ const questions = () => {
     },
     {
       field: 'Category',
-      options: getAllCategories(), 
+      options:['', ...getAllCategories()], 
     },
     {
       field: 'Priority',
@@ -166,21 +152,41 @@ const sortCards = (sortMethod: string) => {
 
     let copy = ([] as any[]).concat(modifiedCardData);
 
+
     if(sortValue !== 'Select Sort'){
 
-      if(sortMethod === 'Ascending' ){
-      
-        copy.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  );
-        setSortType('Ascending');
-                    
-      } else if(sortMethod === 'Descending') {
+      if(sortValue !== 'votes'){
 
-        copy.sort((elm, elm2 )=> elm2[sortValue] - elm[sortValue]  );
-        setSortType('Descending');
-      } 
+        if(sortMethod === 'Ascending' ){
+
+          copy.sort((elm, elm2 )=> elm[sortValue] - elm2[sortValue]  );
+          setSortType('Ascending');
+                    
+        } else if(sortMethod === 'Descending') {
+  
+          copy.sort((elm, elm2 )=> elm2[sortValue] - elm[sortValue]  );
+          setSortType('Descending');
+
+        } 
+        
+      } else {
+
+        if(sortMethod === 'Ascending' ){
+      
+          copy.sort((elm, elm2 )=> (elm['upvotes'] - elm['downvotes']) -  (elm2['upvotes'] - elm2['downvotes']));
+          setSortType('Ascending');
+                      
+        } else if(sortMethod === 'Descending') {
+  
+          copy.sort((elm, elm2 )=> (elm2['upvotes'] - elm2['downvotes'])  - (elm['upvotes'] - elm['downvotes']));
+          setSortType('Descending');
+        } 
+
+      }
+      
     }
   
-    console.log(linkCardData);
+    // console.log(linkCardData);
     setModifiedCardData(copy);
    
  } 
@@ -188,21 +194,21 @@ const sortCards = (sortMethod: string) => {
 
 
   useEffect(() => {
-    linkCardData.sort((elm, elm2 )=> elm2['votes'] - elm['votes']  )
-    setModifiedCardData(linkCardData)
-  },  [])
+ 
+    linkCardData.sort((elm, elm2 ) =>  (elm2['upvotes'] - elm2['downvotes']) - (elm['upvotes'] - elm['downvotes']) );
 
-  useEffect(() => {
-     setQuestionCount(linkCardData.length)
-  }, [linkCardData])
+    setModifiedCardData(linkCardData);
 
-  useEffect(() => {
-    setQuestionCount(modifiedCardData.length)
-  }, [modifiedCardData])
+  },  []);
 
-  useEffect(() => {
-      setIsLoggedIn(userData ? true: false)
-  }, [userData])
+
+  useEffect(() => { sortCards('Descending') },  [activeSortLabel])
+
+  useEffect(() => { setQuestionCount(linkCardData.length)}, [linkCardData]);
+
+  useEffect(() => { setQuestionCount(modifiedCardData.length) }, [modifiedCardData]);
+
+  useEffect(() => { setIsLoggedIn(userData ? true: false)}, [userData]);
 
  
   return (
@@ -284,37 +290,32 @@ const sortCards = (sortMethod: string) => {
               <div className=" bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll md:w-[340px] lg:w-full"> 
 
                   {
-                    (!modifiedCardData)
-                    
-                    &&
-
-                    <h1 className='font-bold mt-10 '>
-                        Be first to ask a question!  
-                    </h1>
+                    (!modifiedCardData) && <h1 className='font-bold mt-10 '> Be first to ask a question!  </h1>
                   }
 
                   {
-                    (modifiedCardData.length === 0 && modifiedCardData)
-                    
-                    &&
-
-                    <h1 className='font-bold mt-10 '>
-                        Looks like there are no entries that match your filters.  
-                    </h1>
+                    (modifiedCardData.length === 0 && modifiedCardData) && <h1 className='font-bold mt-10 '> Looks like there are no entries that match your filters.</h1>
                   }
 
                   {
+
+                    modifiedCardData &&
                     
                      modifiedCardData.map((card, i )=> (
+                          
                           <LinkCard
+                              id = {card.id }
                               key = {i}
                               category={card.category}
                               priority= {card.priority === 3 ?  'Urgent' : card.priority === 2 ? 'Medium' :  card.priority === 1 ?  'Low'   : '' } 
                               status={card.status} 
                               title= {card.title}
-                              votes = {card.upvotes - card.downvotes }
-                          />
+                              upvotes = {card.upvotes ? card.upvotes : 0 }
+                              downvotes = {card.downvotes ? card.downvotes : 0 }
+                          /> 
                       ))
+
+                 
                   }
               </div>
           </div>

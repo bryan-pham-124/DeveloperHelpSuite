@@ -25,3 +25,18 @@ export interface questionDataEntry {
     order: Number 
     content: string | null | undefined 
 }
+
+
+export interface linkCardDataProps {
+    category: string
+    priority: Number  | string
+    title: string  
+    status: string
+    upvotes: number
+    downvotes: number
+    votes?: number
+
+}
+
+
+ 
