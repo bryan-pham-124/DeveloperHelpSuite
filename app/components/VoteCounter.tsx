@@ -4,7 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { Form, useActionData} from '@remix-run/react';
 import { ActionFunction } from '@remix-run/node';
-import { updateVotes } from '~/utils/voteCounter.server';
+
+
+
+import { testString, updateVotes } from '~/utils/voteCounter.server';
 
 
 interface VoteCounterProps {
@@ -29,6 +32,7 @@ const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
   const [toggleUp, setToggleUp] = useState(voteStatus  === 'up');
 
   const [toggleDown, setToggleDown] = useState(voteStatus  === 'down');
+
 
   const updateCounter = (currentCounter: string) => {
 
@@ -68,11 +72,37 @@ const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
   }
 
 
-  const fetchData = useCallback(async () => {
-    const data = await fetch('https://yourapi.com');
-  
-    
+
+
+  const [testData, setTestData] = useState('');
+
+
+
+  /*
+  useEffect(() => { 
+
+    const fetchData = async () => {
+       return await testString();
+    }
+
+
+    fetchData().then(res =>  setTestData(res)).catch(console.error)
+
   }, [])
+
+  */
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
   useEffect(() => { 
@@ -87,7 +117,7 @@ const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
     */
 
     
-    /*
+     
     const activeCounter = toggleDown ? 'downvotes': 'upvotes';
     
 
@@ -95,15 +125,14 @@ const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
 
         
         const fetchData = async () => {
-            const data =  await updateVotes(cardId, activeCounter, voteCount, `/questionCard?questionId=${cardId}`);
+            return await updateVotes(cardId, activeCounter, voteCount, `/questionCard?questionId=${cardId}`);
         }
 
-        fetchData().catch(console.error)
+        fetchData().then(res => console.log(res)).catch(console.error)
 
-        
 
     }  
-    */    
+     
   }, [voteCount]);
 
 

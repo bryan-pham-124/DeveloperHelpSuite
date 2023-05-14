@@ -101,10 +101,11 @@ const questionCard = () => {
 
   }, [data])
 
-  //console.log(displayedData)
+
 
   return (
     <div className='w-full flex justify-center'>
+
 
         <div className="card-wrapper w-full md:w-[50vw] my-10 mx-5 pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
             <div className="wrapper   w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
@@ -113,29 +114,21 @@ const questionCard = () => {
                     <small className="text-xs">Asked by {authorName || 'Unknown author'} on {formattedDate()}</small>
                 </div>
                 
-
                 {
 
                     userId === data?.userId
 
                     &&
 
-                    <>
-                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className="text-white bg-transparent h-10 text-center rounded-xl appearance-none transition hover:bg-customOrange px-5 text-2xl"> ...    </button>
+                    <div className="flex flex-col gap-y-1">
+ 
+                        <a href={`/questionEditForm?cardId=${cardId}`} className="px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs">Edit</a>
+                                                    
+                        <form action={`/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`} method="post">
+                            <button   className="px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs">Delete</button>
+                        </form>
 
-                        <div id="dropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg border-2 border-customOrange">
-                            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                                <li>
-                                    <a href="#" className="block px-4 py-2 transition hover:bg-customOrange">Edit</a>
-                                </li>
-                                <li>
-                                    <form action={`/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`} method="post">
-                                         <button   className="block px-4 py-2 transition hover:bg-customOrange">Delete</button>
-                                   </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </>
+                    </div>
 
                 }
  
@@ -146,7 +139,7 @@ const questionCard = () => {
                 <div className="wrapper flex justify-center  ">
 
                     {
-                        data &&  data.voteToggle && <VoteCounter cardId={cardId} voteStatus={data.voteToggle ? data.voteToggle: 'none'} votes={  voteCount } />
+                        data && <VoteCounter cardId={cardId} voteStatus={data.voteToggle ? data.voteToggle: 'none'} votes={  voteCount } />
                     }
 
                 </div>

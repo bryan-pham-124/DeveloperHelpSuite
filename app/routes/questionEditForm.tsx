@@ -13,6 +13,7 @@ import ErrorBox from '~/components/ErrorBox';
 import { getUserSession } from '~/utils/auth.server';
 import { clearMessage, flashMessage} from '~/utils/messages.server';
 import SuccessBox from '~/components/SuccessBox';
+import { getQuestionById } from '~/utils/questionCard.server';
  
 
 
@@ -27,11 +28,22 @@ export async function loader({ request }: LoaderArgs) {
    // Retrieve the session value set in the previous request
    const message = session.get("message") || null;
 
+   const url = new URL(request.url)
+   const id = url.searchParams.get('cardId');
+
+   let questionData = null;
+
+   if(id){
+       questionData = await getQuestionById(id);
+   }
+
+   console.log(questionData);
+
    if(!userData){
       return redirect('/login?error=User_Not_Logged_In');
    }
 
-   return await json({'userData': userData, message: message}, {headers: await clearMessage(session)});    
+   return await json({'userData': userData, message: message, questionData: questionData}, {headers: await clearMessage(session)});    
 };
 
 
@@ -106,7 +118,7 @@ const actionButtons =  [
     {param: 'Link', color: 'bg-customRed'},
 ]
 
-const QuestionForm = () => {
+const QuestionEditForm = () => {
 
   const formErrors = useActionData<typeof action>();
   const {message} = useLoaderData<typeof loader>();
@@ -211,7 +223,7 @@ const QuestionForm = () => {
             ''
         }
 
-        <h1 className='font-bold text-3xl text-center'>Ask a Question</h1>
+        <h1 className='font-bold text-3xl text-center'>Edit Question</h1>
         <Form method='POST' className='my-[20px] w-[300px]  md:w-[400px] bg-customBlack px-8 py-7 rounded-lg'>
 
             {
@@ -274,4 +286,4 @@ const QuestionForm = () => {
   )
 }
 
-export default QuestionForm;
+export default QuestionEditForm;

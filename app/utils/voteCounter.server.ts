@@ -3,6 +3,10 @@ import { prisma } from './prisma.server'
 
 
 
+
+export const testString = async () => {
+    return 'This is a test string'
+}
  
 
 export const updateVotes = async (id: string, counter: string, votes: number, redirectTo: string) => {
