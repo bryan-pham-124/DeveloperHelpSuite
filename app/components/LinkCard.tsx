@@ -23,22 +23,22 @@ const getSolvedColor = (status:string) => {
 
 const LinkCard = ({id, category, title, status, priority, upvotes, downvotes}: LinkCardProps) => {
   return (
-    <Link to = {'/questionCard?questionId=' + id} > 
+    <Link to = {'/questionCard?cardId=' + id} > 
         <div className="rounded-xl bg-white px-5 py-4 my-5 hover:scale-110">
-            <div className="flex flex-col gap-y-2 min-[810px]:flex-row min-[810px]:gap-y-0 justify-between items-center">
-                <div className="text-center min-[810px]:text-left wrapper mb-3 md:mb-0">
+            <div className="flex flex-col gap-y-2 md:flex-row md:gap-y-0 justify-between md:items-start lg:items-center">
+                <div className="text-center md:text-left wrapper mb-3 md:mb-0 mx-3">
                     <small>{category}</small> 
                     <h1 className='text-md font-bold'>{title}</h1>
-                    <div className="flex flex-col md:flex-row  gap-y-3 md:gap-y-2 gap-x-2 mt-2">
-                        <small className={getSolvedColor(status) + " rounded-xl px-3 text-white"}>
+                    <div className="flex flex-col md:flex-row  gap-y-5 md:gap-y-2 gap-x-2 my-5 text-center">
+                        <small className={getSolvedColor(status) + " rounded-xl px-3 py-2 md:py-1 text-white flex items-center"}>
                             {status}
                         </small>
-                        <small className={getTagColor(priority) + " rounded-xl px-3 text-white"}>
+                        <small className={getTagColor(priority) + " rounded-xl px-3 py-2 md:py-1 text-white flex items-center"}>
                             {priority}
                         </small>
                     </div>
                 </div>
-                <p className='flex l px-2 py-5 border bg-customGreen rounded-xl text-center text-xs'>
+                <p className='flex justify-center px-5 lg:px-2 py-5 border bg-customGreen rounded-xl text-center text-xs'>
                     {upvotes - downvotes} Votes
                 </p>
             </div>

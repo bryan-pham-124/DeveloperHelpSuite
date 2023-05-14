@@ -11,34 +11,22 @@ import VoteCounter from "~/components/VoteCounter";
 import { getQuestionById,   getUserById } from "~/utils/questionCard.server";
 import { json} from "@remix-run/node"; // or cloudflare/deno
 
-
-export const action: ActionFunction = async ({ request }) => {
-
-    const formData = await request.formData();
-
-    const url = new URL(request.url)
-    const id = url.searchParams.get('questionId');
-
-    console.log(id)
-
-    return null;
-
-}
+ 
 
 export async function loader({ request }: LoaderArgs) {
 
     const userData = await getUser(request);
     
-
     //check if user id is the user before they can do edit or delete on card
     const  userId: string | undefined  = userData?.id;
 
     // Retrieves the current session from the incoming request's Cookie header
     const session = await getUserSession(request);
+    const message = session.get("message") || null;
 
  
     const url = new URL(request.url)
-    const id = url.searchParams.get('questionId');
+    const id = url.searchParams.get('cardId');
 
     let authorName = null;
 
@@ -56,11 +44,11 @@ export async function loader({ request }: LoaderArgs) {
 
         }
 
-        return await json({ data: data, userId: userId, authorName: authorName, authorId: authorId,  cardId: id });
+        return await json({ data: data, userId: userId, authorName: authorName, message: message, authorId: authorId,  cardId: id });
 
     } else {
-        // will work on redirecting user with cookies later.
-        return await json({ data: null, userId: null, authorName: authorName, authorId: authorId, cardId: id });
+        // will work on redirecting user with cookies later,
+        return await json({ data: null, userId: null, authorName: authorName, message: message, authorId: authorId, cardId: id });
     }
 
 }
@@ -120,7 +108,7 @@ const questionCard = () => {
 
                     &&
 
-                    <div className="flex flex-col gap-y-1">
+                    <div className="flex flex-col gap-y-3">
  
                         <a href={`/questionEditForm?cardId=${cardId}`} className="px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs">Edit</a>
                                                     

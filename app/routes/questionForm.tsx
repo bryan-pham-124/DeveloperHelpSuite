@@ -13,7 +13,8 @@ import ErrorBox from '~/components/ErrorBox';
 import { getUserSession } from '~/utils/auth.server';
 import { clearMessage, flashMessage} from '~/utils/messages.server';
 import SuccessBox from '~/components/SuccessBox';
- 
+const uuid = require('uuid');
+
 
 
 export async function loader({ request }: LoaderArgs) {
@@ -134,17 +135,18 @@ const QuestionForm = () => {
   const addFormField = async (field: string) => {
 
       field = field.toLowerCase();
+ 
+      const fieldNumber = uuid.v4();
 
-      let countExistingFields = Object.keys(formValues).filter(elm => elm.includes( field)).length;
-
-      let fieldNumber = countExistingFields > 0 ? countExistingFields + 1: 1;
+      // need a unique field number to make each form element have a different name value
+      // need unique name values for each form field so that it field will save to its own entry in database
 
       setFormValues({...formValues, [field + ' ' +  fieldNumber]: ''});
 
       setFormFields([...formFields,  
           {
             field: field + ' ' +   fieldNumber,
-            label:  field + ' ' +  fieldNumber,
+            label:  field,
             value: '',
             error: ''
           },

@@ -14,14 +14,15 @@ import { getUserSession } from '~/utils/auth.server';
 import { clearMessage, flashMessage} from '~/utils/messages.server';
 import SuccessBox from '~/components/SuccessBox';
 import { getQuestionById } from '~/utils/questionCard.server';
- 
+import { editQuestion } from '~/utils/questionEdit.server';
+const uuid = require('uuid');
+
 
 
 export async function loader({ request }: LoaderArgs) {
     
    const userData = await getUser(request);
-
-
+ 
    // Retrieves the current session from the incoming request's Cookie header
    const session = await getUserSession(request);
 
@@ -35,9 +36,11 @@ export async function loader({ request }: LoaderArgs) {
 
    if(id){
        questionData = await getQuestionById(id);
+   } else {
+       return flashMessage(request, 'Could not find question information. Please try again', 'questions', false)
    }
 
-   console.log(questionData);
+   //console.log(questionData);
 
    if(!userData){
       return redirect('/login?error=User_Not_Logged_In');
@@ -55,61 +58,51 @@ export const action: ActionFunction = async ({ request }) => {
       return redirect('/login?error=User_Not_Logged_In');
   }
 
-  const form = await request.formData()
+  const form = await request.formData();
 
-  const session = await getUserSession(request);
-  
-  
-  console.log([...form]);
+  const editFields = form.get('editContent') 
 
-  const baseFields = ['title', 'priority', 'description', 'category'];
+  const cardId = form.get('cardId')  ;
+
+  if(!editFields || !cardId || !userData){
+    return flashMessage(request, 'Could not edit question', `/questionEditForm?cardId=${cardId}`, false);
+  }
+
+
+  const baseFields = ['title',  'description', 'category', 'priority', 'status'];
+
+  const editContent = (editFields + '').split(',');
+
 
   let defaultData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];
   defaultData.map((elm, index) => formattedDefault.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  let contentData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) === -1 );
-  let formattedContent: Array<questionDataEntry> = [];
-  contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
+  let contentData = [...form].filter(elm => editContent.findIndex(i => i === elm[0]) !== -1 );
+  let formattedEditContent: Array<questionDataEntry> = [];
+  contentData.map((elm, index) => formattedEditContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  const result = await createQuestion(formattedDefault, formattedContent, userData.id);
+  
+
+  const result = await editQuestion(formattedDefault, formattedEditContent, userData.id, cardId + '');
+
  
   if(result && result.status === 200){
     console.log(result.status)
-    return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions', true);
+    return flashMessage(request, 'Successfully edited question with title: ' + formattedDefault[0].content, `/questionCard?cardId=${cardId}`, true);
     
   } else {
 
-    return flashMessage(request, 'Question could not be created. Please try again ', '/questionForm', false);
+    return flashMessage(request, 'Question could not be edited. Please try again ', '/questionForm', false);
 
   }
+ 
 
  
 }
 
 const baseBtnStyles = 'rounded-xl py-2 px-2 w-full text-white max-w-[200px] transition	 hover:bg-white hover:text-black';
-
-const defaultFormFields = [
-  {
-    field: 'title',
-    label: "title",
-    value: '',
-    error: ''
-  },
-  {
-    field: 'description',
-    label: "description",
-    value: '',
-    error: ''
-  },
-  {
-    field: 'category',
-    label: "category",
-    value: '',
-    error: ''
-  },
-]
-
+ 
 const singleLineFields = ['title', 'category', 'link'];
 
 const actionButtons =  [
@@ -121,7 +114,7 @@ const actionButtons =  [
 const QuestionEditForm = () => {
 
   const formErrors = useActionData<typeof action>();
-  const {message} = useLoaderData<typeof loader>();
+  const {message, questionData} = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
 
@@ -130,33 +123,104 @@ const QuestionEditForm = () => {
   const [formValues, setFormValues] = useState(({
       title: '',
       description: ''
-  }) );
+  }));
 
-  const [formFields, setFormFields] = useState(defaultFormFields);
+  
+  const defaultFormFields = [
+    {
+      field: 'title',
+      label: "title",
+      value: questionData?.title || '',
+      error: ''
+    },
+    {
+      field: 'description',
+      label: "description",
+      value: questionData?.description || '',
+      error: ''
+    },
+    {
+      field: 'category',
+      label: "category",
+      value: questionData?.category || '',
+      error: ''
+    },
+  ];
+
+
+
+  // reformat loader data to match the format of defaultFormFields
+  const reformatQuestionCardData = () => {
+
+      const newFormFields: typeof defaultFormFields = [];
+
+      if(questionData){
+           
+          questionData.questionContent.map(elm => (
+            newFormFields.push( {
+              field:  elm.type,
+              label:   elm.type,
+              value: elm.content,
+              error: ''
+            })
+          ))
+      }  
+
+      return newFormFields;
+
+  }
+
+  const otherFormFields = reformatQuestionCardData()
+
+  const [formFields, setFormFields] = useState(defaultFormFields.concat(otherFormFields));
   const [serverFormErrors, setServerFormErrors] = useState('');
   const [allFieldsValid, setAllFieldsValid] = useState(false);
+
+  const formatEditContent  = () => {
+
+      const defaultEditFields = otherFormFields;
+    
+      let editFields: string[] = [];
+
+      defaultEditFields.map(elm => editFields.push(elm.field));
+
+      return  editFields;
+
+  }
+
+  const getPriorityString = (priorityNumber: number) => {
+       if(priorityNumber === 3){
+            return 'Urgent';
+       } else if(priorityNumber === 2){
+            return 'Medium';
+       } else {
+            return 'Low';
+       }
+  }
+
 
   useEffect(() => {
     if(formErrors){
         setServerFormErrors((formErrors.error))
     }
   }, [formErrors])
+  
 
 
   const addFormField = async (field: string) => {
 
       field = field.toLowerCase();
 
-      let countExistingFields = Object.keys(formValues).filter(elm => elm.includes( field)).length;
+      //let countExistingFields = Object.keys(formValues).filter(elm => elm.includes( field)).length;
 
-      let fieldNumber = countExistingFields > 0 ? countExistingFields + 1: 1;
+      const fieldNumber = uuid.v4();
 
       setFormValues({...formValues, [field + ' ' +  fieldNumber]: ''});
 
       setFormFields([...formFields,  
           {
             field: field + ' ' +   fieldNumber,
-            label:  field + ' ' +  fieldNumber,
+            label:  field ,
             value: '',
             error: ''
           },
@@ -189,7 +253,9 @@ const QuestionEditForm = () => {
 
 
   useEffect(() => {
-      setAllFieldsValid(validateAllFormFields(formFields))
+     
+    setAllFieldsValid(validateAllFormFields(formFields))
+       
   }, [formValues])
   
 
@@ -225,6 +291,13 @@ const QuestionEditForm = () => {
 
         <h1 className='font-bold text-3xl text-center'>Edit Question</h1>
         <Form method='POST' className='my-[20px] w-[300px]  md:w-[400px] bg-customBlack px-8 py-7 rounded-lg'>
+
+            {/*
+              *
+             *  Send in all default fields 
+             */}
+            <input type="hidden" name = 'editContent' value={formatEditContent()} />
+            <input type="hidden" name = 'cardId' value={questionData?.id} />
 
             {
               formFields.map((field, i )=> (
@@ -262,7 +335,11 @@ const QuestionEditForm = () => {
             </div>
 
             <div className="flex flex-col items-center my-5">
-                <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
+                <DropDown name="priority" options={["1","2","3"]}  defaultValue={ questionData ? '' + (questionData.priority): '1' }    label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
+            </div>
+
+            <div className="flex flex-col items-center my-5">
+                <DropDown name="status" options={[ "Solved", "Not Solved"]}  defaultValue={questionData?.status}  label={'Status (Solved, Not Solved)'} width={'400px'} />
             </div>
 
             {

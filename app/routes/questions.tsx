@@ -261,7 +261,7 @@ const sortCards = (sortMethod: string) => {
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 w-full  max-w-[1000px]  ">
-              <div className="w-full bg-customBlack p-6  h-[600px] rounded-l-xl"> 
+              <div className="w-full bg-customBlack p-6  lg:h-[600px] rounded-l-xl"> 
                   <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
                       <h1 className='py-4 px-3 text-3xl text-white'> Questions</h1>
                       <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> {questionCount}</p>
