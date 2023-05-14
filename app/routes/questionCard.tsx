@@ -8,7 +8,7 @@ import TextItem from "~/components/TextItem";
 import { ActionArgs, LoaderArgs, redirect, ActionFunction } from "@remix-run/node"; // or cloudflare/deno
 import { getUser, getUserSession } from "~/utils/auth.server";
 import VoteCounter from "~/components/VoteCounter";
-import { getQuestionById, getUserById } from "~/utils/questionCard.server";
+import { getQuestionById,   getUserById } from "~/utils/questionCard.server";
 import { json} from "@remix-run/node"; // or cloudflare/deno
 
 
@@ -17,9 +17,9 @@ export const action: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
 
     const url = new URL(request.url)
-    const id = url.searchParams.get('questionId')
+    const id = url.searchParams.get('questionId');
 
-    console.log(formData.get('newVoteCount'))
+    console.log(id)
 
     return null;
 
@@ -36,26 +36,31 @@ export async function loader({ request }: LoaderArgs) {
     // Retrieves the current session from the incoming request's Cookie header
     const session = await getUserSession(request);
 
+ 
     const url = new URL(request.url)
-    const id = url.searchParams.get('questionId')
-
-    console.log(id);
+    const id = url.searchParams.get('questionId');
 
     let authorName = null;
 
-    if(id !== null && id){
-        const data = await getQuestionById(id)
-        console.log(data);
+    let authorId = null;
 
+    if(id !== null && id){
+
+        const data = await getQuestionById(id);
+        
         if(data){
-             authorName = await getUserById(data?.userId)  ;
+             const authorInfo =  await getUserById(data?.userId);
+
+             authorName = authorInfo?.name;
+             authorId = authorInfo?.id;
+
         }
 
-        return await json({ data: data, userId: userId, authorName: authorName });
+        return await json({ data: data, userId: userId, authorName: authorName, authorId: authorId,  cardId: id });
 
     } else {
         // will work on redirecting user with cookies later.
-        return await json({ data: null, userId: null, authorName: authorName});
+        return await json({ data: null, userId: null, authorName: authorName, authorId: authorId, cardId: id });
     }
 
 }
@@ -63,16 +68,7 @@ export async function loader({ request }: LoaderArgs) {
 
 const questionCard = () => {
    
-  const {data, userId, authorName } = useLoaderData<typeof loader>();
-
-  const formattedData = () => {
-    
-    if(data){
-        const dataCopy = Object.entries(data);
-        return dataCopy;
-    }
-   
-  }
+  const {data, userId, authorName, authorId, cardId } = useLoaderData<typeof loader>();
 
   const formattedDate = () => {
     const dateArr = data?.createdAt.split('T')[0].split('-');
@@ -86,9 +82,26 @@ const questionCard = () => {
 
   }
     
-  const [displayedData, setDisplayedData] = useState(formattedData());
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [voteCount , setNewVoteCount] = useState(0);
 
-  console.log(displayedData)
+
+  useEffect(() => { 
+  
+    if(data){
+        setIsDataLoaded(true);
+        if(typeof data.upvotes === 'number' && typeof data.downvotes === 'number'){
+            setNewVoteCount(data.upvotes - data.downvotes);
+        }
+    } else {
+        setIsDataLoaded(false);
+    }
+    
+    console.log(isDataLoaded);
+
+  }, [data])
+
+  //console.log(displayedData)
 
   return (
     <div className='w-full flex justify-center'>
@@ -97,7 +110,7 @@ const questionCard = () => {
             <div className="wrapper   w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
                 <div className="wrapper">
                     <h1 className='text-3xl font-bold'> {data?.title || 'No title'}</h1>
-                    <small className="text-xs">Asked by {authorName?.name || 'Unknown author'} on {formattedDate()}</small>
+                    <small className="text-xs">Asked by {authorName || 'Unknown author'} on {formattedDate()}</small>
                 </div>
                 
 
@@ -116,7 +129,9 @@ const questionCard = () => {
                                     <a href="#" className="block px-4 py-2 transition hover:bg-customOrange">Edit</a>
                                 </li>
                                 <li>
-                                    <a href="#" className="block px-4 py-2 transition hover:bg-customOrange">Delete</a>
+                                    <form action={`/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`} method="post">
+                                         <button   className="block px-4 py-2 transition hover:bg-customOrange">Delete</button>
+                                   </form>
                                 </li>
                             </ul>
                         </div>
@@ -129,15 +144,58 @@ const questionCard = () => {
 
             <div className="wrapper grid grid-cols-4  pr-8 mt-5">
                 <div className="wrapper flex justify-center  ">
-                    <VoteCounter voteStatus="up" votes={ (+data?.upvotes - +data?.downvotes)  } />
+
+                    {
+                        data &&  data.voteToggle && <VoteCounter cardId={cardId} voteStatus={data.voteToggle ? data.voteToggle: 'none'} votes={  voteCount } />
+                    }
+
                 </div>
                 <div className="wrapper-main-content col-span-3">
                     
-                   <TextItem label={'Description'} text={" Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa veniam modi atque explicabo esse possimus!"}/>
-                   
-                   <CodeItem label="Code" code ={'<h1>\n <span>\n  Test Inner \n </span>\n<h1>'}/>
- 
-                   <LinkItem  link={'https://stackoverflow.com/questions/2000656/using-href-links-inside-option-tag'}/>
+
+                    {
+
+                        data
+
+                        ?
+
+                        <>
+                        
+                            <div className="mb-5">
+                                <h1 className="text-2xl mb-3"> Description: </h1>
+                                <TextItem text ={data.description}/>
+                            </div>
+                            
+                            {
+
+                                // sort questionContent (optional content) by order user submitted in form 
+                                data.questionContent.sort((a,b) => a.order - b.order).map(elm => {
+
+                                    if(elm.type.search('code') !== -1){
+                                        return  <CodeItem code ={elm.content}/>
+                                    }
+        
+                                    else if(elm.type.search('text') !== -1){
+                                        return  <TextItem text ={elm.content}/>
+                                    }
+        
+                                    else if(elm.type.search('link') !== -1){
+                                        return  <LinkItem link ={elm.content}/>
+                                    }
+        
+                                })
+                            }
+                            
+                    
+                        </>
+
+
+                        :
+
+                        <h1>Could not load in data. Please try refreshing the page.</h1>
+
+                        
+                    }
 
                 </div>
             </div>

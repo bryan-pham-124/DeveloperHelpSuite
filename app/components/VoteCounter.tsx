@@ -1,14 +1,16 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect,  useCallback } from 'react'
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { Form, useActionData } from '@remix-run/react';
+import { Form, useActionData} from '@remix-run/react';
 import { ActionFunction } from '@remix-run/node';
+import { updateVotes } from '~/utils/voteCounter.server';
 
 
 interface VoteCounterProps {
-    votes: number
+    votes: number | null
     voteStatus: string // up down none
+    cardId: string
 }
 
 
@@ -17,11 +19,12 @@ interface VoteCounterProps {
     Need to supply own action method on page using this counter to send data back to data 
 
 */
- 
-const VoteCounter = ({votes, voteStatus}: VoteCounterProps) => {
+
+
+const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
 
     
-  const [newVoteCount, setNewVoteCount] = useState(votes);
+  const [voteCount, setVoteCount] = useState(votes);
 
   const [toggleUp, setToggleUp] = useState(voteStatus  === 'up');
 
@@ -30,6 +33,7 @@ const VoteCounter = ({votes, voteStatus}: VoteCounterProps) => {
   const updateCounter = (currentCounter: string) => {
 
         let incrementVote = 0;
+        
 
         if(currentCounter === 'up'){
 
@@ -60,31 +64,63 @@ const VoteCounter = ({votes, voteStatus}: VoteCounterProps) => {
            
         }
 
-        setNewVoteCount(prevData => prevData + incrementVote);
+         setVoteCount(prevData => prevData !== null ? (prevData + incrementVote): prevData);
   }
 
+
+  const fetchData = useCallback(async () => {
+    const data = await fetch('https://yourapi.com');
+  
+    
+  }, [])
+
+
   useEffect(() => { 
-        if(toggleUp){
-            console.log("Toggle up " + newVoteCount )
-        } else {
-            console.log("Toggle down " + newVoteCount)
+    /*
+    if(toggleUp){
+        console.log("Toggle up " + newVoteCount )
+    } else if(toggleDown){
+        console.log("Toggle down " + newVoteCount)
+    } else {
+        console.log("NO TOGGLES")
+    }
+    */
+
+    
+    /*
+    const activeCounter = toggleDown ? 'downvotes': 'upvotes';
+    
+
+    if(voteCount){
+
+        
+        const fetchData = async () => {
+            const data =  await updateVotes(cardId, activeCounter, voteCount, `/questionCard?questionId=${cardId}`);
         }
-  }, [newVoteCount])
+
+        fetchData().catch(console.error)
+
+        
+
+    }  
+    */    
+  }, [voteCount]);
+
 
 
   return (
-    <Form  action ='/questionCard' method='POST' className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
-        <button>
-           <FontAwesomeIcon icon={faArrowUp} onClick={() => updateCounter('up')} className={toggleUp ? 'text-customOrange': 'text-white'}/>
-        </button>
+    <div   className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
+       
+        <FontAwesomeIcon icon={faArrowUp} onClick={() => updateCounter('up')} className={toggleUp ? 'text-customOrange': 'text-white'}/>
+        
         <div className="wrapper my-2 text-center text-sm">
             {votes} Votes
         </div>
-        <button >
-            <FontAwesomeIcon icon={faArrowDown} onClick={() => updateCounter('down')} className={toggleDown ? 'text-customOrange': 'text-white'} />
-        </button>
-        <input type="hidden" id="newVoteCount" name="newVoteCount" value={newVoteCount}/>
-    </Form>
+        
+        <FontAwesomeIcon icon={faArrowDown} onClick={() => updateCounter('down')} className={toggleDown ? 'text-customOrange': 'text-white'} />
+        
+        <input type="hidden" id="newVoteCount" name="newVoteCount" value={voteCount ? voteCount : 0}/>
+    </div>
   )
 }
 

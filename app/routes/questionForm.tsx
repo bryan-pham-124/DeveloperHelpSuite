@@ -5,7 +5,7 @@ import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node"; // or cloudf
 import GenericButton from '~/components/GenericButton';
 import { ActionFunction, LoaderFunction, json } from '@remix-run/node'
 import { validateAllFormFields } from '~/utils/validateForms';
-import { createQuestion } from '~/utils/questionForm';
+import { createQuestion } from '~/utils/questionForm.server';
 import DropDown from '~/components/DropDown';
 import { questionData, questionDataEntry } from '~/utils/types.server';
 import { getUser } from '~/utils/auth.server';
@@ -18,7 +18,7 @@ import SuccessBox from '~/components/SuccessBox';
 
 export async function loader({ request }: LoaderArgs) {
     
-  const userData = await getUser(request);
+   const userData = await getUser(request);
 
 
    // Retrieves the current session from the incoming request's Cookie header

@@ -15,7 +15,7 @@ interface FormFieldProps {
     multiline?: boolean
     dynamicForm?: boolean
     deletable?: boolean
-    deleteFormField: Function
+    deleteFormField?: Function
 }
 
 const FormField = ({ 
@@ -78,7 +78,7 @@ const FormField = ({
 
         {
 
-          deletable
+          deletable && deleteFormField
 
           ?
 

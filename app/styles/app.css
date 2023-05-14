@@ -1148,6 +1148,10 @@ input:checked + .toggle-bg {
   margin-bottom: 0.75rem;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
 .mb-\[30px\] {
   margin-bottom: 30px;
 }

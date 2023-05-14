@@ -7,7 +7,7 @@ import ErrorBox from '~/components/ErrorBox';
 import GenericButton from '~/components/GenericButton';
 import DropDown from '~/components/DropDown';
 import LinkCard from '~/components/LinkCard';
-import { getQuestions } from '~/utils/questionForm';
+import { getQuestions } from '~/utils/questionForm.server';
 import { linkCardDataProps } from '~/utils/types.server';
 import SortButtons from '~/components/SortButtons';
 import SuccessBox from '~/components/SuccessBox';
@@ -42,7 +42,7 @@ const questions = () => {
   
   const {userData, questions, message} = useLoaderData<typeof loader>();
 
-  console.log(questions);
+  //console.log(questions);
 
   const linkCardData = questions;
   
@@ -192,17 +192,29 @@ const sortCards = (sortMethod: string) => {
  } 
 
 
-
   useEffect(() => {
- 
-    linkCardData.sort((elm, elm2 ) =>  (elm2['upvotes'] - elm2['downvotes']) - (elm['upvotes'] - elm['downvotes']) );
+    
+    if(linkCardData){
+      linkCardData.sort((elm, elm2 ) =>  {
+
+          if(elm2['upvotes'] !== null && elm2['downvotes'] !== null && elm['upvotes'] && elm['downvotes'] ){
+             return  (elm2['upvotes'] - elm2['downvotes']) - (elm['upvotes'] - elm['downvotes'])
+          }
+
+          return 0;
+      
+        });
+
+    }
 
     setModifiedCardData(linkCardData);
 
   },  []);
 
 
-  useEffect(() => { sortCards('Descending') },  [activeSortLabel])
+  useEffect(() => { sortCards('Descending') },  [activeSortLabel]);
+
+  useEffect(() => { sortCards('Descending') },  [activeFilterLabels]);
 
   useEffect(() => { setQuestionCount(linkCardData.length)}, [linkCardData]);
 

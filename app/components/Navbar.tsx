@@ -15,6 +15,8 @@ const Navbar = ({isLoggedIn = false}: NavbarProps ) => {
         <div className="w-full wrapper flex flex-col gap-x-9 gap-y-7 justify-center align-middle items-center my-7 md:gap-y-0 md:flex-row md:justify-start md:my-0">
             <Link to={"/"} className="link text-3xl font-bold md:text-xl">Developer Help Suite</Link>
             <Link to={"https://github.com/bryan-pham-124/DeveloperHelpSuite/blob/main/README.md"} className="link font-light mt-3 text-xl border-b pb-2 md:text-sm">About</Link>
+            <Link to={"/questions"} className="link font-light mt-3 text-xl border-b pb-2 md:text-sm">Questions</Link>
+
         </div>
         <div className="w-full wrapper flex flex-row justify-center gap-x-3 md:justify-end"> 
              
