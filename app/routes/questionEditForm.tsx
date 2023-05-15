@@ -46,7 +46,12 @@ export async function loader({ request }: LoaderArgs) {
       return redirect('/login?error=User_Not_Logged_In');
    }
 
-   return await json({'userData': userData, message: message, questionData: questionData}, {headers: await clearMessage(session)});    
+   return await json({
+      'userData': userData, 
+      message: message, 
+      questionData: questionData}, 
+      {headers: await clearMessage(session)
+  });    
 };
 
 
