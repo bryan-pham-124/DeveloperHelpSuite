@@ -34,12 +34,14 @@ export const  editQuestion = async(defaultData: Array<questionDataEntry>,  quest
                 category: category || 'None',
                 priority:  priority ? +priority: 1,
                 status: status ? status: 'Not Solved',
-               
+                questionContent:{
+                    deleteMany: {questionId: questionId},
+                    createMany: {
+                        data: questionContentData 
+                    }
+                }
             }
         }) 
-
-         
-
 
         
         return json(

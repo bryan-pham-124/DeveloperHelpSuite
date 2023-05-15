@@ -10,6 +10,9 @@ import { getUser, getUserSession } from "~/utils/auth.server";
 import VoteCounter from "~/components/VoteCounter";
 import { getQuestionById,   getUserById } from "~/utils/questionCard.server";
 import { json} from "@remix-run/node"; // or cloudflare/deno
+import SuccessBox from "~/components/SuccessBox";
+import ErrorBox from "~/components/ErrorBox";
+import { clearMessage } from "~/utils/messages.server";
 
  
 
@@ -44,11 +47,33 @@ export async function loader({ request }: LoaderArgs) {
 
         }
 
-        return await json({ data: data, userId: userId, authorName: authorName, message: message, authorId: authorId,  cardId: id });
+        return await json( 
+            {
+                data: data, 
+                userId: userId, 
+                authorName: authorName, 
+                message: message, 
+                authorId: authorId,  
+                cardId: id,
+            },
+            {headers: await clearMessage(session)}
+
+        );
 
     } else {
         // will work on redirecting user with cookies later,
-        return await json({ data: null, userId: null, authorName: authorName, message: message, authorId: authorId, cardId: id });
+        return await json(
+            {
+                data: null, 
+                userId: null, 
+                authorName: authorName,
+                message: message, 
+                authorId: authorId,
+                cardId: id 
+            },
+           {headers: await clearMessage(session)}
+
+        );
     }
 
 }
@@ -56,7 +81,7 @@ export async function loader({ request }: LoaderArgs) {
 
 const questionCard = () => {
    
-  const {data, userId, authorName, authorId, cardId } = useLoaderData<typeof loader>();
+  const {data, userId, authorName, authorId, cardId, message } = useLoaderData<typeof loader>();
 
   const formattedDate = () => {
     const dateArr = data?.createdAt.split('T')[0].split('-');
@@ -94,10 +119,24 @@ const questionCard = () => {
   return (
     <div className='w-full flex justify-center'>
 
+        <div className="wrapper">
+        {
+            message 
+            
+            && 
+            
+            <div className="wrapper w-full flex justify-center">
+                <h1 className='text-black text-center'>   
+                    {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
+                 </h1>
+            </div>
+        }         
+   
 
-        <div className="card-wrapper w-full md:w-[50vw] my-10 mx-5 pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
-            <div className="wrapper   w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
-                <div className="wrapper">
+      
+        <div className="card-wrapper w-full md:w-[50vw] max-w-[600px] my-10 mx-5 pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
+            <div className="wrapper grid-cols-5  w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
+                <div className="wrappe grid-cols-4">
                     <h1 className='text-3xl font-bold'> {data?.title || 'No title'}</h1>
                     <small className="text-xs">Asked by {authorName || 'Unknown author'} on {formattedDate()}</small>
                 </div>
@@ -127,7 +166,7 @@ const questionCard = () => {
                 <div className="wrapper flex justify-center  ">
 
                     {
-                        data && <VoteCounter cardId={cardId} voteStatus={data.voteToggle ? data.voteToggle: 'none'} votes={  voteCount } />
+                        data && <VoteCounter cardId={cardId} voteStatus={ data.voteToggle !== null ? data.voteToggle: 'none'} votes={  voteCount } />
                     }
 
                 </div>
@@ -174,13 +213,14 @@ const questionCard = () => {
                         :
 
                         <h1>Could not load in data. Please try refreshing the page.</h1>
-
                         
                     }
 
-                </div>
+                 </div>
+              </div>
             </div>
         </div>
+       
         
     </div>
   )

@@ -60,34 +60,32 @@ export const action: ActionFunction = async ({ request }) => {
 
   const form = await request.formData();
 
-  const editFields = form.get('editContent') 
-
+  const formAsArr = [...form];
+ 
   const cardId = form.get('cardId')  ;
 
-  if(!editFields || !cardId || !userData){
+  if( !cardId || !userData){
     return flashMessage(request, 'Could not edit question', `/questionEditForm?cardId=${cardId}`, false);
   }
 
 
+
   const baseFields = ['title',  'description', 'category', 'priority', 'status'];
 
-  const editContent = (editFields + '').split(',');
-
-
-  let defaultData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
+  let defaultData = formAsArr.filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];
   defaultData.map((elm, index) => formattedDefault.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  let contentData = [...form].filter(elm => editContent.findIndex(i => i === elm[0]) !== -1 );
-  let formattedEditContent: Array<questionDataEntry> = [];
-  contentData.map((elm, index) => formattedEditContent.push({type: elm[0], order: index , content: elm[1] + ''}));
+  let contentData = formAsArr.filter(elm => baseFields.findIndex(i => i === elm[0]) === -1 && elm[0] !== 'cardId' );
+  let formattedContent: Array<questionDataEntry> = [];
+  contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  
+  //console.log(formattedContent)
 
-  const result = await editQuestion(formattedDefault, formattedEditContent, userData.id, cardId + '');
-
+  const result = await editQuestion(formattedDefault, formattedContent, userData.id, cardId + '');
  
   if(result && result.status === 200){
+    
     console.log(result.status)
     return flashMessage(request, 'Successfully edited question with title: ' + formattedDefault[0].content, `/questionCard?cardId=${cardId}`, true);
     
@@ -129,19 +127,19 @@ const QuestionEditForm = () => {
   const defaultFormFields = [
     {
       field: 'title',
-      label: "title",
+      label: "Title",
       value: questionData?.title || '',
       error: ''
     },
     {
       field: 'description',
-      label: "description",
+      label: "Description",
       value: questionData?.description || '',
       error: ''
     },
     {
       field: 'category',
-      label: "category",
+      label: "Category",
       value: questionData?.category || '',
       error: ''
     },
@@ -220,7 +218,7 @@ const QuestionEditForm = () => {
       setFormFields([...formFields,  
           {
             field: field + ' ' +   fieldNumber,
-            label:  field ,
+            label:  field +'',
             value: '',
             error: ''
           },
@@ -295,8 +293,10 @@ const QuestionEditForm = () => {
             {/*
               *
              *  Send in all default fields 
+             * <input type="hidden" name = 'editContent' value={formatEditContent()} />
              */}
-            <input type="hidden" name = 'editContent' value={formatEditContent()} />
+
+            
             <input type="hidden" name = 'cardId' value={questionData?.id} />
 
             {
@@ -306,7 +306,7 @@ const QuestionEditForm = () => {
                     key = {i}
                     formType = {'login'}
                     htmlFor =   {field.field}
-                    label   =   {field.label}
+                    label   =   {field.label.split(' ')[0]}
                     formFields = {formFields}
                     value =     {field.value}
                     setFormValues = {setFormValues}

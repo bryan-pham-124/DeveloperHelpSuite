@@ -15,21 +15,21 @@ export interface LoginForm{
 
 export interface questionData {
     type: string 
-    order: Number 
+    order: number 
     content: string | null | undefined 
 }[]
 
 
 export interface questionDataEntry {
     type: string 
-    order: Number 
-    content: string | null | undefined 
+    order: number 
+    content: string 
 }
 
 
 export interface linkCardDataProps {
     category: string
-    priority: Number  | string
+    priority: number  | string
     title: string  
     status: string
     upvotes: number

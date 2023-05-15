@@ -26,7 +26,7 @@ export const  validateFormField = (currentVal: string, field: string ) => {
     } 
     
     if((field.includes('description') || field === 'title' || field.includes('text') ) && currentVal.length < 10 ){
-        errorMessage =  ( field + " must be at least 10 characters")
+        errorMessage =  ("This field must be at least 10 characters")
         errors_present = true;
     }
 
