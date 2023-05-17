@@ -7,7 +7,7 @@ export const getQuestionById = async(id: string) => {
     return await prisma.questions.findUnique({
       where: {id}, 
       include: {
-         questionContent : true
+         questionContent : true,
       }
    });
  }

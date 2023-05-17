@@ -7,13 +7,15 @@ import { ActionFunction } from '@remix-run/node';
 
 
 
-import { testString, updateVotes } from '~/utils/voteCounter.server';
+import { testString, updateVotes } from  '../utils/voteCounter';
+ 
+
 
 
 interface VoteCounterProps {
     votes: number | null
-    voteStatus: string // up down none
-    cardId: string
+    currentVoteStatus: string // up down none
+    userId?: string
 }
 
 
@@ -24,131 +26,79 @@ interface VoteCounterProps {
 */
 
 
-const VoteCounter = ({votes, voteStatus, cardId}: VoteCounterProps) => {
+const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
-    
+
   const [voteCount, setVoteCount] = useState(votes);
 
-  const [toggleUp, setToggleUp] = useState(voteStatus  === 'up');
+  const [toggleUp, setToggleUp] = useState(currentVoteStatus  === 'upvotes');
 
-  const [toggleDown, setToggleDown] = useState(voteStatus  === 'down');
+  const [toggleDown, setToggleDown] = useState(currentVoteStatus  === 'downvotes');
 
 
   const updateCounter = (currentCounter: string) => {
 
-        let incrementVote = 0;
-        
-
-        if(currentCounter === 'up'){
+        if(currentCounter === 'upvotes'){
 
             if(!toggleUp){
-                if(!toggleUp && !toggleDown){ 
-                    incrementVote = 1;
-                } else {
-                    incrementVote = 2;
-                }
                 setToggleUp(true);
                 setToggleDown(false);
             }
          
         }
-        else if(currentCounter === 'down'){
-            // check if button has not been toggled yet
-                // decrement by 1 if it has not
-                // decrement by 2 if it has to undo upvote
+        else if(currentCounter === 'downvotes'){
+           
             if(!toggleDown){
-                if(!toggleUp && !toggleDown){ 
-                    incrementVote = -1;
-                } else {
-                    incrementVote = -2;
-                }
                 setToggleUp(false);
                 setToggleDown(true);
             }
            
         }
 
-         setVoteCount(prevData => prevData !== null ? (prevData + incrementVote): prevData);
   }
 
+  useEffect(() => {console.log(voteCount)}, [voteCount])
 
 
-
-  const [testData, setTestData] = useState('');
-
-
-
-  /*
-  useEffect(() => { 
-
-    const fetchData = async () => {
-       return await testString();
-    }
-
-
-    fetchData().then(res =>  setTestData(res)).catch(console.error)
-
-  }, [])
-
-  */
-
-
-
-
-
-
-
-
-
+  
 
 
  
-
-
-  useEffect(() => { 
-    /*
-    if(toggleUp){
-        console.log("Toggle up " + newVoteCount )
-    } else if(toggleDown){
-        console.log("Toggle down " + newVoteCount)
-    } else {
-        console.log("NO TOGGLES")
-    }
-    */
-
-    
-     
-    const activeCounter = toggleDown ? 'downvotes': 'upvotes';
-    
-
-    if(voteCount){
-
-        
-        const fetchData = async () => {
-            return await updateVotes(cardId, activeCounter, voteCount, `/questionCard?questionId=${cardId}`);
-        }
-
-        fetchData().then(res => console.log(res)).catch(console.error)
-
-
-    }  
-     
-  }, [voteCount]);
-
-
-
   return (
-    <div   className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
-       
-        <FontAwesomeIcon icon={faArrowUp} onClick={() => updateCounter('up')} className={toggleUp ? 'text-customOrange': 'text-white'}/>
+    <div className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
+
+        <input type="hidden" name='currentVoteStatus' value={toggleUp ? 'upvotes': toggleDown ? 'downvotes': 'none'} />
+     
+        {
+            userId 
+            
+            &&
+
+           <button type='submit'  onClick={() => updateCounter('upvotes')} >
+                <FontAwesomeIcon icon={faArrowUp}className={toggleUp ? 'text-customOrange': 'text-white'}/>
+           </button>
+        
+
+        }
+     
         
         <div className="wrapper my-2 text-center text-sm">
             {votes} Votes
         </div>
         
-        <FontAwesomeIcon icon={faArrowDown} onClick={() => updateCounter('down')} className={toggleDown ? 'text-customOrange': 'text-white'} />
-        
-        <input type="hidden" id="newVoteCount" name="newVoteCount" value={voteCount ? voteCount : 0}/>
+        {
+
+            userId 
+
+            &&
+            
+            <button type='submit' onClick={() => updateCounter('downvotes')} >
+                <FontAwesomeIcon icon={faArrowDown} className={toggleDown ? 'text-customOrange': 'text-white'} />
+            </button>
+            
+
+        }
+       
     </div>
   )
 }

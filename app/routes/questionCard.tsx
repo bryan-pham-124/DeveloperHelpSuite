@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react"
+import { Form, Link, useLoaderData } from "@remix-run/react"
 import {useEffect, useState} from 'react';
 import DropDown from "~/components/DropDown"
 import 'flowbite';
@@ -12,7 +12,7 @@ import { getQuestionById,   getUserById } from "~/utils/questionCard.server";
 import { json} from "@remix-run/node"; // or cloudflare/deno
 import SuccessBox from "~/components/SuccessBox";
 import ErrorBox from "~/components/ErrorBox";
-import { clearMessage } from "~/utils/messages.server";
+import { clearMessage, flashMessage } from "~/utils/messages.server";
 
  
 
@@ -23,28 +23,31 @@ export async function loader({ request }: LoaderArgs) {
     //check if user id is the user before they can do edit or delete on card
     const  userId: string | undefined  = userData?.id;
 
+ 
+
     // Retrieves the current session from the incoming request's Cookie header
     const session = await getUserSession(request);
     const message = session.get("message") || null;
 
  
     const url = new URL(request.url)
-    const id = url.searchParams.get('cardId');
+    const cardId = url.searchParams.get('cardId');
 
     let authorName = null;
 
     let authorId = null;
+    
 
-    if(id !== null && id){
+    if(cardId !== null && cardId){
 
-        const data = await getQuestionById(id);
+        const data = await getQuestionById(cardId);
+
+        //console.log(data)
         
         if(data){
              const authorInfo =  await getUserById(data?.userId);
-
              authorName = authorInfo?.name;
              authorId = authorInfo?.id;
-
         }
 
         return await json( 
@@ -54,7 +57,7 @@ export async function loader({ request }: LoaderArgs) {
                 authorName: authorName, 
                 message: message, 
                 authorId: authorId,  
-                cardId: id,
+                cardId: cardId,
             },
             {headers: await clearMessage(session)}
 
@@ -69,7 +72,7 @@ export async function loader({ request }: LoaderArgs) {
                 authorName: authorName,
                 message: message, 
                 authorId: authorId,
-                cardId: id 
+                cardId: cardId 
             },
            {headers: await clearMessage(session)}
 
@@ -77,7 +80,7 @@ export async function loader({ request }: LoaderArgs) {
     }
 
 }
-
+ 
 
 const questionCard = () => {
    
@@ -104,13 +107,13 @@ const questionCard = () => {
     if(data){
         setIsDataLoaded(true);
         if(typeof data.upvotes === 'number' && typeof data.downvotes === 'number'){
-            setNewVoteCount(data.upvotes - data.downvotes);
+            setNewVoteCount(data.upvotes - Math.abs(data.downvotes));
         }
     } else {
         setIsDataLoaded(false);
     }
     
-    console.log(isDataLoaded);
+    console.log(data)
 
   }, [data])
 
@@ -131,9 +134,24 @@ const questionCard = () => {
                  </h1>
             </div>
         }         
-   
 
-      
+          
+        {
+
+            !userId
+
+            &&
+
+            <div className="wrapper w-full flex justify-center">
+                <h1 className='text-black text-center'>   
+                <ErrorBox text={'You must be logged in to interact with posts'} />
+                </h1>
+            </div>
+
+
+        }
+        
+
         <div className="card-wrapper w-full md:w-[50vw] max-w-[600px] my-10 mx-5 pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
             <div className="wrapper grid-cols-5  w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
                 <div className="wrappe grid-cols-4">
@@ -164,9 +182,13 @@ const questionCard = () => {
 
             <div className="wrapper grid grid-cols-4  pr-8 mt-5">
                 <div className="wrapper flex justify-center  ">
-
+                    
                     {
-                        data && <VoteCounter cardId={cardId} voteStatus={ data.voteToggle !== null ? data.voteToggle: 'none'} votes={  voteCount } />
+                        data && 
+                                            //questionCard?cardId=
+                        <Form action = {`/updateVotes?cardId=${cardId}`} method="post">
+                            <VoteCounter userId={userId} currentVoteStatus={ data.currentVoteToggle !== null ? data.currentVoteToggle: 'none'} votes={  voteCount } />
+                        </Form>
                     }
 
                 </div>
@@ -208,7 +230,6 @@ const questionCard = () => {
                             
                     
                         </>
-
 
                         :
 
