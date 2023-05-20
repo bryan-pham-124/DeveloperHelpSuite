@@ -8,7 +8,7 @@ import TextItem from "~/components/TextItem";
 import { ActionArgs, LoaderArgs, redirect, ActionFunction } from "@remix-run/node"; // or cloudflare/deno
 import { getUser, getUserSession } from "~/utils/auth.server";
 import VoteCounter from "~/components/VoteCounter";
-import { getQuestionById,   getUserById } from "~/utils/questionCard.server";
+import { getQuestionById,   getUserById, getUserVotesInfo } from "~/utils/questionCard.server";
 import { json} from "@remix-run/node"; // or cloudflare/deno
 import SuccessBox from "~/components/SuccessBox";
 import ErrorBox from "~/components/ErrorBox";
@@ -36,7 +36,15 @@ export async function loader({ request }: LoaderArgs) {
     let authorName = null;
 
     let authorId = null;
-    
+
+    let userVotesInfo = null;
+
+    if(userId){
+        userVotesInfo = await getUserVotesInfo(userId);
+    }
+
+    //console.log('user votes info is');
+    //console.log(userVotesInfo);
 
     if(cardId !== null && cardId){
 
@@ -58,6 +66,7 @@ export async function loader({ request }: LoaderArgs) {
                 message: message, 
                 authorId: authorId,  
                 cardId: cardId,
+                userVotesInfo: userVotesInfo
             },
             {headers: await clearMessage(session)}
 
@@ -72,7 +81,8 @@ export async function loader({ request }: LoaderArgs) {
                 authorName: authorName,
                 message: message, 
                 authorId: authorId,
-                cardId: cardId 
+                cardId: cardId,
+                userVotesInfo: userVotesInfo
             },
            {headers: await clearMessage(session)}
 
@@ -84,7 +94,7 @@ export async function loader({ request }: LoaderArgs) {
 
 const questionCard = () => {
    
-  const {data, userId, authorName, authorId, cardId, message } = useLoaderData<typeof loader>();
+  const {data, userId, authorName, authorId, cardId, message, userVotesInfo } = useLoaderData<typeof loader>();
 
   const formattedDate = () => {
     const dateArr = data?.createdAt.split('T')[0].split('-');
@@ -185,9 +195,9 @@ const questionCard = () => {
                     
                     {
                         data && 
-                                            //questionCard?cardId=
+                                         
                         <Form action = {`/updateVotes?cardId=${cardId}`} method="post">
-                            <VoteCounter userId={userId} currentVoteStatus={ data.currentVoteToggle !== null ? data.currentVoteToggle: 'none'} votes={  voteCount } />
+                            <VoteCounter userId={userId} currentVoteStatus={ userVotesInfo !== null && userVotesInfo.currentVoteToggle !== null ?  userVotesInfo.currentVoteToggle: 'none'} votes={  voteCount } />
                         </Form>
                     }
 

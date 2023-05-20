@@ -47,3 +47,7 @@ export const getQuestionById = async(id: string) => {
 }
 
 
+export const getUserVotesInfo = (userId: string) =>  prisma.userVotes.findFirst({where: {userId}});
+ 
+
+
