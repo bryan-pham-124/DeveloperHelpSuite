@@ -13,8 +13,6 @@ export const getQuestionById = async(id: string) => {
  }
 
  
- 
-
  export const getUserById = async(id: string) => {
     return await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
  }
@@ -31,6 +29,7 @@ export const getQuestionById = async(id: string) => {
          return flashMessage(request, "Successfully deleted card", "/questions", true);
    
       } catch(e) {   
+         
          console.log(e);
          return flashMessage(request, "Could not delete card", "/questions", false);
          
@@ -47,7 +46,14 @@ export const getQuestionById = async(id: string) => {
 }
 
 
-export const getUserVotesInfo = (userId: string) =>  prisma.userVotes.findFirst({where: {userId}});
+export const getUserVotesInfo = async (userId: string, cardId: string) =>  prisma.userVotes.findUnique({
+   where:  {
+      uniqueUserVoteId: {
+         userId: userId,
+         questionId: cardId
+      }
+   }
+});
  
 
 

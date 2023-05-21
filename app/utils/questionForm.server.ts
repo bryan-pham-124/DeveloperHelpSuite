@@ -58,4 +58,53 @@ import { questionData, questionDataEntry } from "./types.server";
  }
 
 
+
+
+ export const createReply = async(defaultData: Array<questionDataEntry>,  replyContentData: Array<questionDataEntry>, userId: string) => {
+    
+
+
+    const baseQuery = {
+        userId: userId,
+        title:  defaultData[0].content || '',
+        description:defaultData[1].content || '',
+        upvotes: 0,
+        downvotes: 0,
+        replyContent: {}
+    }
+
+    if(replyContentData){
+        baseQuery.replyContent = {create: replyContentData }
+    }
+
+    console.log('base query below is: ')
+    console.log(baseQuery)
+
+    try{
+        
+        await prisma.replies.create({ data: baseQuery}) 
+        
+        return json(
+            {
+            error: ``,
+            },
+            { status: 200 }
+        );
+         
+
+    } catch(e) {
+
+        console.log(e);
+        return json(
+            {
+              error: `Could not create the question. Please try again later`,
+            },
+            { status: 500 }
+        );
+
+    }    
+ }
+
+
+
  

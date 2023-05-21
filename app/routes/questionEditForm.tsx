@@ -32,6 +32,8 @@ export async function loader({ request }: LoaderArgs) {
    const url = new URL(request.url)
    const id = url.searchParams.get('cardId');
 
+  
+
    let questionData = null;
 
    if(id){

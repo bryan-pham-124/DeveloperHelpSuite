@@ -5,7 +5,7 @@ import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node"; // or cloudf
 import GenericButton from '~/components/GenericButton';
 import { ActionFunction, LoaderFunction, json } from '@remix-run/node'
 import { validateAllFormFields } from '~/utils/validateForms';
-import { createQuestion } from '~/utils/questionForm.server';
+import { createQuestion, createReply } from '~/utils/questionForm.server';
 import DropDown from '~/components/DropDown';
 import { questionData, questionDataEntry } from '~/utils/types.server';
 import { getUser } from '~/utils/auth.server';
@@ -28,15 +28,31 @@ export async function loader({ request }: LoaderArgs) {
    // Retrieve the session value set in the previous request
    const message = session.get("message") || null;
 
+   const url = new URL(request.url)
+
+   const isReply= url.searchParams.get('reply');
+
+   console.log('Reply value is: ' + isReply)
+
+
    if(!userData){
       return redirect('/login?error=User_Not_Logged_In');
    }
 
-   return await json({'userData': userData, message: message}, {headers: await clearMessage(session)});    
+   return await json({'userData': userData, message: message, isReply: isReply}, {headers: await clearMessage(session)});    
 };
 
 
 export const action: ActionFunction = async ({ request }) => {
+
+
+  const url = new URL(request.url)
+
+  const cardId = url.searchParams.get('cardId');
+
+  const isReply= url.searchParams.get('reply');
+
+  console.log('Reply value is: ' + isReply)
 
   const userData = await getUser(request);
 
@@ -48,10 +64,16 @@ export const action: ActionFunction = async ({ request }) => {
 
   const session = await getUserSession(request);
   
-  
   console.log([...form]);
 
-  const baseFields = ['title', 'priority', 'description', 'category'];
+  let baseFields = ['title', 'description'];
+
+
+  if(!isReply){
+      baseFields.push('priority');
+      baseFields.push('category');
+
+  }
 
   let defaultData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];
@@ -61,11 +83,29 @@ export const action: ActionFunction = async ({ request }) => {
   let formattedContent: Array<questionDataEntry> = [];
   contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  const result = await createQuestion(formattedDefault, formattedContent, userData.id);
+  let result = null
+  
+  if(!isReply){
+
+     result = await createQuestion(formattedDefault, formattedContent, userData.id);
+
+  } else {
+
+     result = await createReply(formattedDefault, formattedContent, userData.id);
+
+  }
  
+
   if(result && result.status === 200){
-    console.log(result.status)
-    return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions', true);
+    
+    console.log(result.status);
+
+    if(!isReply){ 
+      return flashMessage(request, 'Successfully created question with title: ' + formattedDefault[0].content, '/questions', true);
+    } else {
+      return flashMessage(request, 'Successfully created reply with title: ' + formattedDefault[0].content, `/questionCard?cardId=${cardId}`, true);
+
+    }
     
   } else {
 
@@ -76,41 +116,11 @@ export const action: ActionFunction = async ({ request }) => {
  
 }
 
-const baseBtnStyles = 'rounded-xl py-2 px-2 w-full text-white max-w-[200px] transition	 hover:bg-white hover:text-black';
-
-const defaultFormFields = [
-  {
-    field: 'title',
-    label: "title",
-    value: '',
-    error: ''
-  },
-  {
-    field: 'description',
-    label: "description",
-    value: '',
-    error: ''
-  },
-  {
-    field: 'category',
-    label: "category",
-    value: '',
-    error: ''
-  },
-]
-
-const singleLineFields = ['title', 'category', 'link'];
-
-const actionButtons =  [
-    {param: 'Code', color: 'bg-customOrange'},
-    {param: 'Text', color: 'bg-sky-500'},
-    {param: 'Link', color: 'bg-customRed'},
-]
 
 const QuestionForm = () => {
 
   const formErrors = useActionData<typeof action>();
-  const {message} = useLoaderData<typeof loader>();
+  const {message, isReply} = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
 
@@ -121,9 +131,47 @@ const QuestionForm = () => {
       description: ''
   }) );
 
-  const [formFields, setFormFields] = useState(defaultFormFields);
   const [serverFormErrors, setServerFormErrors] = useState('');
   const [allFieldsValid, setAllFieldsValid] = useState(false);
+
+
+  const baseBtnStyles = 'rounded-xl py-2 px-2 w-full text-white max-w-[200px] transition	 hover:bg-white hover:text-black';
+
+  let defaultFormFields = [
+    {
+      field: 'title',
+      label: "title",
+      value: '',
+      error: ''
+    },
+    {
+      field: 'description',
+      label: "description",
+      value: '',
+      error: ''
+    },
+  ]
+
+if(!isReply){
+  defaultFormFields.push({
+      field: 'category',
+      label: "category",
+      value: '',
+      error: ''
+  })
+}
+
+ const [formFields, setFormFields] = useState(defaultFormFields);
+
+ const singleLineFields = ['title', 'category', 'link'];
+
+ const actionButtons =  [
+    {param: 'Code', color: 'bg-customOrange'},
+    {param: 'Text', color: 'bg-sky-500'},
+    {param: 'Link', color: 'bg-customRed'},
+ ]
+
+
 
   useEffect(() => {
     if(formErrors){
@@ -213,7 +261,7 @@ const QuestionForm = () => {
             ''
         }
 
-        <h1 className='font-bold text-3xl text-center'>Ask a Question</h1>
+        <h1 className='font-bold text-3xl text-center'>{!isReply ? 'Ask a Question' : 'Answer Question' }</h1>
         <Form method='POST' className='my-[20px] w-[300px]  md:w-[400px] bg-customBlack px-8 py-7 rounded-lg'>
 
             {
@@ -251,9 +299,17 @@ const QuestionForm = () => {
                
             </div>
 
-            <div className="flex flex-col items-center my-5">
-                <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
-            </div>
+
+            {
+              !isReply 
+
+              &&
+
+              <div className="flex flex-col items-center my-5">
+                  <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
+              </div>
+            }
+           
 
             {
               !allFieldsValid && <small className='text-center text-customOrange text-xs mb-3 block'>  No fields can be blank. </small>

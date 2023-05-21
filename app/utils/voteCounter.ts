@@ -10,13 +10,22 @@ import { flashMessage } from './messages.server';
 export const updateVotes = async (request: Request, cardId: string, counter: string, redirectTo: string, userId: string, tableName: string  ) => {
 
 
+    console.log('card is: ' + cardId);
+
     let userVotesInfo: any = null;
 
     let totalVotes  = null;
 
     if(tableName === 'questions'){
 
-         userVotesInfo = await prisma.userVotes.findFirst({where: {userId: userId}});
+         userVotesInfo = await prisma.userVotes.findUnique({
+            where: {
+                uniqueUserVoteId:{
+                    userId: userId,
+                    questionId: cardId
+                }
+            }
+        });
          
          totalVotes =  await prisma.questions.findUnique({
             where: {id: cardId}, 
@@ -34,8 +43,8 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
     }  
 
 
-    //console.log('User Info is');
-    //console.log(userVotesInfo)
+    console.log('User Info is');
+    console.log(userVotesInfo)
 
 
     let isNewUserVote = false;
@@ -52,7 +61,14 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
             }
         })
 
-        userVotesInfo = await prisma.userVotes.findFirst({where: {userId: userId}});
+        userVotesInfo = await prisma.userVotes.findUnique({
+            where: {
+                uniqueUserVoteId:{
+                    userId: userId,
+                    questionId: cardId
+                }
+            }
+        });
 
         if( !userVotesInfo || !userVotesInfo.currentVoteToggle ){
             return flashMessage(request, 'Could not update votes. Could not get user vote info.', redirectTo, false)

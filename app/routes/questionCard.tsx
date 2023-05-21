@@ -13,6 +13,7 @@ import { json} from "@remix-run/node"; // or cloudflare/deno
 import SuccessBox from "~/components/SuccessBox";
 import ErrorBox from "~/components/ErrorBox";
 import { clearMessage, flashMessage } from "~/utils/messages.server";
+import GenericButton from "~/components/GenericButton";
 
  
 
@@ -32,20 +33,25 @@ export async function loader({ request }: LoaderArgs) {
     const url = new URL(request.url)
     const cardId = url.searchParams.get('cardId');
 
+
+
     let authorName = null;
 
     let authorId = null;
 
     let userVotesInfo = null;
 
-    if(userId){
-        userVotesInfo = await getUserVotesInfo(userId);
-    }
+  
 
     //console.log('user votes info is');
     //console.log(userVotesInfo);
 
     if(cardId !== null && cardId){
+
+
+        if(userId){
+            userVotesInfo = await getUserVotesInfo(userId, cardId + '');
+        }
 
         const data = await getQuestionById(cardId);
 
@@ -161,10 +167,10 @@ const questionCard = () => {
         }
         
 
-        <div className="card-wrapper w-full md:w-[50vw] max-w-[600px] my-10 mx-5 pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
+        <div className="card-wrapper w-full md:w-[50vw] max-w-[600px] my-10  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
             <div className="wrapper grid-cols-5  w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
                 <div className="wrappe grid-cols-4">
-                    <h1 className='text-3xl font-bold'> {data?.title || 'No title'}</h1>
+                    <h1 className='text-2xl font-bold'> {`${data?.title}  (${data?.status})` || 'No title'}</h1>
                     <small className="text-xs">Asked by {authorName || 'Unknown author'} on {formattedDate()}</small>
                 </div>
                 
@@ -213,25 +219,25 @@ const questionCard = () => {
                         <>
                         
                             <div className="mb-5">
-                                <h1 className="text-2xl mb-3"> Description: </h1>
+                                <h1 className="text-xl mb-3"> Description: </h1>
                                 <TextItem text ={data.description}/>
                             </div>
                             
                             {
 
                                 // sort questionContent (optional content) by order user submitted in form 
-                                data.questionContent.sort((a,b) => a.order - b.order).map(elm => {
+                                data.questionContent.sort((a,b) => a.order - b.order).map((elm, i) => {
 
                                     if(elm.type.search('code') !== -1){
-                                        return  <CodeItem code ={elm.content}/>
+                                        return  <CodeItem key= {i} code ={elm.content}/>
                                     }
         
                                     else if(elm.type.search('text') !== -1){
-                                        return  <TextItem text ={elm.content}/>
+                                        return  <TextItem   key= {i}text ={elm.content}/>
                                     }
         
                                     else if(elm.type.search('link') !== -1){
-                                        return  <LinkItem link ={elm.content}/>
+                                        return  <LinkItem   key= {i} link ={elm.content}/>
                                     }
         
                                 })
@@ -250,9 +256,18 @@ const questionCard = () => {
               </div>
             </div> {/* End question card section */}
 
-            <div className="wrapper">
-                'Hello this is the wrapper section'
-            </div>
+            {
+                userId
+
+                &&
+
+                <div className="wrapper my-3">
+                    <div className="wrapper w-full flex justify-center">
+                        <GenericButton text="Answer Question" to={`/questionForm?cardId=${cardId}&reply=true`} buttonType="skyBlue"  />
+                    </div>
+                </div>
+            }
+            
             
 
         </div>
