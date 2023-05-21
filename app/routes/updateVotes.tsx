@@ -9,8 +9,7 @@ export const action: ActionFunction = async ({ request }) => {
     const url =  new URL(request.url);
 
     const cardId = url.searchParams.get('cardId') + '';
-    const currentVoteToggle = url.searchParams.get('currentVoteToggle') + '';
-
+    const tableName = url.searchParams.get('tableName') + '';
 
     const form = await request.formData();
 
@@ -25,7 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     console.log('vote status is: ' + currentVoteStatus)
 
-    return updateVotes(request, cardId, currentVoteStatus, `/questionCard?cardId=${cardId}`, userId )
+    return updateVotes(request, cardId, currentVoteStatus, `/questionCard?cardId=${cardId}`, userId, tableName )
 };
 //export const loader: LoaderFunction = async ({ request }) =>flashMessage(request, "Successfully deleted card", "/questions", true);
 export const loader: LoaderFunction = async ({ request }) =>  redirect('/questions');

@@ -7,7 +7,7 @@ import { ActionFunction } from '@remix-run/node';
 
 
 
-import { testString, updateVotes } from  '../utils/voteCounter';
+import { updateVotes } from  '../utils/voteCounter';
  
 
 
@@ -57,10 +57,9 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
   }
 
+
+
   useEffect(() => {console.log(voteCount)}, [voteCount])
-
-
-  
 
 
  

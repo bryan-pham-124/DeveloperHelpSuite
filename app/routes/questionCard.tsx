@@ -24,7 +24,6 @@ export async function loader({ request }: LoaderArgs) {
     const  userId: string | undefined  = userData?.id;
 
  
-
     // Retrieves the current session from the incoming request's Cookie header
     const session = await getUserSession(request);
     const message = session.get("message") || null;
@@ -196,7 +195,7 @@ const questionCard = () => {
                     {
                         data && 
                                          
-                        <Form action = {`/updateVotes?cardId=${cardId}`} method="post">
+                        <Form action = {`/updateVotes?cardId=${cardId}&tableName=questions`} method="post">
                             <VoteCounter userId={userId} currentVoteStatus={ userVotesInfo !== null && userVotesInfo.currentVoteToggle !== null ?  userVotesInfo.currentVoteToggle: 'none'} votes={  voteCount } />
                         </Form>
                     }
@@ -249,7 +248,13 @@ const questionCard = () => {
 
                  </div>
               </div>
+            </div> {/* End question card section */}
+
+            <div className="wrapper">
+                'Hello this is the wrapper section'
             </div>
+            
+
         </div>
        
         
