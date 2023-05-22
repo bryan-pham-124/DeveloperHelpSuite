@@ -181,28 +181,6 @@ const QuestionEditForm = () => {
   const [serverFormErrors, setServerFormErrors] = useState('');
   const [allFieldsValid, setAllFieldsValid] = useState(false);
 
-  const formatEditContent  = () => {
-
-      const defaultEditFields = otherFormFields;
-    
-      let editFields: string[] = [];
-
-      defaultEditFields.map(elm => editFields.push(elm.field));
-
-      return  editFields;
-
-  }
-
-  const getPriorityString = (priorityNumber: number) => {
-       if(priorityNumber === 3){
-            return 'Urgent';
-       } else if(priorityNumber === 2){
-            return 'Medium';
-       } else {
-            return 'Low';
-       }
-  }
-
 
   useEffect(() => {
     if(formErrors){
@@ -361,8 +339,7 @@ const QuestionEditForm = () => {
                     className={(isSubmitting || !allFieldsValid )? `mt-4 pointer-events-none opacity-20`: 'mt-4' }
                 />
             </div>
-
-           
+            
         </Form>
     </div>
     

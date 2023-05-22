@@ -14,6 +14,9 @@ import SuccessBox from "~/components/SuccessBox";
 import ErrorBox from "~/components/ErrorBox";
 import { clearMessage, flashMessage } from "~/utils/messages.server";
 import GenericButton from "~/components/GenericButton";
+import QuestionEditForm from "./questionEditForm";
+import QuestionForm from "./questionForm";
+import AnswerForm from "./answerForm";
 
  
 
@@ -28,10 +31,11 @@ export async function loader({ request }: LoaderArgs) {
     // Retrieves the current session from the incoming request's Cookie header
     const session = await getUserSession(request);
     const message = session.get("message") || null;
-
  
     const url = new URL(request.url)
     const cardId = url.searchParams.get('cardId');
+
+    const closeForm = false;
 
 
 
@@ -71,14 +75,15 @@ export async function loader({ request }: LoaderArgs) {
                 message: message, 
                 authorId: authorId,  
                 cardId: cardId,
-                userVotesInfo: userVotesInfo
+                userVotesInfo: userVotesInfo,
+                displayForm: false
             },
             {headers: await clearMessage(session)}
 
         );
 
     } else {
-        // will work on redirecting user with cookies later,
+         
         return await json(
             {
                 data: null, 
@@ -87,7 +92,8 @@ export async function loader({ request }: LoaderArgs) {
                 message: message, 
                 authorId: authorId,
                 cardId: cardId,
-                userVotesInfo: userVotesInfo
+                userVotesInfo: userVotesInfo,
+                displayF: false
             },
            {headers: await clearMessage(session)}
 
@@ -95,11 +101,11 @@ export async function loader({ request }: LoaderArgs) {
     }
 
 }
- 
+
 
 const questionCard = () => {
    
-  const {data, userId, authorName, authorId, cardId, message, userVotesInfo } = useLoaderData<typeof loader>();
+  const {data, userId, authorName, authorId, cardId, message, userVotesInfo} = useLoaderData<typeof loader>();
 
   const formattedDate = () => {
     const dateArr = data?.createdAt.split('T')[0].split('-');
@@ -115,7 +121,11 @@ const questionCard = () => {
     
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [voteCount , setNewVoteCount] = useState(0);
+  const [isFormDisplayed, setIsFormDisplayed] = useState(false);
+  const [isReplySubmitted, setIsReplySubmitted] = useState(false);
 
+
+ 
 
   useEffect(() => { 
   
@@ -143,7 +153,7 @@ const questionCard = () => {
             
             && 
             
-            <div className="wrapper w-full flex justify-center">
+            <div className="wrapper w-full flex justify-center mt-5">
                 <h1 className='text-black text-center'>   
                     {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
                  </h1>
@@ -263,9 +273,34 @@ const questionCard = () => {
 
                 <div className="wrapper my-3">
                     <div className="wrapper w-full flex justify-center">
-                        <GenericButton text="Answer Question" to={`/questionForm?cardId=${cardId}&reply=true`} buttonType="skyBlue"  />
+                        <GenericButton 
+                            text={isFormDisplayed ? 'Close Form' : 'Answer Question'} 
+                            onClick={(e) => {e.preventDefault(); setIsFormDisplayed(prevData => !prevData)}} 
+                            buttonType={isFormDisplayed ? 'dangerRed': 'skyBlue'}  />
                     </div>
                 </div>
+
+            }
+
+            {
+
+                isFormDisplayed && cardId
+
+                &&
+
+                <AnswerForm cardId={cardId} setIsFormDisplayed = {setIsFormDisplayed} setIsReplySubmitted ={setIsReplySubmitted} />
+              
+            }
+
+            {
+                isReplySubmitted
+
+                && 
+
+                <div className="wrapper w-full flex justify-center">
+                    <SuccessBox text= " Your reply has been sent! Please wait a few seconds for server to respond."/>
+                </div>
+
             }
             
             

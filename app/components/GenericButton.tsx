@@ -94,6 +94,7 @@ const GenericButton = (
                ${className}
               `
             } 
+            onClick={onClick}
             disabled = {isSubmitting}
             value={text}
         />
