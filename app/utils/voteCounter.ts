@@ -4,19 +4,16 @@ import { flashMessage } from './messages.server';
 
 
 
- 
-
-
 export const updateVotes = async (request: Request, cardId: string, counter: string, redirectTo: string, userId: string, tableName: string  ) => {
 
 
-    console.log('card is: ' + cardId);
+    //console.log('table name is: ' + tableName);
 
     let userVotesInfo: any = null;
 
     let totalVotes  = null;
 
-    if(tableName === 'questions'){
+    if(tableName === 'question'){
 
          userVotesInfo = await prisma.userVotes.findUnique({
             where: {
@@ -27,6 +24,7 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
             }
         });
          
+
          totalVotes =  await prisma.questions.findUnique({
             where: {id: cardId}, 
             select: {
@@ -43,8 +41,7 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
     }  
 
 
-    console.log('User Info is');
-    console.log(userVotesInfo)
+    //console.log('user id: ' + userId)
 
 
     let isNewUserVote = false;
@@ -76,17 +73,17 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
 
     }  
  
-    /*
+   
     console.log('Counter is');
     console.log(counter)
     
     console.log('current upvotes are: ');
     console.log(totalVotes);
 
-    console.log('check is: ' + (counter === 'upvotes' &&  (userVotesInfo.currentVoteToggle !=='upvotes' || isNewUserVote)))
-    */
+    console.log('check is: ' +  (counter === 'downvotes' &&  userVotesInfo.currentVoteToggle === 'downvotes'))
     
 
+ 
     let query:{'upvotes'?: number, 'downvotes'?: number}  = {
         'upvotes' : totalVotes.upvotes,
         'downvotes' : totalVotes.downvotes
@@ -125,7 +122,7 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
         
         try {
 
-            if( tableName === 'questions'){
+            if( tableName === 'question'){
                 await tx.questions.update({
                     where: {id: cardId}, 
                     data: query
@@ -145,7 +142,6 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
                 }
             }
           
-        
             return flashMessage(request, 'Successfully updated votes', redirectTo, true)
 
         } catch(e){
@@ -154,8 +150,5 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
 
         }
     })
-
-     
-
 
 }

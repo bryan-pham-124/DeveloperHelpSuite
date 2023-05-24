@@ -60,12 +60,12 @@ import { questionData, questionDataEntry } from "./types.server";
 
 
 
- export const createReply = async(defaultData: Array<questionDataEntry>,  replyContentData: Array<questionDataEntry>, userId: string) => {
+ export const createReply = async(defaultData: Array<questionDataEntry>,  replyContentData: Array<questionDataEntry>, userId: string, questionId: string) => {
     
-
 
     const baseQuery = {
         userId: userId,
+        questionId: questionId,
         title:  defaultData[0].content || '',
         description:defaultData[1].content || '',
         upvotes: 0,

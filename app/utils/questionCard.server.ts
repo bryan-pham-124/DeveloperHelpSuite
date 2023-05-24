@@ -13,11 +13,9 @@ export const getQuestionById = async(id: string) => {
  }
 
  
- export const getUserById = async(id: string) => {
-    return await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
- }
+ export const getUserById = async(id: string) => await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
  
-
+ 
  export const deleteCardById = async(request: Request, id: string, userId: string, authorId: string) => {
 
    if(userId === authorId ){
@@ -46,7 +44,7 @@ export const getQuestionById = async(id: string) => {
 }
 
 
-export const getUserVotesInfo = async (userId: string, cardId: string) =>  prisma.userVotes.findUnique({
+export const getUserVotesInfo = async (userId: string, cardId: string) => prisma.userVotes.findUnique({
    where:  {
       uniqueUserVoteId: {
          userId: userId,
@@ -55,5 +53,29 @@ export const getUserVotesInfo = async (userId: string, cardId: string) =>  prism
    }
 });
  
+
+export const getReplies = async(cardId: string) => await prisma.replies.findMany({
+    where: { questionId: cardId}, 
+    include:{
+      replyContent: true,
+      repliesUserVotes: true,
+      user: {
+         select: {
+            name: true
+         }
+      }
+    }
+})
+
+
+export const getRepliesVotesInfo = async (userId: string, replyId: string) => prisma.repliesUserVotes.findUnique({
+   where: {
+      uniqueRepliesUserVoteId: {
+         userId: userId,
+         replyId: replyId
+      }
+   }
+});
+
 
 

@@ -42,6 +42,7 @@ model Questions {
   updatedAt       DateTime       @updatedAt
   questionContent QuestionContent[]
   userVotes       UserVotes[]
+  replies         Replies[]
 }
 
 
@@ -68,7 +69,7 @@ model UserVotes {
 
 model Replies {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  user            User           @relation(fields: [userId], references: [id])
+  questionId      String         @db.ObjectId
   userId          String         @db.ObjectId
   title           String
   description     String
@@ -76,7 +77,10 @@ model Replies {
   downvotes       Int?           @default(0)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  replyContent    RepliesContent[]
+  user            User           @relation(fields: [userId], references: [id])
+  question        Questions      @relation(fields: [questionId], references: [id])
+  preferredAnswer Boolean?       @default(false)
+  replyContent           RepliesContent[]
   repliesUserVotes       RepliesUserVotes[]
 }
 

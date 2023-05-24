@@ -15,7 +15,7 @@ import { updateVotes } from  '../utils/voteCounter';
 interface VoteCounterProps {
     votes: number | null
     currentVoteStatus: string // up down none
-    userId?: string
+    userId?: string | null
 }
 
 
@@ -67,7 +67,7 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
     <div className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
 
         <input type="hidden" name='currentVoteStatus' value={toggleUp ? 'upvotes': toggleDown ? 'downvotes': 'none'} />
-        <input type="hidden" name='userId' value={userId} />
+        <input type="hidden" name='userId' value={userId || ''} />
 
      
         {

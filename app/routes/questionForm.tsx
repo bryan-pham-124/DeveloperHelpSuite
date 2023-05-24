@@ -90,8 +90,14 @@ export const action: ActionFunction = async ({ request }) => {
      result = await createQuestion(formattedDefault, formattedContent, userData.id);
 
   } else {
+    
+      if(!cardId){
 
-     result = await createReply(formattedDefault, formattedContent, userData.id);
+        return flashMessage(request, 'Question could not be created. Please try again ', `/questionCard?cardId=${cardId}`, false);
+
+      }
+      
+     result = await createReply(formattedDefault, formattedContent, userData.id, cardId);
 
   }
  
@@ -112,7 +118,10 @@ export const action: ActionFunction = async ({ request }) => {
     
   } else {
 
-    return flashMessage(request, 'Question could not be created. Please try again ', '/questionForm', false);
+
+    const redirectTo = isReply ? `/questionCard?cardId=${cardId}` : '/questionForm';
+
+    return flashMessage(request, 'Question could not be created. Please try again ', redirectTo, false);
 
   }
 
