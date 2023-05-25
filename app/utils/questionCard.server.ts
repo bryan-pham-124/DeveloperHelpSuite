@@ -13,10 +13,10 @@ export const getQuestionById = async(id: string) => {
  }
 
  
- export const getUserById = async(id: string) => await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
+export const getUserById = async(id: string) => await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
  
  
- export const deleteCardById = async(request: Request, id: string, userId: string, authorId: string) => {
+export const deleteCardById = async(request: Request, id: string, userId: string, authorId: string) => {
 
    if(userId === authorId ){
 
@@ -77,5 +77,53 @@ export const getRepliesVotesInfo = async (userId: string, replyId: string) => pr
    }
 });
 
+
+
+export const updateStatus = async (request: Request, cardId: string | null, replyId: string | null, status: string | null) => {
+
+   if(!cardId || !replyId || !status){
+       return flashMessage(request, "Could not get card info. Please try again.",  `/questionCard?cardId=${cardId}`, false);
+   }
+
+
+   console.log('status inside prisma is: ' + status)
+   console.log('replyId ' + replyId);
+   console.log('cardId ' + cardId);
+
+   // code below updates status of questions and replies to new status
+   
+   return await prisma.$transaction(async (tx) => {
+
+      try {
+
+         await prisma.questions.update({
+            where: {id: cardId},
+            data:  {status: status}
+         });
+
+         // reset all to false because we only have one preferred answer.
+         await prisma.replies.updateMany({
+            where: {preferredAnswer: true},
+            data:  {preferredAnswer: false}
+         });
+
+         await prisma.replies.update({
+            where: {id: replyId},
+            data:  {preferredAnswer: status === 'Solved'}
+         });
+         
+         return flashMessage(request, `Answer has been marked "${status}"`,  `/questionCard?cardId=${cardId}`, true);
+
+      } catch(e){
+
+         console.log(e);
+         return flashMessage(request, "Could not change card status. Please try again.",  `/questionCard?cardId=${cardId}`, false);
+
+      }
+     
+   })
+
+
+}
 
 

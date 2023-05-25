@@ -62,6 +62,7 @@ export interface dataProps {
     downvotes: number | null
     status?: string | null
     createdAt:  string | null
+    preferredAnswer?: boolean | null | undefined
 }
 
  

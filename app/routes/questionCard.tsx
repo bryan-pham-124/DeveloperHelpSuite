@@ -30,13 +30,8 @@ export async function loader({ request }: LoaderArgs) {
 
     const closeForm = false;
 
-
-
-
     let replies = null;
 
-
-    
     let authorName = null;
 
     let authorId = null;
@@ -111,9 +106,6 @@ const questionCard = () => {
   const [isFormDisplayed, setIsFormDisplayed] = useState(false);
   const [isReplySubmitted, setIsReplySubmitted] = useState(false);
 
-
- 
-
   useEffect(() => { 
   
     if(data){
@@ -162,6 +154,9 @@ const questionCard = () => {
 
             }
 
+
+            <h1 className="mt-5 text-center text-4xl font-bole">Question </h1>
+
             <Card 
                 type={'question'}
                 data={data} 
@@ -171,6 +166,7 @@ const questionCard = () => {
                 cardId={cardId} 
                 userVotesInfo={userVotesInfo}
                 voteCount={ voteCount}
+                status={data?.status || 'Not Solved'}
             />
       
             {
@@ -199,10 +195,12 @@ const questionCard = () => {
               
             }
 
+            <h1 className="mt-5 text-center text-4xl font-bole">Replies </h1>
+
             {
                 replies
                 
-                &&
+                ?
 
                 replies.map((reply, i) => (
                     <Card 
@@ -214,9 +212,16 @@ const questionCard = () => {
                         authorId = {reply.userId} 
                         cardId={cardId} 
                         voteCount={reply.upvotes && reply.downvotes ? reply.upvotes - reply.downvotes: 0}
+                        replyId={reply.id}
+                        status={data?.status || 'Not Solved'}
                         userVotesInfo={reply.repliesUserVotes}
+                        questionAuthorId = {authorId || null}
                     />
                 ))
+
+                :
+
+                'Looks like there are no replies here'
                 
             }
 
@@ -233,10 +238,6 @@ const questionCard = () => {
 
             }
 
-
-            
-            
-            
         </div>
        
     </div>

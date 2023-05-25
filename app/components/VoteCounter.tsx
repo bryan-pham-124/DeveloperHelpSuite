@@ -2,7 +2,7 @@ import React, {useState, useEffect,  useCallback } from 'react'
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { Form, useActionData} from '@remix-run/react';
+import { Form, useActionData, useNavigation} from '@remix-run/react';
 import { ActionFunction } from '@remix-run/node';
 
 
@@ -36,6 +36,10 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
   const [toggleDown, setToggleDown] = useState(currentVoteStatus  === 'downvotes');
 
 
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
+
   const updateCounter = (currentCounter: string) => {
 
         if(currentCounter === 'upvotes'){
@@ -64,7 +68,7 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
  
   return (
-    <div className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl">
+    <div className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl w-20">
 
         <input type="hidden" name='currentVoteStatus' value={toggleUp ? 'upvotes': toggleDown ? 'downvotes': 'none'} />
         <input type="hidden" name='userId' value={userId || ''} />
@@ -75,7 +79,7 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
             
             &&
 
-           <button type='submit'  onClick={() => updateCounter('upvotes')} >
+           <button type='submit'  onClick={() => updateCounter('upvotes')}  className={ isSubmitting ? `mt-4 pointer-events-none opacity-20`: ''} >
                 <FontAwesomeIcon icon={faArrowUp}className={toggleUp ? 'text-customOrange': 'text-white'}/>
            </button>
         
@@ -93,11 +97,10 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
             &&
             
-            <button type='submit' onClick={() => updateCounter('downvotes')} >
+            <button type='submit' onClick={() => updateCounter('downvotes')} className={ isSubmitting ? `mt-4 pointer-events-none opacity-20`: ''} >
                 <FontAwesomeIcon icon={faArrowDown} className={toggleDown ? 'text-customOrange': 'text-white'} />
             </button>
             
-
         }
        
     </div>

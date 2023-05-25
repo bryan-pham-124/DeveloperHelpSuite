@@ -1,10 +1,12 @@
-import { Form } from '@remix-run/react'
-import React from 'react'
+import { Form, useNavigation } from '@remix-run/react'
+import React, { useState } from 'react'
 import TextItem from './TextItem'
 import CodeItem from './CodeItem'
 import LinkItem from './LinkItem'
 import VoteCounter from './VoteCounter'
 import { dataProps } from '~/utils/types.server'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 
 // data, userId, authorName, authorId, cardId, message, userVotesInfo
@@ -20,6 +22,9 @@ interface CardProps {
     cardId: string | null
     userVotesInfo?: {currentVoteToggle?: string | null  } | null
     voteCount: number
+    replyId?: string | null
+    status: string  
+    questionAuthorId?: string | null
 }
 
 
@@ -33,8 +38,10 @@ const Card = (
         authorId, 
         cardId, 
         userVotesInfo, 
-        voteCount
-
+        voteCount,
+        replyId,
+        status,
+        questionAuthorId
     }: CardProps
     
     
@@ -53,24 +60,34 @@ const Card = (
     
   }
 
+  // if current answer is a preferred answer then, next state should be not solved
+  const [currentStatus, setCurrentStatus] = useState( data?.preferredAnswer ? 'Not Solved': 'Solved');
 
-  console.log('name is: ' + authorName)
 
   const content = type === 'question' ?  data?.questionContent: data?.replyContent;
   const deleteAction = type === 'question' ? `/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`: '#';
   const editAction = type === 'question' ? `/questionEditForm?cardId=${cardId}`: '#';
- 
+
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const canChangeStatus = userId === questionAuthorId;
 
   return (
-    <div className="card-wrapper w-full md:w-[50vw] max-w-[600px] my-10  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
-            <div className="wrapper grid-cols-5  w-full flex justify-between bg-sky-500 py-5 px-8 rounded-t-xl">   
-                <div className="wrappe grid-cols-4">
-                    <h1 className='text-2xl font-bold'> {`${data?.title}  ${data?.status ? `(${data?.status})`: '' }`}</h1>
+    <div className="card-wrapper   md:w-[50vw] max-w-[600px] mx-3 my-6  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
+            <div className={`wrapper grid-cols-5  w-full flex justify-between py-5 px-8 rounded-t-xl ${data?.status === 'Solved' ? 'bg-customGreen': 'bg-sky-500'}`}>   
+                <div className="wrapper grid-cols-4">
+                    <h1 className='text-2xl font-bold'>
+                         {`${data?.title}  
+                            
+                        ${ 
+                           type ==='question' && data?.status === 'Solved' ? '(Solved)' :
+                           type ==='reply' && data?.preferredAnswer ? '(Solution)' : ''
+                        }`}
+                    </h1>
                     <small className="text-xs">
                         { type === 'question' ? `Asked by`: `Answered by`} {authorName || 'Unknown author'} on {formattedDate()}
                     </small>
                 </div>
-                
                 {
 
                     userId === data?.userId
@@ -93,17 +110,40 @@ const Card = (
              </div>
 
             <div className="wrapper grid grid-cols-4  pr-8 mt-5">
-                <div className="wrapper flex justify-center  ">
+                <div className="wrapper flex flex-col  items-center">
                     
                     {
 
-                      
                         data && 
-                                         
+
                         <Form action = {`/updateVotes?cardId=${cardId}&tableName=${type}`} method="post">
                             <VoteCounter userId={userId} currentVoteStatus={ userVotesInfo !== null && userVotesInfo !== undefined && userVotesInfo.currentVoteToggle !== null ? userVotesInfo.currentVoteToggle: 'none'} votes={  voteCount } />
                         </Form>
                      
+                    }
+
+                    {
+                        type ==='reply' &&
+
+                        <div className='wrapper w-25 my-5 flex flex-col items-center'>
+
+                            <h2 className='text-center text-sm'>
+                                 Solves Problem?
+                            </h2>
+                          
+                            <Form 
+                                action = {`/updateStatus?cardId=${cardId}&replyId=${replyId}&status=${data?.preferredAnswer ? 'Not Solved': "Solved"}`}  
+                                method="post"
+                             >
+                                <button type='submit' className={ (isSubmitting || !canChangeStatus ) ? `mt-4 pointer-events-none`: ''}>
+                                    <FontAwesomeIcon
+                                        icon={faCheck}
+                                        className={ `${data?.preferredAnswer ? 'text-customGreen': 'text-white'} h-10`}
+                                    />
+                                </button>
+                            </Form>
+
+                        </div>
                     }
 
                 </div>
