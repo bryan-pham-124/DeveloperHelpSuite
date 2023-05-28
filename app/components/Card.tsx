@@ -100,7 +100,11 @@ const Card = (
                     <div className="flex flex-col gap-y-3">
  
                         <a href={editAction} 
-                            className="px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs"
+                            className={
+                                `px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs
+                                ${isSubmitting  ? 'mt-4 pointer-events-none opacity-20': ''}
+                                `
+                            }
                          >
                             Edit
                         </a>
@@ -109,10 +113,14 @@ const Card = (
                         {
                             // if a solution is marked as best solution, then it cannot be deleted.
 
-                            !data?.preferredAnswer &&
+                            !data?.preferredAnswer &&  
 
                             <form action={deleteAction} method="post">
-                                <button   className="px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs">Delete</button>
+                                <button   
+                                    className={
+                                        `px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs  
+                                        ${isSubmitting  ? 'mt-4 pointer-events-none opacity-20': ''}`
+                                    }>Delete</button>
                              </form>
                         }
                         

@@ -1076,14 +1076,6 @@ input:checked + .toggle-bg {
   grid-column: span 2 / span 2;
 }
 
-.col-span-5 {
-  grid-column: span 5 / span 5;
-}
-
-.col-span-1 {
-  grid-column: span 1 / span 1;
-}
-
 .col-span-6 {
   grid-column: span 6 / span 6;
 }
@@ -1312,16 +1304,8 @@ input:checked + .toggle-bg {
   max-width: 400px;
 }
 
-.max-w-\[500px\] {
-  max-width: 500px;
-}
-
 .max-w-\[700px\] {
   max-width: 700px;
-}
-
-.max-w-\[750px\] {
-  max-width: 750px;
 }
 
 .flex-1 {
