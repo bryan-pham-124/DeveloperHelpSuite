@@ -74,7 +74,7 @@ const Card = (
   const canChangeStatus = userId === questionAuthorId;
 
   return (
-    <div className="card-wrapper  md:w-[70vw] max-w-[500px] mx-3 my-6  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
+    <div className="card-wrapper  md:w-[70vw] max-w-[700px] mx-3 my-6  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
             <div className={`wrapper grid-cols-5  w-full flex justify-between py-5 px-8 rounded-t-xl ${data?.status === 'Solved' ? 'bg-customGreen': 'bg-sky-500'}`}>   
                 <div className="wrapper grid-cols-4">
                     <h1 className='text-2xl font-bold'>
@@ -123,7 +123,7 @@ const Card = (
 
              </div>
 
-            <div className="wrapper grid grid-cols-7  pr-8 mt-5">
+            <div className="wrapper grid grid-cols-8  pr-8 mt-5">
                 <div className="wrapper flex flex-col col-span-2 items-center">
                     {
 
@@ -244,7 +244,7 @@ const Card = (
                     }
 
                 </div>
-                <div className="wrapper-main-content col-span-5">
+                <div className="wrapper-main-content col-span-6">
                     
 
                     {
