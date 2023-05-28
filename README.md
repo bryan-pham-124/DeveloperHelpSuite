@@ -5,7 +5,7 @@
 
 
 - Inspiration
-  	- The main inspiration for this project was a common situation at work where developers at my workplace often had questions about how to solve certain issues in projects or how certain technical concepts work. Fortunately, other developers at the company would know the answer. I thought it would be useful for an application where users can ask questions and get answers and store those questions in a database and answer in case another developer came across the same issue later. In addition, having a knowledge base with specific tutorials for specific commonly encountered issues would be very helpful for users.
+  	- The main inspiration for this project was a common situation at work where developers at my workplace often had questions about how to solve certain issues in projects or how certain technical concepts work. Fortunately, other developers at the company would know the answer. I thought it would be useful for an application where users can ask questions and get answers and store those questions in a database and answer in case another developer came across the same issue later.  
 
 
 ## Tech Stack
@@ -47,9 +47,7 @@
 	 - Downvote
 	 - Reply 
 	 - Edit/delete their own post
-   - Moderators can do the following to posts:
-	   - Remove/edit posts.
-	   - All other tasks normal users can do.
+ 
 
 ## Questions Feature
 
