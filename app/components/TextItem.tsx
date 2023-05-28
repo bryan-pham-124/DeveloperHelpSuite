@@ -10,7 +10,7 @@ interface TextItemsProps {
 const TextItem = ({text}: TextItemsProps) => {
   return (
     <div className="wrapper my-3">
-        <div className="text-xs font-light"> {text} </div>
+        <div className="text-md font-light"> {text} </div>
     </div>
   )
 }

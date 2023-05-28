@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import { json} from "@remix-run/node"; // or cloudflare/deno
 import { getUser, getUserSession } from '~/utils/auth.server';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useNavigation } from '@remix-run/react';
 import type { LoaderArgs } from "@remix-run/node";
 import ErrorBox from '~/components/ErrorBox';
 import GenericButton from '~/components/GenericButton';
@@ -43,6 +43,11 @@ export async function loader({ request }: LoaderArgs) {
 const questions = () => {
   
   const {userData, questions, message} = useLoaderData<typeof loader>();
+
+
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
 
   //console.log(questions);
 
@@ -318,22 +323,25 @@ const sortCards = (sortMethod: string) => {
                     (modifiedCardData.length === 0 && modifiedCardData) && <h1 className='font-bold mt-10 '> Looks like there are no entries that match your filters.</h1>
                   }
 
+            
+
                   {
 
                     modifiedCardData &&
                     
                      modifiedCardData.map((card, i )=> (
                           
-                          <LinkCard
-                              id = {card.id }
-                              key = {i}
-                              category={card.category}
-                              priority= {card.priority === 3 ?  'Urgent' : card.priority === 2 ? 'Medium' :  card.priority === 1 ?  'Low'   : '' } 
-                              status={card.status} 
-                              title= {card.title}
-                              upvotes = {card.upvotes ? card.upvotes : 0 }
-                              downvotes = {card.downvotes ? card.downvotes : 0 }
-                          /> 
+                             <LinkCard
+                                id = {card.id }
+                                key = {i}
+                                category={card.category}
+                                priority= {card.priority === 3 ?  'Urgent' : card.priority === 2 ? 'Medium' :  card.priority === 1 ?  'Low'   : '' } 
+                                status={card.status} 
+                                title= {card.title}
+                                upvotes = {card.upvotes ? card.upvotes : 0 }
+                                downvotes = {card.downvotes ? card.downvotes : 0 }
+                            /> 
+                         
                       ))
                   }
               </div>

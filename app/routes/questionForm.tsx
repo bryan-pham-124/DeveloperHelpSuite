@@ -306,6 +306,8 @@ if(!isReply){
                     dynamicForm
                     deletable = {defaultFormFields.findIndex(elm => elm.label === field.label) === -1}
                     deleteFormField = {deleteFormField}
+                    isCodeField = {field.label.split(' ')[0].toLowerCase() === 'code'}
+
                 />
                 
               ))

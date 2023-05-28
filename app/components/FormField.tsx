@@ -18,6 +18,7 @@ interface FormFieldProps {
     dynamicForm?: boolean
     deletable?: boolean
     deleteFormField?: Function
+    isCodeField?: boolean
 }
 
 const FormField = ({ 
@@ -31,7 +32,8 @@ const FormField = ({
     multiline = false,
     dynamicForm = false,
     deletable = false,
-    deleteFormField
+    deleteFormField,
+    isCodeField = false
   }: FormFieldProps
     
     ) =>
@@ -88,7 +90,9 @@ const FormField = ({
                <label htmlFor={htmlFor} className="flex items-center text-white text-lg font-semibold capitalize">
                     {label}
                </label>
-               <button className='bg-customRed rounded-xl text-sm px-4 text-white transition hover:bg-customOrange p-2 rounded-xl' onClick={(e) => {e.preventDefault(); deleteFormField(htmlFor)}}>
+               <button className='bg-customRed rounded-xl text-sm px-4 text-white transition hover:bg-customOrange p-2 rounded-xl'
+                       onClick={(e) => {e.preventDefault(); deleteFormField(htmlFor)}}
+                >
                    <FontAwesomeIcon icon={faXmark} className= "h-6" />
                </button>
           </div>
@@ -118,7 +122,12 @@ const FormField = ({
               
                 id={htmlFor}
                 name={htmlFor}
-                className="w-full p-2 rounded-xl my-3  whitespace-pre overflow-auto  h-[120px] focus:outline-none focus:ring focus:ring-customOrange"
+                className={
+                    `
+                      w-full p-2 rounded-xl my-3 h-[120px] focus:outline-none focus:ring focus:ring-customOrange
+                      ${isCodeField ? 'whitespace-pre overflow-auto': ''}
+                    `
+                  }
                 value={value}
                 required
               >
