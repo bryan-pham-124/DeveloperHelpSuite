@@ -20,9 +20,8 @@ interface VoteCounterProps {
 
 
 /*
-    Vote counter submits data with updated vote count 
+    shows the current number of upvotes minus downvotes for a reply or question
     Need to supply own action method on page using this counter to send data back to data 
-
 */
 
 
@@ -40,6 +39,7 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
   const isSubmitting = navigation.state === "submitting";
 
 
+  // update the toggle status of vote counter when user clicks vote counter
   const updateCounter = (currentCounter: string) => {
 
         if(currentCounter === 'upvotes'){
@@ -75,6 +75,9 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
      
         {
+            // only logged in users can interact with vote counters
+            // non logged in users will not see arrows
+
             userId 
             
             &&
@@ -92,6 +95,9 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
         </div>
         
         {
+
+             // only logged in users can interact with vote counters
+            // non logged in users will not see arrows
 
             userId 
 

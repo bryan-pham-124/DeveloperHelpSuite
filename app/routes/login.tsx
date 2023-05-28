@@ -12,6 +12,8 @@ import ErrorBox from '~/components/ErrorBox';
 
 
 
+// login page for users to log in
+// user needs to supply a valid email and password
 
 export const loader: LoaderFunction = async({request}) => {
 
@@ -31,6 +33,8 @@ export const loader: LoaderFunction = async({request}) => {
 
 }
 
+
+// send user submitted data to a server
 export const action: ActionFunction = async ({ request }) => {
 
     const form = await request.formData()
@@ -81,6 +85,8 @@ const login = () => {
    ]
    
 
+   // useEffects are used by program see if there are any server errors and display them if they exist
+
   useEffect(() => {
     if(formErrors){
         setServerFormErrors((formErrors.error))
@@ -105,7 +111,8 @@ const login = () => {
         <div className="w-full wrapper flex flex-col items-center "> 
             <h1 className='my-[50px] text-4xl text-center font-bold '>  Welcome Back!</h1>
              
-            {
+            { // display any server or application errors
+            
                 serverFormErrors !== ''
 
                 ?

@@ -27,7 +27,7 @@ interface CardProps {
     questionAuthorId?: string | null
 }
 
-
+// Purpose of this card is to render all the question and reply cards on the "questionCard" page
 
 const Card = (
     {       
@@ -40,15 +40,14 @@ const Card = (
         userVotesInfo, 
         voteCount,
         replyId,
-        status,
         questionAuthorId
     }: CardProps
     
     
     ) => {
 
-
- 
+  
+  // Need to format date from db because it is not in format needed for card.
   const formattedDate = () => {
         const dateArr = data?.createdAt?.split('T')[0].split('-');
         if(dateArr){
@@ -61,17 +60,21 @@ const Card = (
     
   }
 
- 
+  // constants that determine content and actions of form
+  // need these because card can either be a reply or a question 
   const content = type === 'question' ?  data?.questionContent: data?.replyContent;
-  const deleteAction = type === 'question' ? `/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`: '#';
+  const deleteAction = type === 'question' ? `/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`: `/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}&replyId=${replyId}&isReply=true`;
   const editAction = type === 'question' ? `/questionEditForm?cardId=${cardId}`: `/questionEditForm?cardId=${cardId}&replyId=${replyId}&isReply=true`;
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+
+
+  // only authors of question can mark cards as best solutions
   const canChangeStatus = userId === questionAuthorId;
 
   return (
-    <div className="card-wrapper   md:w-[50vw] max-w-[600px] mx-3 my-6  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
+    <div className="card-wrapper  md:w-[70vw] max-w-[500px] mx-3 my-6  pb-4   border-3 border-sky-500 bg-customBlack text-white rounded-xl">
             <div className={`wrapper grid-cols-5  w-full flex justify-between py-5 px-8 rounded-t-xl ${data?.status === 'Solved' ? 'bg-customGreen': 'bg-sky-500'}`}>   
                 <div className="wrapper grid-cols-4">
                     <h1 className='text-2xl font-bold'>
@@ -88,6 +91,8 @@ const Card = (
                 </div>
                 {
 
+                    // only authors of questions can edit or delete their own question.
+
                     userId === data?.userId
 
                     &&
@@ -100,10 +105,17 @@ const Card = (
                             Edit
                         </a>
                                                     
-                        <form action={deleteAction} method="post">
-                            <button   className="px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs">Delete</button>
-                        </form>
 
+                        {
+                            // if a solution is marked as best solution, then it cannot be deleted.
+
+                            !data?.preferredAnswer &&
+
+                            <form action={deleteAction} method="post">
+                                <button   className="px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs">Delete</button>
+                             </form>
+                        }
+                        
                     </div>
 
                 }
@@ -111,9 +123,12 @@ const Card = (
 
              </div>
 
-            <div className="wrapper grid grid-cols-4  pr-8 mt-5">
-                <div className="wrapper flex flex-col  items-center">
+            <div className="wrapper grid grid-cols-7  pr-8 mt-5">
+                <div className="wrapper flex flex-col col-span-2 items-center">
                     {
+
+                        // if form is submitting, notify user that their click input went through
+
                         isSubmitting
 
                         &&
@@ -124,6 +139,12 @@ const Card = (
                     }    
                     
                     {
+
+                        // vote counter here keeps track of number of upvotes and downvotes a question has.
+
+                        // also input toggle status of button to check if user has clicked upvote or downvote on a vote counter 
+
+                        // check toggle status to prevent same users from spamming multiple upvotes or downvotes on a question
 
                         data && 
 
@@ -155,14 +176,37 @@ const Card = (
                     }
 
                     {
+
+                        // only question authors can mark the best solution for their question
+                        // canChangeStatus check if user is the author of question
+
                         type ==='reply' &&
 
                         <div className='wrapper w-25 my-5 flex flex-col items-center'>
 
                             <h2 className='text-center text-sm'>
-                                Best solution?
+                                Best solution? 
                             </h2>
-                          
+
+
+                            {
+                                
+                                canChangeStatus && !data?.preferredAnswer &&
+
+                                <h2 className='mt-3 text-customOrange text-center text-sm'>Click X</h2>
+                            }
+
+
+                            {
+                                canChangeStatus  && data?.preferredAnswer &&
+
+                                <h2 className='mt-3 text-customOrange text-center text-sm'>Click check to untoggle</h2>
+                            }
+
+
+                            {
+                                // If user can click form, gather the required data through query parameters and send it to updateStatus path to update status
+                            }
                             <Form 
                                 action = {`/updateStatus?cardId=${cardId}&replyId=${replyId}&status=${data?.preferredAnswer ? 'Not Solved': "Solved"}`}  
                                 method="post"
@@ -177,12 +221,15 @@ const Card = (
                                  >
 
                                  {
+
+                                    // best solution has  a checkmark with orange backgrounds while other solutions have an X and a gray background
+
                                     data?.preferredAnswer 
 
                                     ?
-
+    
                                     <FontAwesomeIcon icon={faCheck} className= "h-6" />
-
+                                
                                     :
 
                                     <FontAwesomeIcon icon={faXmark} className= "h-6" />
@@ -197,7 +244,7 @@ const Card = (
                     }
 
                 </div>
-                <div className="wrapper-main-content col-span-3">
+                <div className="wrapper-main-content col-span-5">
                     
 
                     {
@@ -215,6 +262,7 @@ const Card = (
                             
                             {
 
+                                // render the remaining content of form
                                 // sort questionContent (optional content) by order user submitted in form 
 
                                 content &&

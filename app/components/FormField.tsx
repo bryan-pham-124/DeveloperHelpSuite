@@ -1,3 +1,5 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {useState}from 'react'
 import { validateFormField } from '~/utils/validateForms'
 
@@ -82,12 +84,12 @@ const FormField = ({
 
           ?
 
-          <div className="flex justify-between my-3">
-               <label htmlFor={htmlFor} className="text-white text-lg font-semibold capitalize">
+          <div className="flex justify-between mt-3">
+               <label htmlFor={htmlFor} className="flex items-center text-white text-lg font-semibold capitalize">
                     {label}
                </label>
-               <button className='bg-customRed rounded-xl text-sm px-4 text-white transition hover:bg-customOrange ' onClick={(e) => {e.preventDefault(); deleteFormField(htmlFor)}}>
-                    Delete Field
+               <button className='bg-customRed rounded-xl text-sm px-4 text-white transition hover:bg-customOrange p-2 rounded-xl' onClick={(e) => {e.preventDefault(); deleteFormField(htmlFor)}}>
+                   <FontAwesomeIcon icon={faXmark} className= "h-6" />
                </button>
           </div>
          
@@ -116,7 +118,7 @@ const FormField = ({
               
                 id={htmlFor}
                 name={htmlFor}
-                className="w-full p-2 rounded-xl my-3 whitespace-pre-wrap h-[120px] focus:outline-none focus:ring focus:ring-customOrange"
+                className="w-full p-2 rounded-xl my-3  whitespace-pre overflow-auto  h-[120px] focus:outline-none focus:ring focus:ring-customOrange"
                 value={value}
                 required
               >

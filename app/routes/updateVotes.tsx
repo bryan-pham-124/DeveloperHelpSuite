@@ -2,6 +2,8 @@ import { ActionFunction, LoaderFunction, json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { updateVotes } from "~/utils/voteCounter";
 
+
+//route responsible for updating votes for a question or reply
 export const action: ActionFunction = async ({ request }) => {
 
     const url =  new URL(request.url);

@@ -14,6 +14,8 @@ import SuccessBox from '~/components/SuccessBox';
 import { clearMessage } from '~/utils/messages.server';
  
 
+//this page displays all the questions and also has a menu where users can filter and sort cards
+
 export async function loader({ request }: LoaderArgs) {
 
   const userData = await getUser(request);
@@ -94,6 +96,8 @@ const questions = () => {
   }
 
 
+
+  // handles all the filtering in the program
   const updateFilters = (currentValue: string , label: string) => {
 
     let copyArr = [...activeFilterLabels];
@@ -143,7 +147,7 @@ const questions = () => {
 
 }
 
-
+// handles all the logic of sorting cards
 const sortCards = (sortMethod: string) => {
 
     let sortValue = activeSortLabel.toLowerCase();
@@ -153,8 +157,9 @@ const sortCards = (sortMethod: string) => {
     let copy = ([] as any[]).concat(modifiedCardData);
 
 
-    if(sortValue !== 'Select Sort'){
+    if(sortValue !== 'Select Sort'){    
 
+      //logic for sorting cards for all fields besides votes
       if(sortValue !== 'votes'){
 
         if(sortMethod === 'Ascending' ){
@@ -170,6 +175,8 @@ const sortCards = (sortMethod: string) => {
         } 
         
       } else {
+
+        // sort method for sorting votes
 
         if(sortMethod === 'Ascending' ){
       
@@ -191,6 +198,8 @@ const sortCards = (sortMethod: string) => {
    
  } 
 
+
+ // useEffects keep track of active filters and labels 
 
   useEffect(() => {
     
@@ -326,8 +335,6 @@ const sortCards = (sortMethod: string) => {
                               downvotes = {card.downvotes ? card.downvotes : 0 }
                           /> 
                       ))
-
-                 
                   }
               </div>
           </div>

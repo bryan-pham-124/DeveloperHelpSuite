@@ -15,6 +15,7 @@ interface DropDownProps {
 const baseStyles = `text-xs lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat  bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`;
 
 
+// Dropdown that is used on multiple pages and takes an array of options where each element will be displayed
 const DropDown = ({options, label, updateSort, updateFilters, width, name = '', defaultValue =''}: DropDownProps) => {
 
   return (
@@ -23,6 +24,8 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
        <label className='text-white font-light my-2 block' htmlFor="Filter">{label}</label>
 
         {
+        
+          // Dropdown to display sorting labels -> Ascending or Descending
           updateSort
 
           ?
@@ -38,6 +41,9 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
 
           :
 
+
+          // Dropdown to display currently available filters
+
           updateFilters
 
           ?
@@ -51,6 +57,8 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
            </select>
 
            :
+
+           // default dropdown
 
            <select name={name}  defaultValue={defaultValue}   className={`${baseStyles} w-[${width}]`}>
             {

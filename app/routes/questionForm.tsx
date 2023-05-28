@@ -49,7 +49,7 @@ export async function loader({ request }: LoaderArgs) {
    );    
 };
 
-
+// submit all data from form to server and check if the request was successfully furfi;;ed
 export const action: ActionFunction = async ({ request }) => {
 
 
@@ -81,6 +81,10 @@ export const action: ActionFunction = async ({ request }) => {
       baseFields.push('category');
 
   }
+
+
+  //default data is fields every reply and question (ex: title, description)
+  //content data is all other content
 
   let defaultData = [...form].filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];

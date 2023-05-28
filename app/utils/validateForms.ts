@@ -1,4 +1,4 @@
-
+//this file contains all the validaiton scripts that are ran on formfields
 
 export const  validateFormField = (currentVal: string, field: string ) => {
 

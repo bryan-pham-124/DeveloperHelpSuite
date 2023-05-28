@@ -13,6 +13,9 @@ import Card from "~/components/Card";
 
  
 
+
+// this component is the page where each question and its corresponding replies  appear
+
 export async function loader({ request }: LoaderArgs) {
 
     const userData = await getUser(request);
@@ -21,14 +24,12 @@ export async function loader({ request }: LoaderArgs) {
     const  userId: string | undefined  = userData?.id;
 
  
-    // Retrieves the current session from the incoming request's Cookie header
+    //load in all the necessary data for this page to display
     const session = await getUserSession(request);
     const message = session.get("message") || null;
  
     const url = new URL(request.url)
     const cardId = url.searchParams.get('cardId');
-
-    const closeForm = false;
 
     let replies = null;
 
@@ -38,13 +39,12 @@ export async function loader({ request }: LoaderArgs) {
 
     let userVotesInfo = null;
 
-    let repliesUserVotes = null;
 
-
-
-
-
+    // send a different response if page cannot find cardId
     if(cardId !== null && cardId){
+
+
+        // load in all the question and replies if a valid cardId is found
 
 
         replies = await getReplies(cardId);
@@ -55,7 +55,6 @@ export async function loader({ request }: LoaderArgs) {
             console.log('user downvotes: ' + replies[0].downvotes)
         }
        
-
 
         if(userId){
             userVotesInfo = await getUserVotesInfo(userId, cardId);
@@ -109,43 +108,21 @@ export async function loader({ request }: LoaderArgs) {
 
 const questionCard = () => {
    
+    // get the required information from the loader to display the information needed to display on questions and replues
   const {question, userId, authorName, authorId, cardId, message, userVotesInfo, replies} = useLoaderData<typeof loader>();   
   const [isFormDisplayed, setIsFormDisplayed] = useState(false);
   const [isReplySubmitted, setIsReplySubmitted] = useState(false);
 
  
-  const [isRepliesLoaded, setIsRepliesLoaded] = useState(false);
-
-
-  useEffect(() => {
-
-        let isAllVotesLoaded = true;
-
-        if(replies){
-            console.log('replies below')
-            console.log(replies)
-
-            for(let i = 0; i < replies.length; i++){
-                if(replies[i].upvotes === null || replies[i].downvotes === null){
-                    isAllVotesLoaded = false;
-                    break;
-                }
-            }
-
-        }
-
-        setIsRepliesLoaded(isAllVotesLoaded);
-
-  }, [replies])
-
-  
-
 
   return (
     <div className='w-full flex justify-center'>
 
         <div className="wrapper">
             {
+
+                // display any server messages to user
+
                 message 
                 
                 && 
@@ -160,6 +137,8 @@ const questionCard = () => {
             
             {
 
+                // check if user is logged in in order to determine if they can interact with posts
+
                 !userId
 
                 &&
@@ -173,11 +152,25 @@ const questionCard = () => {
             }
 
 
-            <h1 className="mt-5 text-center text-4xl font-bole">Question </h1>
-
-
             {
 
+                // display a message on top of page if there is a solution to a question
+
+               replies &&  replies.find(reply => reply.preferredAnswer)  &&
+
+                <div className="wrapper w-full flex justify-center">
+                    <SuccessBox text={'Solution to question is below in the replies.'} />
+               </div>
+ 
+            }
+
+
+            <h1 className="mt-5 text-center text-4xl font-bold">Question </h1>
+
+
+            {  
+
+                // render all questions if there is question data
 
                 question && question.upvotes !== null  && question.downvotes !== null &&
 
@@ -197,6 +190,11 @@ const questionCard = () => {
             
       
             {
+
+                // button that displays a form where users can write their solution on and submit to server
+
+                // only logged in users can submit replies
+
                 userId
 
                 &&
@@ -225,13 +223,16 @@ const questionCard = () => {
             
 
             {  
+
+                // render all replies to a question, if there are not any, tell user that there are no replies
+
                 replies && replies.length > 0 
                 
                 ?
 
                 <>
 
-                    <h1 className="mt-5 text-center text-4xl font-bole">Replies </h1>
+                    <h1 className="mt-5 text-center text-4xl font-bold">Replies </h1>
 
                     {
 
@@ -269,11 +270,10 @@ const questionCard = () => {
                 <h1 className="text-center mt-5"> Looks like there are no replies here </h1>
 
                 
-                
             }
 
             {
-
+                // send user a message when they submit their reply to a question
 
                 !message && isReplySubmitted
 

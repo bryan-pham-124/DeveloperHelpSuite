@@ -2,6 +2,8 @@ import { ActionFunction, LoaderFunction} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { updateStatus } from "~/utils/questionCard.server";
 
+
+// route responsible for updating status of cards from 'Not Solved' to 'Solved' or vice versa
 export const action: ActionFunction = async ({ request }) => {
 
     const url =  new URL(request.url);

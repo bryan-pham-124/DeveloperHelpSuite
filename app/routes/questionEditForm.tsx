@@ -19,6 +19,7 @@ const uuid = require('uuid');
 
 
 
+// this loader loads in previous question or reply data after determining if this component is to be a reply or a question
 export async function loader({ request }: LoaderArgs) {
     
    const userData = await getUser(request);
@@ -76,6 +77,7 @@ export async function loader({ request }: LoaderArgs) {
 };
 
 
+//send response to server once user submits response
 export const action: ActionFunction = async ({ request }) => {
 
   const userData = await getUser(request);
@@ -96,15 +98,10 @@ export const action: ActionFunction = async ({ request }) => {
 
   const replyId = url.searchParams.get('replyId');
 
-  //console.log('isReply ' + isReply)
-  //console.log('reply id is: ' +  replyId)
-
-  
-
+ 
   if( !cardId || !userData){
     return flashMessage(request, 'Could not edit question', `/questionEditForm?cardId=${cardId}`, false);
   }
-
 
 
   let baseFields = ['title', 'description'];
@@ -115,7 +112,9 @@ export const action: ActionFunction = async ({ request }) => {
       baseFields.push('category');
   }
 
-  
+  //default data is fields every reply and question (ex: title, description)
+  //content data is all other content
+
   let defaultData = formAsArr.filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];
   defaultData.map((elm, index) => formattedDefault.push({type: elm[0], order: index , content: elm[1] + ''}));
@@ -124,31 +123,14 @@ export const action: ActionFunction = async ({ request }) => {
   let formattedContent: Array<questionDataEntry> = [];
   contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  //console.log(formattedContent)
-
   /*
-  const result = await editQuestion(formattedDefault, formattedContent, userData.id, cardId + '');
- 
-  if(result && result.status === 200){
-    
-    console.log(result.status)
-    return flashMessage(request, 'Successfully edited question with title: ' + formattedDefault[0].content, `/questionCard?cardId=${cardId}`, true);
-    
-  } else {
-
-    return flashMessage(request, 'Question could not be edited. Please try again ', '/questionForm', false);
-
-  }
-  */
-
-
+  console.log('content below');
+  console.log(formattedDefault);
+  console.log(formattedContent);
   console.log('replyId:   ' + replyId)
-
-  
   console.log('reply status is: ' + isReply);
-
+  */
   
-
   let result = null
   
   if(!isReply){
@@ -188,6 +170,10 @@ const actionButtons =  [
     {param: 'Text', color: 'bg-sky-500'},
     {param: 'Link', color: 'bg-customRed'},
 ]
+
+
+// this form is used by users who want to edit question or replies
+// it is similiar to the questionForm, but this form contains data that the user previously inputed and this form edits existing questions/replies
 
 const QuestionEditForm = () => {
 
@@ -386,14 +372,6 @@ const QuestionEditForm = () => {
 
         <h1 className='font-bold text-3xl text-center'>{!isReply ? 'Edit Question': 'Edit Reply'}</h1>
         <Form method='POST' className='my-[20px] w-[300px]  md:w-[400px] bg-customBlack px-8 py-7 rounded-lg'>
-
-            {/*
-              *
-             *  Send in all default fields 
-             * <input type="hidden" name = 'editContent' value={formatEditContent()} />
-             */}
-
-          
 
             {
               formFields.map((field, i )=> (

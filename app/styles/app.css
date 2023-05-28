@@ -1072,8 +1072,12 @@ input:checked + .toggle-bg {
   z-index: 50;
 }
 
-.col-span-3 {
-  grid-column: span 3 / span 3;
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+.col-span-5 {
+  grid-column: span 5 / span 5;
 }
 
 .mx-3 {
@@ -1224,10 +1228,6 @@ input:checked + .toggle-bg {
   display: none;
 }
 
-.h-10 {
-  height: 2.5rem;
-}
-
 .h-32 {
   height: 8rem;
 }
@@ -1304,8 +1304,8 @@ input:checked + .toggle-bg {
   max-width: 400px;
 }
 
-.max-w-\[600px\] {
-  max-width: 600px;
+.max-w-\[500px\] {
+  max-width: 500px;
 }
 
 .flex-1 {
@@ -1479,6 +1479,10 @@ input:checked + .toggle-bg {
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }
@@ -1493,6 +1497,10 @@ input:checked + .toggle-bg {
 
 .overflow-y-scroll {
   overflow-y: scroll;
+}
+
+.whitespace-pre {
+  white-space: pre;
 }
 
 .whitespace-pre-wrap {
@@ -1619,6 +1627,11 @@ input:checked + .toggle-bg {
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+}
+
 .bg-gray-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
@@ -1662,11 +1675,6 @@ input:checked + .toggle-bg {
   background-color: rgb(255 255 255 / 0.5);
 }
 
-.bg-gray-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
-}
-
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -1703,6 +1711,10 @@ input:checked + .toggle-bg {
   padding: 0.625rem;
 }
 
+.p-3 {
+  padding: 0.75rem;
+}
+
 .p-4 {
   padding: 1rem;
 }
@@ -1713,10 +1725,6 @@ input:checked + .toggle-bg {
 
 .p-6 {
   padding: 1.5rem;
-}
-
-.p-3 {
-  padding: 0.75rem;
 }
 
 .px-10 {
@@ -1918,11 +1926,6 @@ input:checked + .toggle-bg {
 .text-customBlack {
   --tw-text-opacity: 1;
   color: rgb(33 33 33 / var(--tw-text-opacity));
-}
-
-.text-customGreen {
-  --tw-text-opacity: 1;
-  color: rgb(46 209 111 / var(--tw-text-opacity));
 }
 
 .text-customOrange {
@@ -2301,8 +2304,8 @@ input:checked + .toggle-bg {
     width: 400px;
   }
 
-  .md\:w-\[50vw\] {
-    width: 50vw;
+  .md\:w-\[70vw\] {
+    width: 70vw;
   }
 
   .md\:grid-cols-2 {

@@ -2,6 +2,9 @@ import { Link } from '@remix-run/react'
 import React from 'react'
 
 
+//link cards are the the small cards that appear on the "questions" page
+//users can click on them to go to the card's corresponding question
+
 interface LinkCardProps {
     id: string
     category: string
@@ -12,6 +15,7 @@ interface LinkCardProps {
     downvotes: number
 }
 
+// display different color based on a question's priority
 const getTagColor = (priority:string) => {
     return priority === 'Urgent' ? 'bg-customRed' :  priority === 'Medium' ? 'bg-customOrange' : priority === 'Low' ? 'bg-customGreen' : '';
 
@@ -21,6 +25,7 @@ const getSolvedColor = (status:string) => {
     return status === 'Solved' ? 'bg-customGreen' : 'bg-customRed' ;
 }
 
+//link card displays basic information about question like status, priority, etc
 const LinkCard = ({id, category, title, status, priority, upvotes, downvotes}: LinkCardProps) => {
   return (
     <Link to = {'/questionCard?cardId=' + id} > 

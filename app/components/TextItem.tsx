@@ -6,6 +6,7 @@ interface TextItemsProps {
     text: string
 }
 
+// component that shows text on a question or reply
 const TextItem = ({text}: TextItemsProps) => {
   return (
     <div className="wrapper my-3">

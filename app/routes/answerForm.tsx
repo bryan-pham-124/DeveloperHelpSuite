@@ -16,6 +16,7 @@ import SuccessBox from '~/components/SuccessBox';
 const uuid = require('uuid');
 
 
+// this form create a new reply if user submits all required information
 
 interface AnswerFormProps {
   cardId: string
@@ -66,6 +67,8 @@ const AnswerForm = ( {cardId, setIsFormDisplayed, setIsReplySubmitted}: AnswerFo
  ]
 
 
+// two methods below are for adding additional fields to form if additional info is neededed
+
 const addFormField = async (field: string) => {
 
       field = field.toLowerCase();
@@ -114,8 +117,6 @@ const addFormField = async (field: string) => {
     <div className="wrapper w-full flex flex-col items-center py-5 rounded-xl">
 
           
-        
-
         {
             serverFormErrors !== ''
 
@@ -157,8 +158,10 @@ const addFormField = async (field: string) => {
 
             <div className="wrapper flex my-4 gap-x-3">
 
-                {
-                  actionButtons.map(btn => (
+              {
+
+                // action butons are for adding code, text or links to a reply
+                actionButtons.map(btn => (
                     <button 
                         onClick={(e) =>{  e.preventDefault(); addFormField(btn.param)}}
                         className= {btn.color + ' ' +  baseBtnStyles}

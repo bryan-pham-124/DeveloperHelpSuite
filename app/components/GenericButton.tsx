@@ -2,6 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 // app/components/form-field.tsx
+
+
+// This is a generic button that is used on multiple pages
+// it can be used a regular button or as a link.
+
 interface GenericButtonArgs {
     to?: string
     text: string

@@ -8,7 +8,7 @@ interface NavbarProps  {
  
 }
 
- 
+//navbar that appears on each page 
 const Navbar = ({isLoggedIn = false}: NavbarProps ) => {
   return (
     <nav className="w-full grid grid-cols-1 bg-customBlack px-10 py-5  text-white items-center gap-y-7 md:grid-cols-2 md:gap-y-0">
@@ -21,6 +21,8 @@ const Navbar = ({isLoggedIn = false}: NavbarProps ) => {
         <div className="w-full wrapper flex flex-row justify-center gap-x-3 md:justify-end"> 
              
             {
+
+              // check if user is logged in so navbar can display a sign/up or register button or a logout button
               
               isLoggedIn
 

@@ -16,31 +16,47 @@ export const getQuestionById = async(id: string) => {
 export const getUserById = async(id: string) => await prisma.user.findUnique({where: {id}, select:{id: true, name: true}});
  
  
-export const deleteCardById = async(request: Request, id: string, userId: string, authorId: string) => {
+export const deleteCardById = async(
+      request: Request,
+      cardId: string, 
+      userId: string, 
+      authorId: string, 
+      isReply: boolean,  
+      replyId: string
+) => {
 
    if(userId === authorId ){
 
       try {
 
-         await prisma.questions.delete({where:{id}});
+         if(!isReply){
+
+            await prisma.questions.delete({where:{id: cardId}});
+
+            return flashMessage(request, "Successfully deleted card", "/questions", true);
+
+         } else {
+
+            await prisma.replies.delete({where:{id: replyId}});
+
+            return flashMessage(request, "Successfully deleted reply", `/questionCard?cardId=${cardId}`, true);
+
+         }
    
-         return flashMessage(request, "Successfully deleted card", "/questions", true);
-   
+    
       } catch(e) {   
          
          console.log(e);
-         return flashMessage(request, "Could not delete card", "/questions", false);
+         return flashMessage(request, "Could not delete card or reply", "/questions", false);
          
       }
 
    }  else {
 
-      return flashMessage(request, "You cannot delete this card. You are not the author", "/questions", false);
+      return flashMessage(request, "You cannot delete this card or reply. You are not the author", "/questions", false);
 
    }
 
-  
-   
 }
 
 

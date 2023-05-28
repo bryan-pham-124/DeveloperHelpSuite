@@ -1,5 +1,8 @@
 // app/components/modal.tsx
- 
+
+
+
+// I was originally going to use a modal, but it did not work well with scrolling down long content
 import { useNavigate } from '@remix-run/react'
 
 interface props {

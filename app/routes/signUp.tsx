@@ -11,7 +11,7 @@ import { validateAllFormFields } from '~/utils/validateForms';
 import ErrorBox from '~/components/ErrorBox';
 
 
-
+// form users see when they sign up
 export const action: ActionFunction = async ({ request }) => {
 
     const form = await request.formData()

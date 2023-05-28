@@ -5,6 +5,10 @@ import { redirect,  } from "@remix-run/node";
 import { json } from "@remix-run/node"; // or cloudflare/deno
 
 
+
+
+//this page is displayed if user has been successfully logged in
+
 export async function loader({ request }: LoaderArgs) {
     
     const userData = await getUser(request);
@@ -30,11 +34,6 @@ const loginSuccess = () => {
             
             <div className="wrapper flex w-full gap-x-5 justify-center px-4">   
                 <Link to="/questions" className='border-b border-sky-500 pb-2 text-sky-500 text-md md:text-lg' > Explore Questions and Answers </Link>
-                {
-                    /*
-                        <Link to="#" className='border-b border-customBlack pb-2 text-customBlack text-md md:text-lg' > Explore the Knowledgebase </Link>
-                    */
-                }
             </div>
            
         </div>

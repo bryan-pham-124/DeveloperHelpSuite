@@ -1,4 +1,5 @@
 
+
 interface ImageIconProps {
     src: string,
     height: string,
@@ -7,6 +8,9 @@ interface ImageIconProps {
 }
 
 const newFilter = 'invert(56%) sepia(64%) saturate(5697%) hue-rotate(166deg) brightness(101%) contrast(101%)';
+
+// not used much. 
+// I was experimenting with adding certain images with certain filters but decided not to implement them because they were not important.
 
 const ImageIcon = ({
     src,
