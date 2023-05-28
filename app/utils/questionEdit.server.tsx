@@ -9,26 +9,11 @@ export const  editQuestion = async(defaultData: Array<questionDataEntry>,  quest
     const category = (defaultData.find(elm => elm.type === 'category')?.content);
     const status   = (defaultData.find(elm => elm.type === 'status')?.content);
 
-    let  contentIdsOnly = [];
-    /*
-
-        Solution is here:
-
-        https://stackoverflow.com/questions/72100627/prisma-update-nested-entities-in-a-single-query
-
-
-        Need to get all ids from question content and delete them.
-
-        Then create entries that were deleted
-
-    */
-
     try{
 
         await prisma.questions.update({
             where:{id: questionId}, 
             data:{  
-                userId: userId,
                 title:  defaultData[0].content || '',
                 description:defaultData[1].content || '',
                 category: category || 'None',
@@ -44,6 +29,49 @@ export const  editQuestion = async(defaultData: Array<questionDataEntry>,  quest
         }) 
 
         
+        return json(
+            {
+            error: ``,
+            },
+            { status: 200 }
+        );
+         
+
+    } catch(e) {
+
+        console.log(e);
+        return json(
+            {
+              error: `Could not create the question. Please try again later`,
+            },
+            { status: 500 }
+        );
+
+    }    
+ }
+
+
+
+ export const  editReply = async(defaultData: Array<questionDataEntry>,  questionContentData: Array<questionDataEntry>,   cardId:string,  replyId: string) => {
+    
+    console.log('IN EDIT REPLY')
+    
+    return null;
+    try{
+        await prisma.replies.update({
+            where:{id: replyId}, 
+            data:{  
+                title:  defaultData[0].content || '',
+                description:defaultData[1].content || '',
+                replyContent:{
+                    deleteMany: {replyId: replyId},
+                    createMany: {
+                        data: questionContentData 
+                    }
+                }
+            }
+        }) 
+
         return json(
             {
             error: ``,

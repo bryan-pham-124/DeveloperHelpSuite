@@ -41,28 +41,37 @@ export async function loader({ request }: LoaderArgs) {
     let repliesUserVotes = null;
 
 
+
+
+
     if(cardId !== null && cardId){
 
 
         replies = await getReplies(cardId);
 
-        //console.log(replies);
+        
+        if(replies.length > 0){
+            console.log('user upvotes: ' + replies[0].upvotes)
+            console.log('user downvotes: ' + replies[0].downvotes)
+        }
+       
+
 
         if(userId){
             userVotesInfo = await getUserVotesInfo(userId, cardId);
         }
 
-        const data = await getQuestionById(cardId);
+        const question = await getQuestionById(cardId);
         
-        if(data){
-             const authorInfo =  await getUserById(data?.userId);
+        if(question){
+             const authorInfo =  await getUserById(question?.userId);
              authorName = authorInfo?.name;
              authorId = authorInfo?.id;
         }
 
         return await json( 
             {
-                data: data, 
+                question: question, 
                 userId: userId, 
                 authorName: authorName, 
                 message: message, 
@@ -80,7 +89,7 @@ export async function loader({ request }: LoaderArgs) {
          
         return await json(
             {
-                data: null, 
+                question: null, 
                 userId: null, 
                 authorName: authorName,
                 message: message, 
@@ -100,27 +109,36 @@ export async function loader({ request }: LoaderArgs) {
 
 const questionCard = () => {
    
-  const {data, userId, authorName, authorId, cardId, message, userVotesInfo, replies} = useLoaderData<typeof loader>();   
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
-  const [voteCount , setNewVoteCount] = useState(0);
+  const {question, userId, authorName, authorId, cardId, message, userVotesInfo, replies} = useLoaderData<typeof loader>();   
   const [isFormDisplayed, setIsFormDisplayed] = useState(false);
   const [isReplySubmitted, setIsReplySubmitted] = useState(false);
 
-  useEffect(() => { 
-  
-    if(data){
-        setIsDataLoaded(true);
-        if(typeof data.upvotes === 'number' && typeof data.downvotes === 'number'){
-            setNewVoteCount(data.upvotes - Math.abs(data.downvotes));
+ 
+  const [isRepliesLoaded, setIsRepliesLoaded] = useState(false);
+
+
+  useEffect(() => {
+
+        let isAllVotesLoaded = true;
+
+        if(replies){
+            console.log('replies below')
+            console.log(replies)
+
+            for(let i = 0; i < replies.length; i++){
+                if(replies[i].upvotes === null || replies[i].downvotes === null){
+                    isAllVotesLoaded = false;
+                    break;
+                }
+            }
+
         }
-    } else {
-        setIsDataLoaded(false);
-    }
-    
-    console.log(data)
 
-  }, [data])
+        setIsRepliesLoaded(isAllVotesLoaded);
 
+  }, [replies])
+
+  
 
 
   return (
@@ -148,7 +166,7 @@ const questionCard = () => {
 
                 <div className="wrapper w-full flex justify-center">
                     <h1 className='text-black text-center'>   
-                    <ErrorBox text={'You must be logged in to interact with posts'} />
+                        <ErrorBox text={'You must be logged in to interact with posts'} />
                     </h1>
                 </div>
 
@@ -157,17 +175,26 @@ const questionCard = () => {
 
             <h1 className="mt-5 text-center text-4xl font-bole">Question </h1>
 
-            <Card 
-                type={'question'}
-                data={data} 
-                userId={userId} 
-                authorName = {authorName} 
-                authorId ={authorId} 
-                cardId={cardId} 
-                userVotesInfo={userVotesInfo}
-                voteCount={ voteCount}
-                status={data?.status || 'Not Solved'}
-            />
+
+            {
+
+
+                question && question.upvotes !== null  && question.downvotes !== null &&
+
+                <Card 
+                    type={'question'}
+                    data={question} 
+                    userId={userId} 
+                    authorName = {authorName} 
+                    authorId ={authorId} 
+                    cardId={cardId} 
+                    userVotesInfo={userVotesInfo}
+                    voteCount={ question.upvotes - question.downvotes}
+                    status={question?.status || 'Not Solved'}
+                />
+
+            }
+            
       
             {
                 userId
@@ -195,33 +222,53 @@ const questionCard = () => {
               
             }
 
-            <h1 className="mt-5 text-center text-4xl font-bole">Replies </h1>
+            
 
-            {
-                replies
+            {  
+                replies && replies.length > 0 
                 
                 ?
 
-                replies.map((reply, i) => (
-                    <Card 
-                        key={i}
-                        type={'reply'}
-                        data={reply} 
-                        userId={userId} 
-                        authorName = {reply.user.name} 
-                        authorId = {reply.userId} 
-                        cardId={cardId} 
-                        voteCount={reply.upvotes && reply.downvotes ? reply.upvotes - reply.downvotes: 0}
-                        replyId={reply.id}
-                        status={data?.status || 'Not Solved'}
-                        userVotesInfo={reply.repliesUserVotes}
-                        questionAuthorId = {authorId || null}
-                    />
-                ))
+                <>
 
+                    <h1 className="mt-5 text-center text-4xl font-bole">Replies </h1>
+
+                    {
+
+                        replies.map((reply, i) => (
+                                                
+                            reply.upvotes !== null  && reply.downvotes  !== null
+
+                            &&
+
+                            <Card 
+                                key={i}
+                                type={'reply'}
+                                data={reply} 
+                                userId={userId} 
+                                authorName = {reply.user.name} 
+                                authorId = {reply.userId} 
+                                cardId={cardId} 
+                                voteCount={reply.upvotes - reply.downvotes }
+                                replyId={reply.id || null}
+                                status={question?.status || 'Not Solved'}
+                                userVotesInfo={reply.repliesUserVotes.find(elm => elm.userId === userId && elm.replyId === reply.id)}
+                                questionAuthorId = {authorId || null}
+                            />
+
+                            
+                        ))
+
+                    }
+                    
+                
+                </>
+               
                 :
 
-                'Looks like there are no replies here'
+                <h1 className="text-center mt-5"> Looks like there are no replies here </h1>
+
+                
                 
             }
 

@@ -35,6 +35,29 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
 
     }
 
+
+    if(tableName === 'reply'){
+
+        userVotesInfo = await prisma.repliesUserVotes.findUnique({
+           where: {
+                uniqueRepliesUserVoteId:{
+                   userId: userId,
+                   replyId: cardId
+               }
+           }
+       });
+        
+
+        totalVotes =  await prisma.replies.findUnique({
+           where: {id: cardId}, 
+           select: {
+               upvotes: true,
+               downvotes: true,
+           }
+       })
+
+   }
+
     
     if(!totalVotes || totalVotes.upvotes === null || totalVotes.downvotes  == null ){
         return flashMessage(request, 'Could not update votes. Could not get question info.', redirectTo, false)
@@ -46,7 +69,7 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
 
     let isNewUserVote = false;
 
-    if(!userVotesInfo){
+    if(!userVotesInfo && tableName === 'question'){
 
         isNewUserVote = true;
 
@@ -67,10 +90,37 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
             }
         });
 
-        if( !userVotesInfo || !userVotesInfo.currentVoteToggle ){
-            return flashMessage(request, 'Could not update votes. Could not get user vote info.', redirectTo, false)
-        }  
+    }  
 
+
+   
+
+    if(!userVotesInfo && tableName === 'reply'){
+
+        isNewUserVote = true;
+
+        await prisma.repliesUserVotes.create({
+            data:{
+                userId: userId,
+                replyId: cardId,
+                currentVoteToggle: counter
+            }
+        })
+
+        userVotesInfo = await prisma.repliesUserVotes.findUnique({
+            where: {
+                uniqueRepliesUserVoteId:{
+                    userId: userId,
+                    replyId: cardId
+                }
+            }
+        });
+
+    }  
+
+
+    if( !userVotesInfo || !userVotesInfo.currentVoteToggle ){
+        return flashMessage(request, 'Could not update votes. Could not get user vote info.', redirectTo, false)
     }  
  
    
@@ -93,7 +143,6 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
     if(counter === 'upvotes' &&  userVotesInfo.currentVoteToggle ==='downvotes' ){
         query['upvotes'] = totalVotes.upvotes + 1;
         query['downvotes'] = totalVotes.downvotes -1;
-
     } 
 
     else if(counter === 'upvotes' &&  (userVotesInfo.currentVoteToggle !=='upvotes' || isNewUserVote)){
@@ -136,6 +185,26 @@ export const updateVotes = async (request: Request, cardId: string, counter: str
                         data:{
                             userId: userId,
                             questionId: cardId,
+                            currentVoteToggle: counter
+                        }
+                    })
+                }
+            }
+
+            else if( tableName === 'reply'){
+                await tx.replies.update({
+                    where: {id: cardId}, 
+                    data: query
+                })
+    
+                if(!isNewUserVote ){
+                    await tx.repliesUserVotes.update({
+                        where: {
+                            id: userVotesInfo?.id
+                        },
+                        data:{
+                            userId: userId,
+                            replyId: cardId,
                             currentVoteToggle: counter
                         }
                     })

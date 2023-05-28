@@ -6,7 +6,7 @@ import LinkItem from './LinkItem'
 import VoteCounter from './VoteCounter'
 import { dataProps } from '~/utils/types.server'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 
 // data, userId, authorName, authorId, cardId, message, userVotesInfo
@@ -48,6 +48,7 @@ const Card = (
     ) => {
 
 
+ 
   const formattedDate = () => {
         const dateArr = data?.createdAt?.split('T')[0].split('-');
         if(dateArr){
@@ -60,13 +61,10 @@ const Card = (
     
   }
 
-  // if current answer is a preferred answer then, next state should be not solved
-  const [currentStatus, setCurrentStatus] = useState( data?.preferredAnswer ? 'Not Solved': 'Solved');
-
-
+ 
   const content = type === 'question' ?  data?.questionContent: data?.replyContent;
   const deleteAction = type === 'question' ? `/deleteCard?cardId=${cardId}&authorId=${authorId}&userId=${userId}`: '#';
-  const editAction = type === 'question' ? `/questionEditForm?cardId=${cardId}`: '#';
+  const editAction = type === 'question' ? `/questionEditForm?cardId=${cardId}`: `/questionEditForm?cardId=${cardId}&replyId=${replyId}&isReply=true`;
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -96,7 +94,11 @@ const Card = (
 
                     <div className="flex flex-col gap-y-3">
  
-                        <a href={editAction} className="px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs">Edit</a>
+                        <a href={editAction} 
+                            className="px-4 py-1 bg-customBlack rounded-xl text-center transition hover:bg-customOrange text-xs"
+                         >
+                            Edit
+                        </a>
                                                     
                         <form action={deleteAction} method="post">
                             <button   className="px-4 py-1 bg-customRed rounded-xl text-center transition hover:bg-customOrange text-xs">Delete</button>
@@ -111,13 +113,43 @@ const Card = (
 
             <div className="wrapper grid grid-cols-4  pr-8 mt-5">
                 <div className="wrapper flex flex-col  items-center">
+                    {
+                        isSubmitting
+
+                        &&
+
+                        <p className='text-customOrange text-sm'>
+                            Updating card...
+                        </p>
+                    }    
                     
                     {
 
                         data && 
 
-                        <Form action = {`/updateVotes?cardId=${cardId}&tableName=${type}`} method="post">
-                            <VoteCounter userId={userId} currentVoteStatus={ userVotesInfo !== null && userVotesInfo !== undefined && userVotesInfo.currentVoteToggle !== null ? userVotesInfo.currentVoteToggle: 'none'} votes={  voteCount } />
+                        <Form action = {`/updateVotes?cardId=${cardId}&tableName=${type}&replyId=${replyId}`} method="post">
+                            <VoteCounter
+
+                                 userId={userId} 
+
+                                 currentVoteStatus= { 
+
+                                    userVotesInfo !== null && userVotesInfo !== undefined && userVotesInfo.currentVoteToggle 
+                                    
+                                    ? 
+                                    
+                                    userVotesInfo.currentVoteToggle
+
+                                    : 
+
+                                    'none'
+
+                                } 
+                                
+                                votes= {  voteCount }
+
+                            />
+                                     
                         </Form>
                      
                     }
@@ -128,18 +160,36 @@ const Card = (
                         <div className='wrapper w-25 my-5 flex flex-col items-center'>
 
                             <h2 className='text-center text-sm'>
-                                 Solves Problem?
+                                Best solution?
                             </h2>
                           
                             <Form 
                                 action = {`/updateStatus?cardId=${cardId}&replyId=${replyId}&status=${data?.preferredAnswer ? 'Not Solved': "Solved"}`}  
                                 method="post"
                              >
-                                <button type='submit' className={ (isSubmitting || !canChangeStatus ) ? `mt-4 pointer-events-none`: ''}>
-                                    <FontAwesomeIcon
-                                        icon={faCheck}
-                                        className={ `${data?.preferredAnswer ? 'text-customGreen': 'text-white'} h-10`}
-                                    />
+                                <button  type='submit'
+                                         className=
+                                            {`
+                                                ${(isSubmitting || !canChangeStatus ) ? 'mt-4 pointer-events-none': ''}
+                                                ${data?.preferredAnswer ? 'bg-customOrange': 'bg-gray-400'}
+                                                p-3 rounded-xl mt-3
+                                            `}
+                                 >
+
+                                 {
+                                    data?.preferredAnswer 
+
+                                    ?
+
+                                    <FontAwesomeIcon icon={faCheck} className= "h-6" />
+
+                                    :
+
+                                    <FontAwesomeIcon icon={faXmark} className= "h-6" />
+
+                                 }
+                                
+                                    
                                 </button>
                             </Form>
 
@@ -176,7 +226,7 @@ const Card = (
                                     }
         
                                     else if(elm.type.search('text') !== -1){
-                                        return  <TextItem   key= {i}text ={elm.content}/>
+                                        return  <TextItem   key= {i} text ={elm.content}/>
                                     }
         
                                     else if(elm.type.search('link') !== -1){

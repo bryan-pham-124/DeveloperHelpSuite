@@ -101,7 +101,7 @@ model RepliesUserVotes {
   id              String           @id @default(auto()) @map("_id") @db.ObjectId
   reply           Replies          @relation(fields: [replyId], references: [id], onDelete: Cascade)
   replyId         String           @db.ObjectId
-  userId          String           @db.ObjectId  @unique
+  userId          String           @db.ObjectId  
   currentVoteToggle      String?   @default("none")
 
   @@unique(fields: [replyId, userId], name: "uniqueRepliesUserVoteId")

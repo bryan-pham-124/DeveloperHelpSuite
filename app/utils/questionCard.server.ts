@@ -52,6 +52,26 @@ export const getUserVotesInfo = async (userId: string, cardId: string) => prisma
       }
    }
 });
+
+
+export const getReplyById = async(id: string) => {
+   return await prisma.replies.findUnique({
+     where: {id}, 
+     include: {
+        replyContent : true,
+     }
+  });
+}
+
+
+export const getRepliesUserVotesInfo = async (userId: string, replyId: string) => prisma.repliesUserVotes.findUnique({
+   where:  {
+      uniqueRepliesUserVoteId: {
+         userId: userId,
+         replyId: replyId
+      }
+   }
+});
  
 
 export const getReplies = async(cardId: string) => await prisma.replies.findMany({

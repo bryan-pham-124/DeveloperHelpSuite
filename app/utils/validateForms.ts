@@ -16,17 +16,17 @@ export const  validateFormField = (currentVal: string, field: string ) => {
     }
 
     if(currentVal.trim() === "" || !currentVal.length || currentVal.length === 0 ){
-        errorMessage =  ( field + " cannot be blank")
+        errorMessage =  ("Field cannot be blank")
         errors_present = true;
     }
 
     if((field.includes('password') || field === 'name' ) && currentVal.length < 7 ){
-        errorMessage = ( field + ' must be at least 7 characters.')
+        errorMessage = ( 'Field must be at least 7 characters.')
         errors_present = true;
     } 
     
     if((field.includes('description') || field === 'title' || field.includes('text') ) && currentVal.length < 10 ){
-        errorMessage =  ("This field must be at least 10 characters")
+        errorMessage =  ("Field must be at least 10 characters")
         errors_present = true;
     }
 

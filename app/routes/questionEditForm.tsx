@@ -13,8 +13,8 @@ import ErrorBox from '~/components/ErrorBox';
 import { getUserSession } from '~/utils/auth.server';
 import { clearMessage, flashMessage} from '~/utils/messages.server';
 import SuccessBox from '~/components/SuccessBox';
-import { getQuestionById } from '~/utils/questionCard.server';
-import { editQuestion } from '~/utils/questionEdit.server';
+import { getQuestionById, getReplyById } from '~/utils/questionCard.server';
+import { editQuestion, editReply } from '~/utils/questionEdit.server';
 const uuid = require('uuid');
 
 
@@ -28,16 +28,28 @@ export async function loader({ request }: LoaderArgs) {
 
    // Retrieve the session value set in the previous request
    const message = session.get("message") || null;
+ 
 
    const url = new URL(request.url)
-   const id = url.searchParams.get('cardId');
 
-  
+   const isReply= url.searchParams.get('isReply');
+
+   const replyId = url.searchParams.get('replyId');
+
+   const cardId = url.searchParams.get('cardId');
 
    let questionData = null;
+   let replyData = null;
 
-   if(id){
-       questionData = await getQuestionById(id);
+   if(cardId){
+      if(!isReply){
+        questionData = await getQuestionById(cardId);
+      }
+      else if(replyId) {
+        replyData = await getReplyById(replyId);
+        //console.log('reply data');
+        //console.log(replyData)
+      }
    } else {
        return flashMessage(request, 'Could not find question information. Please try again', 'questions', false)
    }
@@ -48,12 +60,19 @@ export async function loader({ request }: LoaderArgs) {
       return redirect('/login?error=User_Not_Logged_In');
    }
 
-   return await json({
-      'userData': userData, 
-      message: message, 
-      questionData: questionData}, 
-      {headers: await clearMessage(session)
-  });    
+   return await 
+      json(
+        {
+           userData: userData, 
+           message: message, 
+           questionData: questionData, 
+           replyData: replyData,
+           isReply: isReply,
+           cardId: cardId
+        }
+        ,
+        {headers: await clearMessage(session)}
+     );    
 };
 
 
@@ -69,7 +88,18 @@ export const action: ActionFunction = async ({ request }) => {
 
   const formAsArr = [...form];
  
-  const cardId = form.get('cardId')  ;
+  const url = new URL(request.url);
+
+  const cardId = url.searchParams.get('cardId');
+
+  const isReply= url.searchParams.get('isReply');
+
+  const replyId = url.searchParams.get('replyId');
+
+  //console.log('isReply ' + isReply)
+  //console.log('reply id is: ' +  replyId)
+
+  
 
   if( !cardId || !userData){
     return flashMessage(request, 'Could not edit question', `/questionEditForm?cardId=${cardId}`, false);
@@ -77,8 +107,15 @@ export const action: ActionFunction = async ({ request }) => {
 
 
 
-  const baseFields = ['title',  'description', 'category', 'priority', 'status'];
+  let baseFields = ['title', 'description'];
 
+
+  if(!isReply){
+      baseFields.push('priority');
+      baseFields.push('category');
+  }
+
+  
   let defaultData = formAsArr.filter(elm => baseFields.findIndex(i => i === elm[0]) !== -1  );
   let formattedDefault: Array<questionDataEntry> = [];
   defaultData.map((elm, index) => formattedDefault.push({type: elm[0], order: index , content: elm[1] + ''}));
@@ -89,8 +126,44 @@ export const action: ActionFunction = async ({ request }) => {
 
   //console.log(formattedContent)
 
+  /*
   const result = await editQuestion(formattedDefault, formattedContent, userData.id, cardId + '');
  
+  if(result && result.status === 200){
+    
+    console.log(result.status)
+    return flashMessage(request, 'Successfully edited question with title: ' + formattedDefault[0].content, `/questionCard?cardId=${cardId}`, true);
+    
+  } else {
+
+    return flashMessage(request, 'Question could not be edited. Please try again ', '/questionForm', false);
+
+  }
+  */
+
+
+  console.log('replyId:   ' + replyId)
+
+  
+  console.log('reply status is: ' + isReply);
+
+  
+
+  let result = null
+  
+  if(!isReply){
+
+     result = await editQuestion(formattedDefault, formattedContent, userData.id, cardId + '');
+
+  } else {
+    
+    if(replyId){  
+      result = await editReply(formattedDefault, formattedContent,   cardId + '', replyId+ '');
+    }
+
+  }
+
+
   if(result && result.status === 200){
     
     console.log(result.status)
@@ -119,7 +192,7 @@ const actionButtons =  [
 const QuestionEditForm = () => {
 
   const formErrors = useActionData<typeof action>();
-  const {message, questionData} = useLoaderData<typeof loader>();
+  const {message, questionData,  replyData  ,isReply} = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
 
@@ -131,26 +204,52 @@ const QuestionEditForm = () => {
   }));
 
   
-  const defaultFormFields = [
-    {
-      field: 'title',
-      label: "Title",
-      value: questionData?.title || '',
-      error: ''
-    },
-    {
-      field: 'description',
-      label: "Description",
-      value: questionData?.description || '',
-      error: ''
-    },
-    {
-      field: 'category',
-      label: "Category",
-      value: questionData?.category || '',
-      error: ''
-    },
-  ];
+  let defaultFormFields = 
+  
+    !isReply
+
+    ?
+    
+    [
+      {
+        field: 'title',
+        label: "Title",
+        value: questionData?.title || '',
+        error: ''
+      },
+      {
+        field: 'description',
+        label: "Description",
+        value: questionData?.description || '',
+        error: ''
+      },
+      {
+        field: 'category',
+        label: "Category",
+        value: questionData?.category || '',
+        error: ''
+      },
+    ]
+
+    :
+
+    [
+      {
+        field: 'title',
+        label: "Title",
+        value: replyData?.title || '',
+        error: ''
+      },
+      {
+        field: 'description',
+        label: "Description",
+        value: replyData?.description || '',
+        error: ''
+      },
+      
+    ];
+
+
 
 
 
@@ -170,6 +269,19 @@ const QuestionEditForm = () => {
             })
           ))
       }  
+      
+      else if(replyData) {
+
+        replyData.replyContent.map(elm => (
+          newFormFields.push( {
+            field:  elm.type,
+            label:   elm.type,
+            value: elm.content,
+            error: ''
+          })
+        ))
+
+      }
 
       return newFormFields;
 
@@ -272,7 +384,7 @@ const QuestionEditForm = () => {
             ''
         }
 
-        <h1 className='font-bold text-3xl text-center'>Edit Question</h1>
+        <h1 className='font-bold text-3xl text-center'>{!isReply ? 'Edit Question': 'Edit Reply'}</h1>
         <Form method='POST' className='my-[20px] w-[300px]  md:w-[400px] bg-customBlack px-8 py-7 rounded-lg'>
 
             {/*
@@ -281,8 +393,7 @@ const QuestionEditForm = () => {
              * <input type="hidden" name = 'editContent' value={formatEditContent()} />
              */}
 
-            
-            <input type="hidden" name = 'cardId' value={questionData?.id} />
+          
 
             {
               formFields.map((field, i )=> (
@@ -319,13 +430,6 @@ const QuestionEditForm = () => {
                
             </div>
 
-            <div className="flex flex-col items-center my-5">
-                <DropDown name="priority" options={["1","2","3"]}  defaultValue={ questionData ? '' + (questionData.priority): '1' }    label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
-            </div>
-
-            <div className="flex flex-col items-center my-5">
-                <DropDown name="status" options={[ "Solved", "Not Solved"]}  defaultValue={questionData?.status}  label={'Status (Solved, Not Solved)'} width={'400px'} />
-            </div>
 
             {
               !allFieldsValid && <small className='text-center text-customOrange text-xs mb-3 block'>  No fields can be blank. </small>
