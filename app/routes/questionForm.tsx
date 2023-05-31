@@ -335,7 +335,7 @@ if(!isReply){
               &&
 
               <div className="flex flex-col items-center my-5">
-                  <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 1 Low)'} width={'400px'} />
+                  <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 2 Med, 1 Low)'} width={'400px'} />
               </div>
             }
            

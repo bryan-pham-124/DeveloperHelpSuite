@@ -123,13 +123,6 @@ export const action: ActionFunction = async ({ request }) => {
   let formattedContent: Array<questionDataEntry> = [];
   contentData.map((elm, index) => formattedContent.push({type: elm[0], order: index , content: elm[1] + ''}));
 
-  /*
-  console.log('content below');
-  console.log(formattedDefault);
-  console.log(formattedContent);
-  console.log('replyId:   ' + replyId)
-  console.log('reply status is: ' + isReply);
-  */
   
   let result = null
   
@@ -408,6 +401,18 @@ const QuestionEditForm = () => {
                 }
                
             </div>
+
+
+            
+            {
+              !isReply 
+
+              &&
+
+              <div className="flex flex-col items-center my-5">
+                  <DropDown name="priority" options={["1","2","3"]}  defaultValue={'Ascending'}   label={'Priority (3 Urgent, 2 Med, 1 Low)'} width={'400px'} />
+              </div>
+            }
 
 
             {

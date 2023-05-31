@@ -19,7 +19,6 @@ export const  editQuestion = async(defaultData: Array<questionDataEntry>,  quest
                     description:defaultData[1].content || '',
                     category: category || 'None',
                     priority:  priority ? +priority: 1,
-                    status: status ? status: 'Not Solved',
                     questionContent:{
                         deleteMany: {questionId: questionId},
                         createMany: {
@@ -36,7 +35,6 @@ export const  editQuestion = async(defaultData: Array<questionDataEntry>,  quest
                     description:defaultData[1].content || '',
                     category: category || 'None',
                     priority:  priority ? +priority: 1,
-                    status: status ? status: 'Not Solved',
                     questionContent:{
                         deleteMany: {questionId: questionId},
                     }
