@@ -28,12 +28,12 @@ const loginSuccess = () => {
   return (
     <div className='w-full h-[50vh] flex justify-center items-center'>
         <div className="wrapper">
-            <h1 className=' text-lg text-center md:text-3xl mb-[30px] px-4 font-bold'>
+            <h1 className=' text-lg text-center md:text-3xl mb-[30px] px-4 font-bold text-sky-500'>
                 {`Congrats, ${userData?.name}  you have logged in!`}
             </h1>
             
             <div className="wrapper flex w-full gap-x-5 justify-center px-4">   
-                <Link to="/questions" className='border-b border-sky-500 pb-2 text-sky-500 text-md md:text-lg' > Explore Questions and Answers </Link>
+                <Link to="/questions" className='border-b border-customBlack pb-2 text-customBlack text-lg md:text-2xl font-bold' > Explore Questions and Answers </Link>
             </div>
            
         </div>
