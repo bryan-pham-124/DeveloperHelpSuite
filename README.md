@@ -75,7 +75,6 @@
  
 - Questions can be sorted by:
 	- Upvotes
-	- Date
 	- Priority
 
 - Questions can be filtered by:
