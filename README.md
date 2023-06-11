@@ -1,7 +1,7 @@
 # About this project
 
 - Description
-	- This application is a prototype of what a useful “one stop shop” developer knowledge base could be. My application has a section where developers can ask questions and get answers on their technical issues. Developers can also answer other questions. In addition, there is a resources section, where developers can share resources and write articles on topics/ technologies users may have trouble with.
+	- This application is a prototype of what a useful “one stop shop” developer knowledge base could be. My application has a section where developers can ask questions and get answers on their technical issues. Developers can also answer other questions. 
 
 
 - Inspiration
