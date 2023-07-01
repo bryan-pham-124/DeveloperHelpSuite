@@ -12,7 +12,7 @@ const LinkItem = ({link}: linkItemProps) => {
         <div className="wrapper my-3">
             <h2>Link:</h2>
             <Link to={link}>
-                <div className="bg-gray-300	text-xs font-mono rounded-xl px-3 py-3 my-5 text-customBlack  transition hover:scale-110">
+                <div className="bg-gray-300	text-xs font-mono rounded-xl px-3 py-3 my-5 text-customBlack  text-ellipsis overflow-hidden transition hover:scale-110">
                     {link}
                 </div>  
             </Link>

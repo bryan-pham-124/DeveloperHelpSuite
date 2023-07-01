@@ -61,14 +61,10 @@ const VoteCounter = ({votes, currentVoteStatus, userId}: VoteCounterProps) => {
 
   }
 
-
-
   useEffect(() => {console.log(voteCount)}, [voteCount])
 
-
- 
   return (
-    <div className="h-32 bg-customGreen px-3 py-3 flex flex-col items-center justify-center rounded-xl w-20">
+    <div className="w-full h-32 bg-customGreen px-2 py-3 flex flex-col items-center justify-center rounded-xl">
 
         <input type="hidden" name='currentVoteStatus' value={toggleUp ? 'upvotes': toggleDown ? 'downvotes': 'none'} />
         <input type="hidden" name='userId' value={userId || ''} />

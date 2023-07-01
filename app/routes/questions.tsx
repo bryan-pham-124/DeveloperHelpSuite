@@ -239,17 +239,18 @@ const sortCards = (sortMethod: string) => {
  
   return (
   
-      <div className="wrapper my-[50px] px-10  w-full grid justify-center">
+      <div className="wrapper my-[50px] px-6 md:px-10  w-full grid justify-center">
     
-          <div className="flex w-full justify-between mb-[50px]">
-            <h1 className='text-4xl font-bold'>Questions</h1>
-  
-             
+          <div className="flex flex-col md:flex-row w-full   justify-between mb-[50px]">
+
+            <h1 className='text-4xl font-bold text-center md:text-left'>Questions</h1>
+
             <GenericButton text ="Ask A Question"  
                 to='/questionForm'
                 buttonType='skyBlue'  
                 className={(!isLoggedIn) ? `mt-4 pointer-events-none opacity-20`: 'mt-4' } 
              />
+
           </div>
 
           {
@@ -274,14 +275,15 @@ const sortCards = (sortMethod: string) => {
             </div>
           }
 
-          <div className="grid grid-cols-1 md:grid-cols-2 w-full  max-w-[1000px]  ">
-              <div className="w-full bg-customBlack p-6  lg:h-[600px] rounded-l-xl"> 
-                  <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-3 px-4  border-white'>
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full  max-w-[1000px]">
+
+              <div className="w-full bg-customBlack p-6  md:h-[700px] rounded-xl md:rounded-l-xl md:rounded-r-none mb-[50px]"> 
+                  <div className='flex flex-col md:flex-row w-full justify-between  items-center border-b pb-5 px-4  border-white'>
                       <h1 className='py-4 px-3 text-3xl text-white'> Questions</h1>
                       <p className='bg-white px-5 py-1 text-customBlack rounded-xl text-md'> {questionCount}</p>
                   </div>
 
-                  <div className='grid grid-cols-1 md:grid-cols-2  w-full justify-between gap-x-7 mt-[40px] px-6'>
+                  <div className='grid grid-cols-1 md:grid-cols-2  w-full justify-between gap-x-7 mt-[40px] px-1 md:px-6'>
                         <div className="wrapper my-3 md:my-0">
                             <h1 className='text-white text-2xl'>Sort</h1>
                             
@@ -301,19 +303,21 @@ const sortCards = (sortMethod: string) => {
                               filterOptions.map(elm => (
                                  <DropDown updateFilters  = {updateFilters} options={elm.options} label={elm.field} />
                               )) 
-                               
                             }
 
                         </div>
                   </div>
-                  <div className="flex flex-col mt-[30px] ml-2 px-4">
-                      <div className='text-white  my-4 text-md'>
-                            Sorted Questions by: { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + sortType: ''}
-                       </div>
+                  <div className="flex flex-col mt-[30px] ml-2 text-center   my-4px-4">
+                      <p className='text-white text-md'>
+                            Sorted Questions by:
+                       </p>
+                       <p className='text-white text-md'>
+                           { activeSortLabel !== 'Select Sort' ? activeSortLabel + ' ' + sortType: ''}
+                       </p>
                   </div>
                
               </div>
-              <div className=" bg-customOrange p-6 h-[600px] rounded-r-xl overflow-y-scroll md:w-[340px] lg:w-full"> 
+              <div className="bg-customOrange p-6 rounded-xl overflow-y-scroll border border-customBlack md:rounded-r-xl md:rounded-l-none md:w-[340px] lg:w-full h-[700px] "> 
 
                   {
                     (!modifiedCardData) && <h1 className='font-bold mt-10 '> Be first to ask a question!  </h1>
@@ -323,13 +327,11 @@ const sortCards = (sortMethod: string) => {
                     (modifiedCardData.length === 0 && modifiedCardData) && <h1 className='font-bold mt-10 '> Looks like there are no entries that match your filters.</h1>
                   }
 
-            
-
                   {
 
                     modifiedCardData &&
                     
-                     modifiedCardData.map((card, i )=> (
+                      modifiedCardData.map((card, i )=> (
                           
                              <LinkCard
                                 id = {card.id }

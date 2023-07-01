@@ -11,8 +11,8 @@ interface SortbuttonsProps {
 
 //buttons that are used in sorting cards on the "questions page"
 //come in multiple colors
-const skyBlue = 'bg-sky-500 rounded-xl py-2 px-2 my-3 w-full text-white max-w-[200px]';
-const customOrange ='bg-customOrange rounded-xl py-2 px-2 w-full text-white max-w-[200px]';
+const skyBlue = 'bg-sky-500 rounded-xl py-2 px-2 my-3 w-full text-white';
+const customOrange ='bg-customOrange rounded-xl py-2 px-2 w-full text-white';
 
 const buttonTypes = [{type: 'skyBlue', styles: skyBlue }, {type: 'customOrange', styles: customOrange }]
 

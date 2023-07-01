@@ -127,11 +127,10 @@ const questionCard = () => {
                 
                 && 
                 
-                <div className="wrapper w-full flex justify-center mt-5">
-                    <h1 className='text-black text-center'>   
-                        {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
-                    </h1>
-                </div>
+                <h1 className='wrapper w-full flex justify-center mt-5 text-black text-center'>   
+                    {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
+                </h1>
+                 
             }         
 
             
@@ -143,11 +142,10 @@ const questionCard = () => {
 
                 &&
 
-                <div className="wrapper w-full flex justify-center">
-                    <h1 className='text-black text-center'>   
-                        <ErrorBox text={'You must be logged in to interact with posts'} />
-                    </h1>
-                </div>
+                <h1 className='wrapper w-full flex justify-center mt-5 text-black text-center'>    
+                    <ErrorBox text={'You must be logged in to interact with posts'} />
+                </h1>
+                
 
             }
 
@@ -156,7 +154,7 @@ const questionCard = () => {
 
                 // display a message on top of page if there is a solution to a question
 
-               replies &&  replies.find(reply => reply.preferredAnswer)  &&
+               replies && replies.find(reply => reply.preferredAnswer)  &&
 
                 <div className="wrapper w-full flex justify-center">
                     <SuccessBox text={'Solution to question is below in the replies.'} />
@@ -204,7 +202,8 @@ const questionCard = () => {
                         <GenericButton 
                             text={isFormDisplayed ? 'Close Form' : 'Answer Question'} 
                             onClick={(e) => {e.preventDefault(); setIsFormDisplayed(prevData => !prevData)}} 
-                            buttonType={isFormDisplayed ? 'dangerRed': 'skyBlue'}  />
+                            buttonType={isFormDisplayed ? 'dangerRed': 'skyBlue'}  
+                        />
                     </div>
                 </div>
 

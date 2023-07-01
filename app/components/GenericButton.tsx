@@ -31,29 +31,32 @@ const GenericButton = (
     }: GenericButtonArgs
 ) => {
 
+
+  const baseStyles = 'font-light py-3 md:py-1 px-3 rounded-xl text-center flex items-center justify-center'
+
   const buttonTypes = [
     {
       name: "skyBlue",
-      styles: "font-light py-1 px-3 rounded-xl text-center",
+      styles: baseStyles,
       textColor: "text-white",
       bgColor: "bg-sky-500",
     },
     {
       name: "outlineWhite",
-      styles: "font-light border px-3  py-1 rounded-xl text-center",  
+      styles: baseStyles + " border",  
       textColor: 'text-white',
       bgColor: 'bg-transparent',
     },
     {
       name: "blackFilled",
-      styles: "font-light py-1 px-3 rounded-xl text-center",  
+      styles:  baseStyles,  
       textColor: 'text-white',
       bgColor: 'bg-customBlack',
     },
 
     {
       name: "dangerRed",
-      styles: "font-light py-1 px-3 rounded-xl  text-center",  
+      styles:  baseStyles,  
       textColor: 'text-white',
       bgColor: 'bg-red-500',
     },
@@ -70,14 +73,16 @@ const GenericButton = (
         ? 
 
         <Link to={to} onClick={onClick}  
-            className=  {
-              `transition ease-in-out
-              ${bStyle?.bgColor} hover:bg-customOrange
-              ${bStyle?.textColor} 
-              hover:text-${bStyle?.textColor} 
-              hover:border-0
-              duration-300 ${bStyle?.styles} 
-               ${className}
+            className =  {
+              ` transition ease-in-out
+                ${bStyle?.bgColor} 
+                hover:bg-customOrange
+                ${bStyle?.textColor} 
+                hover:text-${bStyle?.textColor} 
+                hover:border-0
+                duration-300 
+                ${bStyle?.styles} 
+                ${className}
               `
             }
             >
@@ -89,14 +94,16 @@ const GenericButton = (
        <input
             type="submit"
             onSubmit={onSubmit}
-            className= {
-              `transition ease-in-out
-              ${bStyle?.bgColor} hover:bg-customOrange
-              ${bStyle?.textColor} 
-              hover:text-${bStyle?.textColor} 
-              hover:border-0
-              duration-300 ${bStyle?.styles} 
-               ${className}
+            className = {
+              ` transition ease-in-out
+                ${bStyle?.bgColor}
+              hover:bg-customOrange
+                ${bStyle?.textColor} 
+                hover:text-${bStyle?.textColor} 
+                hover:border-0
+                duration-300 
+                ${bStyle?.styles} 
+                ${className}
               `
             } 
             onClick={onClick}

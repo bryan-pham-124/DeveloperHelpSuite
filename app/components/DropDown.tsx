@@ -12,8 +12,8 @@ interface DropDownProps {
 }
 
 
-const baseStyles = `text-xs lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat  bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`;
-
+const baseStyles = `w-full text-md lg:w-[160px] bg-[url('../images/sort-down-solid.svg')] bg-no-repeat  bg-[right_10%_bottom_95%] bg-[length:10px_30px] appearance-none  pl-[20px]   pb-2 pt-1  px-4  rounded-xl`;
+const optionStyles = 'w-full text-sm rounded-xl text-center';
 
 // Dropdown that is used on multiple pages and takes an array of options where each element will be displayed
 const DropDown = ({options, label, updateSort, updateFilters, width, name = '', defaultValue =''}: DropDownProps) => {
@@ -33,8 +33,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
             <select  defaultValue={defaultValue} onChange = {e => updateSort(e.target.value)} className={`w-full ${baseStyles}`}>
             {
                 options.map((option) =>  (
-                  <option className='text-sm rounded-xl' value={option}> {option}</option>
-
+                  <option className={optionStyles} value={option}> {option}</option>
                 ))
             }
             </select>
@@ -51,7 +50,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
             <select  defaultValue={defaultValue}  onChange = {e => updateFilters(e.target.value, label)}  className={`w-full ${baseStyles}`}>
             {
                 options.map((option) =>  (
-                  <option className='text-sm rounded-xl' value={option}> {option}</option>
+                  <option className={optionStyles} value={option}> {option !== '' ? option: '-'}</option>
                 ))
             }
            </select>
@@ -63,7 +62,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
            <select name={name}  defaultValue={defaultValue}   className={`${baseStyles} w-[${width}]`}>
             {
                 options.map((option) =>  (
-                  <option className='text-sm rounded-xl' value={option}> {option}</option>
+                  <option className={optionStyles} value={option}> {option !== '' ? option: '-'}</option>
                 ))
             }
            </select>

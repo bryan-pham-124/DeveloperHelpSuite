@@ -156,7 +156,7 @@ const Card = (
 
                         data && 
 
-                        <Form action = {`/updateVotes?cardId=${cardId}&tableName=${type}&replyId=${replyId}`} method="post">
+                        <Form  className='w-full px-3 md:px-5' action = {`/updateVotes?cardId=${cardId}&tableName=${type}&replyId=${replyId}`} method="post">
                             <VoteCounter
 
                                  userId={userId} 
@@ -190,7 +190,7 @@ const Card = (
 
                         type ==='reply' &&
 
-                        <div className='wrapper w-25 my-5 flex flex-col items-center'>
+                        <div className='wrapper w-25 my-5 flex flex-col items-center px-2'>
 
                             <h2 className='text-center text-sm'>
                                 Best solution? 
