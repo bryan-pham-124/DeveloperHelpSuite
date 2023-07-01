@@ -134,7 +134,7 @@ export const updateStatus = async (request: Request, cardId: string | null, repl
 
          await prisma.questions.update({
             where: {id: cardId},
-            data:  {status: status}
+            data:  {status: status === 'NotSolved' ? 'Not Solved': 'Solved'}
          });
 
          // reset all to false because we only have one preferred answer.

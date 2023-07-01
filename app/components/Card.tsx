@@ -216,7 +216,7 @@ const Card = (
                                 // If user can click form, gather the required data through query parameters and send it to updateStatus path to update status
                             }
                             <Form 
-                                action = {`/updateStatus?cardId=${cardId}&replyId=${replyId}&status=${data?.preferredAnswer ? 'Not Solved': "Solved"}`}  
+                                action = {`/updateStatus?cardId=${cardId}&replyId=${replyId}&status=${data?.preferredAnswer ? 'NotSolved': "Solved"}`}  
                                 method="post"
                              >
                                 <button  type='submit'

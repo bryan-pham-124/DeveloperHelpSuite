@@ -127,9 +127,9 @@ const questionCard = () => {
                 
                 && 
                 
-                <h1 className='wrapper w-full flex justify-center mt-5 text-black text-center'>   
+                <div className='wrapper w-full flex justify-center mt-5 text-black text-center'>   
                     {message.split(":")[0] === 'Success' ?  <SuccessBox text={message} /> :  <ErrorBox text={message} />}
-                </h1>
+                </div>
                  
             }         
 
@@ -142,9 +142,9 @@ const questionCard = () => {
 
                 &&
 
-                <h1 className='wrapper w-full flex justify-center mt-5 text-black text-center'>    
+                <div className='wrapper w-full flex justify-center mt-5 text-black text-center'>    
                     <ErrorBox text={'You must be logged in to interact with posts'} />
-                </h1>
+                </div>
                 
 
             }

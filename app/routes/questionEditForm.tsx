@@ -419,7 +419,7 @@ const QuestionEditForm = () => {
               !allFieldsValid && <small className='text-center text-customOrange text-xs mb-3 block'>  No fields can be blank. </small>
             }
 
-            <div className="w-full text-center ">
+            <div className="w-full text-center flex justify-center">
                 <GenericButton
                     formButton = {true}
                     buttonType='skyBlue'
