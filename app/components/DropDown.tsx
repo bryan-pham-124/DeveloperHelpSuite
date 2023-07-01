@@ -18,11 +18,14 @@ const optionStyles = 'w-full text-sm rounded-xl text-center md:text-left';
 const DropDown = ({options, label, updateSort, updateFilters, width, name = '', defaultValue =''}: DropDownProps) => {
 
   
+  const idLabel = label.replace(/\s/g, '');
+
+
   return (
     <>
        
        <label className='text-white font-light my-2 block' 
-            htmlFor={updateFilters ? 'Filter-' + label: updateSort ? 'Sort-'+ label: 'Default-'+ label}
+            htmlFor={updateFilters ? 'Filter-' + idLabel: updateSort ? 'Sort-'+ idLabel: 'Default-'+ idLabel}
         >
               {label}
        </label>
@@ -34,7 +37,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
 
           ?
 
-            <select id= {"Sort-" + label} defaultValue={defaultValue} onChange = {e => updateSort(e.target.value)} className={`w-full ${baseStyles}`}>
+            <select id= {"Sort-" + idLabel} defaultValue={defaultValue} onChange = {e => updateSort(e.target.value)} className={`w-full ${baseStyles}`}>
             {
                 options.map((option) =>  (
                   <option className={optionStyles} value={option}> {option}</option>
@@ -51,7 +54,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
 
           ?
 
-            <select id= {"Filter-" + label} defaultValue={defaultValue}  onChange = {e => updateFilters(e.target.value, label)}  className={`w-full ${baseStyles}`}>
+            <select id= {"Filter-" + idLabel} defaultValue={defaultValue}  onChange = {e => updateFilters(e.target.value, label)}  className={`w-full ${baseStyles}`}>
             {
                 options.map((option) =>  (
                   <option className={optionStyles} value={option}> {option !== '' ? option: '-'}</option>
@@ -63,7 +66,7 @@ const DropDown = ({options, label, updateSort, updateFilters, width, name = '', 
 
            // default dropdown
 
-           <select id={"Default-" + label} name={name}  defaultValue={defaultValue}   className={`${baseStyles} w-[${width}]`}>
+           <select id={"Default-" + idLabel} name={name}  defaultValue={defaultValue}   className={`${baseStyles} w-[${width}]`}>
             {
                 options.map((option) =>  (
                   <option className={optionStyles} value={option}> {option !== '' ? option: '-'}</option>
