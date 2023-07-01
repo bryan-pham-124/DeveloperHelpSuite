@@ -134,13 +134,16 @@ export const updateStatus = async (request: Request, cardId: string | null, repl
 
          await prisma.questions.update({
             where: {id: cardId},
-            data:  {status: status === 'NotSolved' ? 'Not Solved': 'Solved'}
+            data:  {status: (status === 'NotSolved')  || (status === 'Not Solved')? 'Not Solved': 'Solved'}
          });
 
          // reset all to false because we only have one preferred answer.
          await prisma.replies.updateMany({
-            where: {preferredAnswer: true},
-            data:  {preferredAnswer: false}
+            where: {
+               id: cardId,
+               preferredAnswer: true
+            },
+            data: {preferredAnswer: false}
          });
 
          await prisma.replies.update({

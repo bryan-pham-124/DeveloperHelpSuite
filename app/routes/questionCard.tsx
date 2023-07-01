@@ -49,6 +49,10 @@ export async function loader({ request }: LoaderArgs) {
 
         replies = await getReplies(cardId);
 
+
+        console.log('replies are: ')
+        console.log(replies)
+
         
         if(replies.length > 0){
             console.log('user upvotes: ' + replies[0].upvotes)
@@ -154,7 +158,7 @@ const questionCard = () => {
 
                 // display a message on top of page if there is a solution to a question
 
-               replies && replies.find(reply => reply.preferredAnswer)  &&
+               replies && replies.find(reply => reply.preferredAnswer) &&
 
                 <div className="wrapper w-full flex justify-center">
                     <SuccessBox text={'Solution to question is below in the replies.'} />
